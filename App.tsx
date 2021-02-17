@@ -1,21 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import AppLoading from 'expo-app-loading';
+import { Asset } from 'expo-asset';
+import * as Font from 'expo-font';
+import { Ionicons } from '@expo/vector-icons';
+import { Root } from "native-base";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import RouterApp from './app/config/routes';
+import store from './app/redux/store';
+
+// function cacheFonts(fonts) {
+//     return fonts.map(font => Font.loadAsync(font));
+// }
+
+export default class App extends Component {
+    state = {
+        isReady: false,
+    };
+
+    async _cacheResourcesAsync() {
+        await Font.loadAsync({
+            Roboto: require('native-base/Fonts/Roboto.ttf'),
+            Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
+            ...Ionicons.font,
+        });
+
+        const images = [require('./assets/driver.png')];
+    
+        const cacheImages = images.map(image => {
+          return Asset.fromModule(image).downloadAsync();
+        }); 
+        return Promise.all(cacheImages);
+    }
+
+    render() {
+        if (!this.state.isReady) {
+            return (
+                <AppLoading
+                    startAsync={this._cacheResourcesAsync}
+                    onFinish={() => this.setState({ isReady: true })}
+                    onError={console.warn}
+                />
+            );
+        }
+    
+        return (
+            <Provider store={store}>
+                <Root>
+                    <RouterApp/>
+                </Root>
+            </Provider>
+        );
+    }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
