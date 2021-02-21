@@ -6,42 +6,22 @@ import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text } from
 import { actions as auth } from "../../index"
 const { registerInit } = auth;
 
-import styles from './styles';
-
-// const error = {
-//     general: "",
-//     email: "",
-//     fullName: "",
-//     username: "",
-//     password: "",
-//     confirm_password: ""
-// }
-
 type MyProps = {
     registerInit: (data, onSuccess, onError) => void,
     navigation: any,
 }
 type MyState = {
-    // error: {
-    //     general: string,
-    //     email: string,
-    //     password: string
-    // }
     error: string,
     mobileNumber: string,
 }
 
-class RegisterInit extends React.Component<MyProps, MyState> {
+class PasswordRecoverInit extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
             error: '',
             mobileNumber: '',
         }
-
-        // this.onSubmit = this.onSubmit.bind(this);
-        // this.onSuccess = this.onSuccess.bind(this);
-        // this.onError = this.onError.bind(this);
     }
 
     goToLogIn = () => {
@@ -62,22 +42,8 @@ class RegisterInit extends React.Component<MyProps, MyState> {
 
     onSuccess = () => {
         const { navigation } = this.props;
-        navigation.navigate('Register');
+        navigation.navigate('PasswordRecover');
     }
-
-    // onError(error) {
-    //     let errObj = this.state.error;
-
-    //     if (error.hasOwnProperty("message")) {
-    //         errObj['general'] = error.message;
-    //     } else {
-    //         let keys = Object.keys(error);
-    //         keys.map((key, index) => {
-    //             errObj[key] = error[key];
-    //         })
-    //     }
-    //     this.setState({error: errObj});
-    // }
 
     onError = (error) => {
         this.setState({ error });
@@ -116,15 +82,11 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                             <Button style={{ flex: 1, flexDirection: 'center', paddingVertical: 10 }}
                                 onPress={this.onSubmit}>
                                 <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
-                                    Crear cuenta
+                                    Recuperar cuenta
                                 </Text>
                             </Button>
                         </Item>
                     </Form>
-
-                    <View>
-                        <Text onPress={this.goToLogIn}>Ya tienes una cuenta creada? Iniciar Sesión</Text>
-                    </View>
 
                 </Content>
             </Container>
@@ -138,4 +100,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { registerInit })(RegisterInit);
+export default connect(mapStateToProps, { registerInit })(PasswordRecoverInit);

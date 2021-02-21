@@ -43,15 +43,17 @@ class Login extends React.Component<MyProps, MyState> {
     }
 
     onForgotPassword = () => {
+        const { navigation } = this.props;
+
         Toast.hide();
-        Alert.alert('Me olvide de la contraseña.')
+        navigation.navigate('PasswordRecoverInit');
     }
 
     goToRegister = () => {
         const { navigation } = this.props;
 
         Toast.hide();
-        navigation.navigate('Register');
+        navigation.navigate('RegisterInit');
     }
 
     onSubmit = () => {
@@ -75,7 +77,7 @@ class Login extends React.Component<MyProps, MyState> {
             buttonText: "Aceptar",
             buttonTextStyle: { color: "#008000" },
             buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300
+            duration: 300000
         })
     }
 
@@ -92,7 +94,7 @@ class Login extends React.Component<MyProps, MyState> {
                     // }}
                 >
                     <View style={{ alignItems: 'center', margin: 20 }}>
-                        <Image source={require('../../../../../assets/driver.png')}/>
+                        <Image style={{ height: 200, width: 200 }} resizeMode='cover' source={require('../../../../../assets/driver.png')}/>
                     </View>
 
                     <Form style={{ padding: 20 }}>
@@ -121,7 +123,7 @@ class Login extends React.Component<MyProps, MyState> {
                         </View>
                         <Item style={{ marginVertical: 10 }}>
                             <Button style={{ flex: 1, flexDirection: 'center', paddingVertical: 10 }}
-                                onPress={() => this.onSubmit}>
+                                onPress={this.onSubmit}>
                                 <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
                                     Iniciar Sesión
                                 </Text>

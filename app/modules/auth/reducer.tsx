@@ -6,7 +6,7 @@ let initialState = {
     isLoading: false,
     isLoggedIn: false, 
     user: null,
-    codeId: ''
+    codeId: '',
 };
 
 const authReducer = (state = initialState, action) => {
@@ -42,7 +42,7 @@ const authReducer = (state = initialState, action) => {
             const keys = ['user_userId', 'user_mobileNumber', 'user_name', 'user_lastName', 'user_pushNotificationID', 'session_token'];
             deleteMany(keys);
             
-            return { ...state, isLoggedIn: false, isLoading: false };
+            return { ...state, initialState };
         }
 
         case t.SIGN_UP_INIT: {
@@ -51,17 +51,43 @@ const authReducer = (state = initialState, action) => {
             return { ...state, codeId, isLoading: false };
         }
         
-        // case t.COMPLETE_USER_INFO: {
-        //     const user = action.data;
+        case t.SIGN_UP: {
+            const { user, session } = action.data;
 
-        //     return { ...state, user };
-        // }
+            const saveItems = [
+                { key: 'user_userId', value: user.userId },
+                { key: 'user_mobileNumber', value: user.mobileNumber },
+                { key: 'user_name', value: user.name },
+                { key: 'user_lastName', value: user.lastName },
+                { key: 'user_pushNotificationID', value: user.pushNotificationID },
+                { key: 'session_token', value: session.token },
+            ]
+            saveMany(saveItems);
+
+            return { ...state, isLoggedIn: true, user: user, isLoading: false, codeId: '' };
+        }
+
+        case t.RECOVER_INIT: {
+            const { codeId } = action.data;
+
+            return { ...state, codeId, isLoading: false };
+        }
         
-        // case t.ONLY_USER_ID_INFO: {
-        //     let { data } = action;
+        case t.RECOVER: {
+            const { user, session } = action.data;
 
-        //     return { ...state, user: { id: data } };
-        // }
+            const saveItems = [
+                { key: 'user_userId', value: user.userId },
+                { key: 'user_mobileNumber', value: user.mobileNumber },
+                { key: 'user_name', value: user.name },
+                { key: 'user_lastName', value: user.lastName },
+                { key: 'user_pushNotificationID', value: user.pushNotificationID },
+                { key: 'session_token', value: session.token },
+            ]
+            saveMany(saveItems);
+
+            return { ...state, isLoggedIn: true, user: user, isLoading: false, codeId: '' };
+        }
 
         default:
             return state;

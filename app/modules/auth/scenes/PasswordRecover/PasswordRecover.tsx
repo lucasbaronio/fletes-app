@@ -4,38 +4,24 @@ import { connect } from 'react-redux';
 import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text } from 'native-base';
 
 import { actions as auth } from "../../index"
-const { register } = auth;
+const { passwordRecover } = auth;
 
 import styles from './styles';
 
-// const error = {
-//     general: "",
-//     email: "",
-//     fullName: "",
-//     username: "",
-//     password: "",
-//     confirm_password: ""
-// }
-
 type MyProps = {
-    register: (data, onSuccess, onError) => void,
+    passwordRecover: (data, onSuccess, onError) => void,
     codeId: string,
     navigation: any,
     // isLoading: boolean,
 }
 type MyState = {
-    // error: {
-    //     general: string,
-    //     email: string,
-    //     password: string
-    // }
     error: string,
     code: string,
     password: string,
     repassword: string,
 }
 
-class Register extends React.Component<MyProps, MyState> {
+class PasswordRecover extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -44,10 +30,6 @@ class Register extends React.Component<MyProps, MyState> {
             password: '',
             repassword: '',
         }
-
-        // this.onSubmit = this.onSubmit.bind(this);
-        // this.onSuccess = this.onSuccess.bind(this);
-        // this.onError = this.onError.bind(this);
     }
 
     onSubmit = () => {
@@ -55,8 +37,8 @@ class Register extends React.Component<MyProps, MyState> {
         const { code, password, repassword } = this.state;
 
         if (password === repassword) {
-            const { register, codeId } = this.props;
-            register({ codeId, code, password }, this.onSuccess, this.onError)
+            const { passwordRecover, codeId } = this.props;
+            passwordRecover({ codeId, code, password }, this.onSuccess, this.onError)
         } else {
             this.showToast('Las contraseñas no son iguales')
         }
@@ -76,20 +58,6 @@ class Register extends React.Component<MyProps, MyState> {
         const { navigation } = this.props;
         navigation.navigate('RouterLogged');
     }
-
-    // onError(error) {
-    //     let errObj = this.state.error;
-
-    //     if (error.hasOwnProperty("message")) {
-    //         errObj['general'] = error.message;
-    //     } else {
-    //         let keys = Object.keys(error);
-    //         keys.map((key, index) => {
-    //             errObj[key] = error[key];
-    //         })
-    //     }
-    //     this.setState({error: errObj});
-    // }
 
     onError = (error) => {
         this.setState({ error });
@@ -158,4 +126,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { register })(Register);
+export default connect(mapStateToProps, { passwordRecover })(PasswordRecover);

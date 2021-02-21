@@ -6,6 +6,8 @@ import RouterLogged from './routesLogged';
 import Login from '../modules/auth/scenes/Login/Login';
 import RegisterInit from '../modules/auth/scenes/RegisterInit/RegisterInit';
 import Register from '../modules/auth/scenes/Register/Register';
+import PasswordRecoverInit from '../modules/auth/scenes/PasswordRecoverInit/PasswordRecoverInit';
+import PasswordRecover from '../modules/auth/scenes/PasswordRecover/PasswordRecover';
 import Splash from '../components/Splash/Splash';
 
 const Stack = createStackNavigator();
@@ -65,6 +67,24 @@ class Router extends Component<MyProps, MyState> {
                         component={Register}
                         options={{
                             title: 'Crear cuenta',
+                            headerTransparent: true,
+                            // headerShown: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="PasswordRecoverInit"
+                        component={PasswordRecoverInit}
+                        options={{
+                            title: 'Recuperar cuenta',
+                            headerTransparent: true,
+                            // headerShown: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="PasswordRecover"
+                        component={PasswordRecover}
+                        options={{
+                            title: 'Recuperar cuenta',
                             headerTransparent: true,
                             // headerShown: false,
                         }}

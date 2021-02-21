@@ -12,7 +12,7 @@ export function registerInit(mobileNumber, successCB, errorCB) {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 dispatch({type: t.SIGN_UP_INIT, data});
-                successCB(data);
+                successCB();
             }
             else if (error) errorCB(error)
         });
@@ -20,32 +20,18 @@ export function registerInit(mobileNumber, successCB, errorCB) {
 }
 
 export function register(codeAndPwdDTO, successCB, errorCB) {
-    // return (dispatch) => {
-    //     dispatch({type: t.LOADING});
-    //     api.signUpInit(mobileNumber, (isSuccess, data, error) => {
-    //         dispatch({type: t.LOADING});
-    //         if (isSuccess) {
-    //             dispatch({type: t.SIGN_UP_INIT, data});
-    //             successCB(data);
-    //         }
-    //         else if (error) errorCB(error)
-    //     });
-    // };
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.signUp(codeAndPwdDTO, (isSuccess, data, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                dispatch({type: t.SIGN_UP_INIT, data});
+                successCB();
+            }
+            else if (error) errorCB(error)
+        });
+    };
 }
-
-// export function finalizeCreateUser(user, successCB, errorCB) {
-//     return (dispatch) => {
-//         dispatch({type: t.LOADING});
-//         api.updateUser(user, function (success, data, error) {
-//             dispatch({type: t.LOADING});
-//             if (success) {
-//                 dispatch({type: t.LOGGED_IN, data: user});
-//                 dispatch({type: tProfile.USER_INFO_AVAILABLE, data: user, isLoggedUser: true });
-//                 successCB();
-//             }else if (error) errorCB(error)
-//         });
-//     };
-// }
 
 export function login(data, successCB, errorCB) {
     return (dispatch) => {
@@ -53,35 +39,52 @@ export function login(data, successCB, errorCB) {
         api.logIn(data, (isSuccess, data, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
-                if (data.exists) {
-                    dispatch({type: t.LOG_IN, data});
-                    // dispatch({type: tProfile.USER_INFO_AVAILABLE, data: data.user, isLoggedUser: true });
-                }
-                // successCB(data);
+                dispatch({type: t.LOG_IN, data});
                 successCB();
-            } else if (error) errorCB(error)
+            } 
+            else if (error) errorCB(error)
         });
     };
 }
 
-export function resetPassword(data, successCB, errorCB) {
-//     return (dispatch) => {
-//         api.resetPassword(data, function (success, data, error) {
-//             if (success) successCB();
-//             else if (error) errorCB(error)
-//         });
-//     };
+export function passwordRecoverInit(mobileNumber, successCB, errorCB) {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.passwordRecoverInit(mobileNumber, (isSuccess, data, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                dispatch({type: t.RECOVER_INIT, data});
+                successCB();
+            }
+            else if (error) errorCB(error)
+        });
+    };
 }
 
-export function signOut(successCB, errorCB) {
-//     return (dispatch) => {
-//         api.signOut(function (success, data, error) {
-//             if (success) {
-//                 dispatch({type: t.LOGGED_OUT});
-//                 successCB();
-//             }else if (error) errorCB(error)
-//         });
-//     };
+export function passwordRecover(codeAndPwdDTO, successCB, errorCB) {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.passwordRecover(codeAndPwdDTO, (isSuccess, data, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                dispatch({type: t.RECOVER, data});
+                successCB();
+            }
+            else if (error) errorCB(error)
+        });
+    };
+}
+
+export function logOut(successCB, errorCB) {
+    return (dispatch) => {
+        api.logOut(function (isSuccess, data, error) {
+            if (isSuccess) {
+                dispatch({type: t.LOG_OUT});
+                successCB();
+            } 
+            else if (error) errorCB(error)
+        });
+    };
 }
 
 // export function checkLoginStatus(callback) {
