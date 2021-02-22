@@ -8,6 +8,7 @@ import { Root } from "native-base";
 
 import RouterApp from './app/config/routes';
 import store from './app/redux/store';
+import { getValue } from './app/modules/secureStore';
 
 // function cacheFonts(fonts) {
 //     return fonts.map(font => Font.loadAsync(font));
@@ -18,7 +19,7 @@ export default class App extends Component {
         isReady: false,
     };
 
-    async _cacheResourcesAsync() {
+    async _cacheResourcesAsync(): Promise<void> {
         await Font.loadAsync({
             Roboto: require('native-base/Fonts/Roboto.ttf'),
             Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf'),
@@ -29,8 +30,8 @@ export default class App extends Component {
     
         const cacheImages = images.map(image => {
           return Asset.fromModule(image).downloadAsync();
-        }); 
-        return Promise.all(cacheImages);
+        });
+        Promise.all(cacheImages);
     }
 
     render() {

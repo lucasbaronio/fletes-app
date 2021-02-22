@@ -5,3 +5,4 @@ export const SIGN_UP = 'auth/SIGN_UP';
 export const RECOVER_INIT = 'auth/RECOVER_INIT';
 export const RECOVER = 'auth/RECOVER';
 export const LOADING = 'auth/LOADING';
+export const USERS_ME = 'users/USERS_ME'

@@ -64,7 +64,7 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
                     scrollEnabled={false}>
                     
                     <View style={{ alignItems: 'center', margin: 20 }}>
-                        <Image source={require('../../../../../assets/driver.png')}/>
+                        <Image style={{ height: 200, width: 200 }} resizeMode='cover' source={require('../../../../../assets/driver.png')}/>
                     </View>
 
                     <Form style={{ padding: 20 }}>

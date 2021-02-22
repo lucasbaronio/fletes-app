@@ -5,7 +5,7 @@ import * as api from './api';
 
 // import { AsyncStorage } from "react-native";
 
-export function registerInit(mobileNumber, successCB, errorCB) {
+export const registerInit = (mobileNumber, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
         api.signUpInit(mobileNumber, (isSuccess, data, error) => {
@@ -19,7 +19,7 @@ export function registerInit(mobileNumber, successCB, errorCB) {
     };
 }
 
-export function register(codeAndPwdDTO, successCB, errorCB) {
+export const register = (codeAndPwdDTO, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
         api.signUp(codeAndPwdDTO, (isSuccess, data, error) => {
@@ -33,7 +33,7 @@ export function register(codeAndPwdDTO, successCB, errorCB) {
     };
 }
 
-export function login(data, successCB, errorCB) {
+export const login = (data, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
         api.logIn(data, (isSuccess, data, error) => {
@@ -47,7 +47,7 @@ export function login(data, successCB, errorCB) {
     };
 }
 
-export function passwordRecoverInit(mobileNumber, successCB, errorCB) {
+export const passwordRecoverInit = (mobileNumber, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
         api.passwordRecoverInit(mobileNumber, (isSuccess, data, error) => {
@@ -61,7 +61,7 @@ export function passwordRecoverInit(mobileNumber, successCB, errorCB) {
     };
 }
 
-export function passwordRecover(codeAndPwdDTO, successCB, errorCB) {
+export const passwordRecover = (codeAndPwdDTO, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
         api.passwordRecover(codeAndPwdDTO, (isSuccess, data, error) => {
@@ -75,14 +75,33 @@ export function passwordRecover(codeAndPwdDTO, successCB, errorCB) {
     };
 }
 
-export function logOut(successCB, errorCB) {
+export const logOut = (successCB, errorCB) => {
     return (dispatch) => {
-        api.logOut(function (isSuccess, data, error) {
+        api.logOut((isSuccess, data, error) => {
             if (isSuccess) {
                 dispatch({type: t.LOG_OUT});
                 successCB();
             } 
             else if (error) errorCB(error)
+        });
+    };
+}
+
+export const logOutForce = (successCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOG_OUT});
+        // successCB();
+    };
+}
+
+export const checkLoginStatus = (successCB, errorCB) => {
+    return (dispatch) => {
+        api.usersMe((isSuccess, data, error) => {
+            if (isSuccess) {
+                dispatch({type: t.USERS_ME, data});
+                successCB();
+            } 
+            else if (error) errorCB(error) // Ver como hacer aca para si expiro su token, mandarlo al login
         });
     };
 }

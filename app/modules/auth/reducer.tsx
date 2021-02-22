@@ -1,5 +1,5 @@
 // import { AsyncStorage } from 'react-native';
-import { save, getValue, deleteMany, saveMany } from '../secureStore';
+import { deleteMany, saveMany } from '../secureStore';
 import * as t from './actionTypes';
 
 let initialState = { 
@@ -87,6 +87,21 @@ const authReducer = (state = initialState, action) => {
             saveMany(saveItems);
 
             return { ...state, isLoggedIn: true, user: user, isLoading: false, codeId: '' };
+        }
+
+        case t.USERS_ME: {
+            const { user } = action.data;
+
+            const saveItems = [
+                { key: 'user_userId', value: user.userId },
+                { key: 'user_mobileNumber', value: user.mobileNumber },
+                { key: 'user_name', value: user.name },
+                { key: 'user_lastName', value: user.lastName },
+                { key: 'user_pushNotificationID', value: user.pushNotificationID },
+            ]
+            saveMany(saveItems);
+
+            return { ...state, isLoggedIn: true, user: user, isLoading: false };
         }
 
         default:

@@ -6,9 +6,10 @@ import {
     API_AUTH_LOG_OUT,
     API_AUTH_RECOVER_INIT,
     API_AUTH_RECOVER,
+    API_USERS_ME,
 } from './constants';
 import { get, post, deleteMethod } from '../globalApi';
-import { getValue } from '../secureStore';
+import { getHeaderToken } from '../security';
 
 // import { getUserById } from '../profile/api';
 // export { getUserById }
@@ -26,10 +27,6 @@ type LogInDTO = {
     password: string,
 }
 
-const headerApp = {
-    'Authorization': `Bearer ${getValue('session_token')}`
-}
-
 export const signUpInit = (mobileNumber: MobileNumberDTO, callback) => {
     post(API_AUTH_SIGN_UP_INIT, mobileNumber, {}, callback)
 }
@@ -43,7 +40,7 @@ export const logIn = (logInDTO: LogInDTO, callback) => {
 }
 
 export const logOut = (callback) => {
-    deleteMethod(API_AUTH_LOG_OUT, headerApp, callback)
+    deleteMethod(API_AUTH_LOG_OUT, getHeaderToken(), callback)
 }
 
 export const passwordRecoverInit = (mobileNumber: MobileNumberDTO, callback) => {
@@ -52,6 +49,10 @@ export const passwordRecoverInit = (mobileNumber: MobileNumberDTO, callback) => 
 
 export const passwordRecover = (passwordRecovedDTO: CodeAndPwdDTO, callback) => {
     post(API_AUTH_RECOVER, passwordRecovedDTO, {}, callback)
+}
+
+export const usersMe = (callback) => {
+    get(API_USERS_ME, getHeaderToken(), callback)
 }
 
 
