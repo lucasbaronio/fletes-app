@@ -1,14 +1,20 @@
 import React from 'react';
-import { View, Image, ScrollView } from 'react-native';
+import { View, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text } from 'native-base';
+import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinner } from 'native-base';
 
 import { actions as auth } from "../../index"
-const { registerInit } = auth;
+const { passwordRecoverInit } = auth;
+import { isNotEmpty, validateMobileNumber } from '../../utils/validate';
+import { 
+    ERROR_EMPTY_MOBILE_NUMBER, 
+    ERROR_INCORRECT_MOBILE_NUMBER 
+} from '../../../../config/strings';
 
 type MyProps = {
-    registerInit: (data, onSuccess, onError) => void,
+    passwordRecoverInit: (data, onSuccess, onError) => void,
     navigation: any,
+    isLoading: boolean,
 }
 type MyState = {
     error: string,
@@ -32,12 +38,31 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
     }
 
     onSubmit = () => {
-        this.setState({ error: '' }); //clear out error messages
         Toast.hide();
+        this.setState({ error: '' });
 
         const { mobileNumber } = this.state;
-        const { registerInit } = this.props;
-        registerInit({ mobileNumber }, this.onSuccess, this.onError);
+        const val1 = isNotEmpty(mobileNumber, () => {
+            this.showToast(ERROR_EMPTY_MOBILE_NUMBER)
+        });
+        const val2 = val1 && validateMobileNumber(mobileNumber, () => {
+            this.showToast(ERROR_INCORRECT_MOBILE_NUMBER)
+        });
+
+        if (val1 && val2) {
+            const { passwordRecoverInit } = this.props;
+            passwordRecoverInit({ mobileNumber }, this.onSuccess, this.onError);
+        }
+    }
+
+    showToast = (msj: string) => {
+        Toast.show({
+            text: msj,
+            buttonText: "Aceptar",
+            buttonTextStyle: { color: "#008000" },
+            buttonStyle: { backgroundColor: "#5cb85c" },
+            duration: 300000
+        })
     }
 
     onSuccess = () => {
@@ -47,16 +72,11 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
 
     onError = (error) => {
         this.setState({ error });
-        Toast.show({
-            text: this.state.error,
-            buttonText: "Aceptar",
-            buttonTextStyle: { color: "#008000" },
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300000
-        })
+        this.showToast(this.state.error);
     }
 
     render() {
+        const { isLoading } = this.props;
         return (
             <Container>
                 <Content
@@ -70,7 +90,7 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
                     <Form style={{ padding: 20 }}>
                         <Item rounded error={false} style={{ marginVertical: 10 }}>
                             <Icon name='phone-portrait' />
-                            <Text style={{ color: '#000', fontWeight: 'bold' }}>+598</Text>
+                            <Text style={{ color: '#000', fontWeight: 'bold' }}>🇺🇾 (+598)</Text>
                             <Input 
                                 keyboardType="phone-pad" 
                                 placeholder="Nro. celular"
@@ -78,14 +98,21 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
                                 value={this.state.mobileNumber}/>
                             {false && <Icon name='close-circle' />}
                         </Item>
-                        <Item style={{ marginVertical: 10 }}>
-                            <Button style={{ flex: 1, flexDirection: 'center', paddingVertical: 10 }}
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10, paddingVertical: 10 }}>
+                            <Button 
+                                disable={isLoading}
+                                style={{ flex: 1, flexDirection: 'row', justifyContent: "center", paddingVertical: 20 }}
                                 onPress={this.onSubmit}>
-                                <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
-                                    Recuperar cuenta
-                                </Text>
+                                {
+                                    isLoading ?
+                                    <ActivityIndicator />
+                                    :
+                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
+                                        Recuperar cuenta
+                                    </Text>
+                                }
                             </Button>
-                        </Item>
+                        </View>
                     </Form>
 
                 </Content>
@@ -100,4 +127,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { registerInit })(PasswordRecoverInit);
+export default connect(mapStateToProps, { passwordRecoverInit })(PasswordRecoverInit);

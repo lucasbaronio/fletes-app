@@ -1,19 +1,10 @@
-// export const FIREBASE_API_KEY = "AIzaSyAZXjQr7qvStK9zE-OuG4FW5uv05kDUC-k";
-// export const FIREBASE_AUTH_DOMAIN = "pimbaymobile.firebaseapp.com";
-// export const FIREBASE_DATABASE_URL = "https://pimbaymobile.firebaseio.com";
-// export const FIREBASE_PROJECT_ID = "pimbaymobile";
-// export const FIREBASE_STORAGE_BUCKET = "pimbaymobile.appspot.com";
-// export const FIREBASE_MESSAGING_SENDER_ID = "619978772784";
-
-// export const FACEBOOK_APP_ID = '197787241068265';
-
 export const API = 'https://Z.Y.X.W/v1';
 
 export const API_AUTH = `${API}/auth`;
 export const API_AUTH_LOG_IN = () => `${API_AUTH}`;
 export const API_AUTH_LOG_OUT = () => `${API_AUTH}`;
-export const API_AUTH_SIGN_UP_INIT = () => `${API_AUTH}/signUp/init`;
-export const API_AUTH_SIGN_UP = () => `${API_AUTH}/signUp`;
+export const API_AUTH_SIGN_UP_INIT = () => `${API_AUTH}/user/init`;
+export const API_AUTH_SIGN_UP = () => `${API_AUTH}/user`;
 export const API_AUTH_RECOVER_INIT = () => `${API_AUTH}/password/recover/init`;
 export const API_AUTH_RECOVER = () => `${API_AUTH}/password/recover`;
 

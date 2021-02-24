@@ -10,8 +10,6 @@ import {
 
 // export const NAME = 'auth';
 
-// export const FACEBOOK_APP_ID = fbID;
-
 export const API_AUTH_SIGN_UP_INIT = apiAuthSignUpInit;
 export const API_AUTH_SIGN_UP = apiAuthSignUp;
 export const API_AUTH_LOG_IN = apiAuthLogIn;

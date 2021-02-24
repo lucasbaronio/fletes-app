@@ -1,28 +1,54 @@
-export function isEmpty(str) {
-    return (!str || 0 === str.length);
+export const isNotEmpty = (str, onError) => {
+    if (!str || 0 === str.length) {
+        onError();
+        return false;
+    }
+    return true;
 }
 
-export function validateEmail(email) {
+export const isOnlyNumbers = (str, onError) => {
+    const numbers = /^[0-9]+$/;
+    if (!str.match(numbers)) {
+        onError();
+        return false;
+    }
+    return true;
+}
+
+export const validateEmail = (email, onError) => {
     var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
-    if (filter.test(email)) return true;
-
-    return false;
+    if (!filter.test(email)) {
+        onError();
+        return false;
+    }
+    return true;
 }
 
-export function validatePassword(password) {
-    if (password.length > 6) return true;
-
-    return false;
+export const validateMobileNumber = (mobileNumber, onError) => {
+    if (!mobileNumber.match(/^\d{8}$/)) {
+        onError();
+        return false;
+    }
+    return true;
 }
 
-export function confirmPassword(c_password, password) {
-    if (c_password === password) return true;
-
-    return false;
+export const validatePassword = (password, onError) => {
+    if (password.length < 8) {
+        onError();
+        return false;
+    }
+    return true;
 }
 
-export function validate(form) {
+export const confirmPassword = (c_password, password, onError) => {
+    if (c_password !== password) {
+        onError();
+        return false;
+    }
+    return true;
+}
+
+export const validate = (form) => {
     let error = {};
     let success = true;
 

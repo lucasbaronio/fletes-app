@@ -1,18 +1,25 @@
 import React from 'react';
-import { View, Image, ScrollView } from 'react-native';
+import { View, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text } from 'native-base';
+import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinner } from 'native-base';
 
 import { actions as auth } from "../../index"
 const { passwordRecover } = auth;
 
-import styles from './styles';
+import { confirmPassword, isNotEmpty, isOnlyNumbers, validatePassword } from '../../utils/validate';
+import { 
+    ERROR_EMPTY_CODE, 
+    ERROR_EMPTY_PASSWORD, 
+    ERROR_INCORRECT_CODE, 
+    ERROR_PASSWORD_DIFF, 
+    ERROR_PASSWORD_LENGTH 
+} from '../../../../config/strings';
 
 type MyProps = {
     passwordRecover: (data, onSuccess, onError) => void,
     codeId: string,
     navigation: any,
-    // isLoading: boolean,
+    isLoading: boolean,
 }
 type MyState = {
     error: string,
@@ -33,14 +40,32 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
     }
 
     onSubmit = () => {
-        this.setState({ error: '' }); //clear out error messages
+        Toast.hide();
+        this.setState({ error: '' });
+        
         const { code, password, repassword } = this.state;
+        const val1 = isNotEmpty(code, () => {
+            this.showToast(ERROR_EMPTY_CODE)
+        });
+        const val2 = val1 && isNotEmpty(password, () => {
+            this.showToast(ERROR_EMPTY_PASSWORD)
+        });
+        const val3 = val1 && val2 && isNotEmpty(repassword, () => {
+            this.showToast(ERROR_EMPTY_PASSWORD)
+        });
+        const val4 = val1 && val2 && val3 && isOnlyNumbers(code, () => {
+            this.showToast(ERROR_INCORRECT_CODE)
+        });
+        const val5 = val1 && val2 && val3 && val4 && confirmPassword(repassword, password, () => {
+            this.showToast(ERROR_PASSWORD_DIFF)
+        });
+        const val6 = val1 && val2 && val3 && val4 && val5 && validatePassword(password, () => {
+            this.showToast(ERROR_PASSWORD_LENGTH)
+        });
 
-        if (password === repassword) {
+        if (val1 && val2 && val3 && val4 && val5 && val6) {
             const { passwordRecover, codeId } = this.props;
-            passwordRecover({ codeId, code, password }, this.onSuccess, this.onError)
-        } else {
-            this.showToast('Las contraseñas no son iguales')
+            passwordRecover({ codeId, code, password }, this.onSuccess, this.onError);
         }
     }
 
@@ -61,10 +86,11 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
 
     onError = (error) => {
         this.setState({ error });
-        this.showToast(this.state.error)
+        this.showToast(this.state.error);
     }
 
     render() {
+        const { isLoading } = this.props;
         return (
             <Container>
                 <Content
@@ -103,14 +129,21 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
                                 value={this.state.repassword}/>
                             {false && <Icon name='close-circle' />}
                         </Item>
-                        <Item style={{ marginVertical: 10 }}>
-                            <Button style={{ flex: 1, flexDirection: 'center', paddingVertical: 10 }}
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10 }}>
+                            <Button 
+                                disable={isLoading}
+                                style={{ flex: 1, flexDirection: 'row', justifyContent: "center", paddingVertical: 20 }}
                                 onPress={this.onSubmit}>
-                                <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
-                                    Crear cuenta
-                                </Text>
+                                {
+                                    isLoading ?
+                                    <ActivityIndicator />
+                                    :
+                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
+                                        Crear cuenta
+                                    </Text>
+                                }
                             </Button>
-                        </Item>
+                        </View>
                     </Form>
 
                 </Content>
@@ -121,7 +154,7 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
 
 function mapStateToProps(state, props) {
     return {
-        // isLoading: state.authReducer.isLoading,
+        isLoading: state.authReducer.isLoading,
         codeId: state.authReducer.codeId,
     }
 }

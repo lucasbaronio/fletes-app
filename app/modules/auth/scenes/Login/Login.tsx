@@ -1,10 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Image, Alert } from 'react-native';
-import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text } from 'native-base';
+import { View, Image, ActivityIndicator } from 'react-native';
+import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinner } from 'native-base';
 
 import { actions as auth } from "../../index";
 const { login } = auth;
+
+import { isNotEmpty, validateMobileNumber } from '../../utils/validate';
+import { 
+    ERROR_EMPTY_MOBILE_NUMBER, 
+    ERROR_EMPTY_PASSWORD, 
+    ERROR_INCORRECT_MOBILE_NUMBER 
+} from '../../../../config/strings';
 
 // const error = {
 //     general: "",
@@ -24,7 +31,7 @@ type MyState = {
     //     password: string
     // }
     error: string,
-    phoneNumber: string,
+    mobileNumber: string,
     password: string,
 }
 
@@ -33,13 +40,9 @@ class Login extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
-            phoneNumber: '',
+            mobileNumber: '',
             password: '',
         }
-
-        // this.onSubmit = this.onSubmit.bind(this);
-        // this.onSuccess = this.onSuccess.bind(this);
-        // this.onError = this.onError.bind(this);
     }
 
     onForgotPassword = () => {
@@ -57,12 +60,34 @@ class Login extends React.Component<MyProps, MyState> {
     }
 
     onSubmit = () => {
-        this.setState({ error: '' }); //clear out error messages
         Toast.hide();
+        this.setState({ error: '' });
 
-        const { phoneNumber, password } = this.state;
-        const { login } = this.props;
-        login({ phoneNumber, password }, this.onSuccess, this.onError);
+        const { mobileNumber, password } = this.state;
+        const val1 = isNotEmpty(mobileNumber, () => {
+            this.showToast(ERROR_EMPTY_MOBILE_NUMBER)
+        });
+        const val2 = val1 && isNotEmpty(password, () => {
+            this.showToast(ERROR_EMPTY_PASSWORD)
+        });
+        const val3 = val1 && val2 && validateMobileNumber(mobileNumber, () => {
+            this.showToast(ERROR_INCORRECT_MOBILE_NUMBER)
+        });
+
+        if (val1 && val2 && val3) {
+            const { login } = this.props;
+            login({ mobileNumber, password }, this.onSuccess, this.onError);
+        }
+    }
+
+    showToast = (msj) => {
+        Toast.show({
+            text: msj,
+            buttonText: "Aceptar",
+            buttonTextStyle: { color: "#008000" },
+            buttonStyle: { backgroundColor: "#5cb85c" },
+            duration: 300000
+        })
     }
 
     onSuccess = () => {
@@ -72,16 +97,11 @@ class Login extends React.Component<MyProps, MyState> {
 
     onError = (error) => {
         this.setState({ error });
-        Toast.show({
-            text: this.state.error,
-            buttonText: "Aceptar",
-            buttonTextStyle: { color: "#008000" },
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300000
-        })
+        this.showToast(this.state.error);
     }
 
     render() {
+        const { isLoading } = this.props;
         return (
             <Container>
                 <Content 
@@ -97,15 +117,15 @@ class Login extends React.Component<MyProps, MyState> {
                         <Image style={{ height: 200, width: 200 }} resizeMode='cover' source={require('../../../../../assets/driver.png')}/>
                     </View>
 
-                    <Form style={{ padding: 20 }}>
+                    <Form style={{ paddingHorizontal: 20 }}>
                         <Item rounded error={false} style={{ marginVertical: 10 }}>
                             <Icon name='phone-portrait' />
-                            <Text style={{ color: '#000', fontWeight: 'bold' }}>+598</Text>
+                            <Text style={{ color: '#000', fontWeight: 'bold' }}>🇺🇾(+598)</Text>
                             <Input 
                                 keyboardType="phone-pad" 
-                                placeholder="Nro. celular"
-                                onChangeText={phoneNumber => this.setState({ phoneNumber })}
-                                value={this.state.phoneNumber}/>
+                                placeholder="Nro. celular (Ej: 91234567)"
+                                onChangeText={mobileNumber => this.setState({ mobileNumber })}
+                                value={this.state.mobileNumber}/>
                             {false && <Icon name='close-circle' />}
                         </Item>
                         <Item rounded error={false} style={{ marginVertical: 10 }}>
@@ -118,21 +138,33 @@ class Login extends React.Component<MyProps, MyState> {
                                 value={this.state.password}/>
                             {false && <Icon name='close-circle' />}
                         </Item>
-                        <View>
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: "flex-end" }}>
                             <Text onPress={this.onForgotPassword}>Has olvidado la contraseña?</Text>
                         </View>
-                        <Item style={{ marginVertical: 10 }}>
-                            <Button style={{ flex: 1, flexDirection: 'center', paddingVertical: 10 }}
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10, paddingVertical: 10 }}>
+                            <Button 
+                                disable={isLoading}
+                                style={{ flex: 1, flexDirection: 'row', justifyContent: "center", paddingVertical: 20 }}
                                 onPress={this.onSubmit}>
-                                <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
-                                    Iniciar Sesión
-                                </Text>
+                                {
+                                    isLoading ?
+                                    <ActivityIndicator />
+                                    :
+                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
+                                        Iniciar Sesión
+                                    </Text>
+                                }
                             </Button>
-                        </Item>
+                        </View>
                     </Form>
 
-                    <View>
-                        <Text onPress={this.goToRegister}>No tienes una cuenta? Crear cuenta</Text>
+                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}>
+                        <Text>No tienes una cuenta? </Text>
+                        <Text 
+                            style={{ color: 'blue' }} 
+                            onPress={this.goToRegister}>
+                                Crear cuenta
+                        </Text>
                     </View>
                     
                 </Content>
