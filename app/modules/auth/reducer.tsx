@@ -9,7 +9,8 @@ let initialState = {
     codeId: '',
 };
 
-const authReducer = (state = initialState, action) => {
+const authReducer = async (state = initialState, action) => {
+    // console.log(action.type);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };
@@ -40,7 +41,7 @@ const authReducer = (state = initialState, action) => {
 
         case t.LOG_OUT: {
             const keys = ['user_userId', 'user_mobileNumber', 'user_name', 'user_lastName', 'user_pushNotificationID', 'session_token'];
-            deleteMany(keys);
+            await deleteMany(keys);
             
             return { ...state, initialState };
         }

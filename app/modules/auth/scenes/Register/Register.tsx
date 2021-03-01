@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
-import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinner } from 'native-base';
+import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinner, Header, Left, Right, Body } from 'native-base';
 
 import { actions as auth } from "../../index"
 const { register } = auth;
@@ -17,15 +17,6 @@ import {
     ERROR_PASSWORD_LENGTH 
 } from '../../../../config/strings';
 
-// const error = {
-//     general: "",
-//     email: "",
-//     fullName: "",
-//     username: "",
-//     password: "",
-//     confirm_password: ""
-// }
-
 type MyProps = {
     register: (data, onSuccess, onError) => void,
     codeId: string,
@@ -33,15 +24,10 @@ type MyProps = {
     isLoading: boolean,
 }
 type MyState = {
-    // error: {
-    //     general: string,
-    //     email: string,
-    //     password: string
-    // }
     error: string,
     code: string,
     password: string,
-    repassword: string,
+    showPassword: boolean,
 }
 
 class Register extends React.Component<MyProps, MyState> {
@@ -51,7 +37,7 @@ class Register extends React.Component<MyProps, MyState> {
             error: '',
             code: '',
             password: '',
-            repassword: '',
+            showPassword: false,
         }
     }
 
@@ -59,27 +45,21 @@ class Register extends React.Component<MyProps, MyState> {
         Toast.hide();
         this.setState({ error: '' });
         
-        const { code, password, repassword } = this.state;
+        const { code, password} = this.state;
         const val1 = isNotEmpty(code, () => {
             this.showToast(ERROR_EMPTY_CODE)
         });
         const val2 = val1 && isNotEmpty(password, () => {
             this.showToast(ERROR_EMPTY_PASSWORD)
         });
-        const val3 = val1 && val2 && isNotEmpty(repassword, () => {
-            this.showToast(ERROR_EMPTY_PASSWORD)
-        });
-        const val4 = val1 && val2 && val3 && isOnlyNumbers(code, () => {
+        const val3 = val1 && val2 && isOnlyNumbers(code, () => {
             this.showToast(ERROR_INCORRECT_CODE)
         });
-        const val5 = val1 && val2 && val3 && val4 && confirmPassword(repassword, password, () => {
-            this.showToast(ERROR_PASSWORD_DIFF)
-        });
-        const val6 = val1 && val2 && val3 && val4 && val5 && validatePassword(password, () => {
+        const val4 = val1 && val2 && val3 && validatePassword(password, () => {
             this.showToast(ERROR_PASSWORD_LENGTH)
         });
 
-        if (val1 && val2 && val3 && val4 && val5 && val6) {
+        if (val1 && val2 && val3 && val4) {
             const { register, codeId } = this.props;
             register({ codeId, code, password }, this.onSuccess, this.onError);
         }
@@ -100,20 +80,6 @@ class Register extends React.Component<MyProps, MyState> {
         navigation.navigate('RouterLogged');
     }
 
-    // onError(error) {
-    //     let errObj = this.state.error;
-
-    //     if (error.hasOwnProperty("message")) {
-    //         errObj['general'] = error.message;
-    //     } else {
-    //         let keys = Object.keys(error);
-    //         keys.map((key, index) => {
-    //             errObj[key] = error[key];
-    //         })
-    //     }
-    //     this.setState({error: errObj});
-    // }
-
     onError = (error) => {
         this.setState({ error });
         this.showToast(this.state.error)
@@ -121,44 +87,61 @@ class Register extends React.Component<MyProps, MyState> {
 
     render() {
         const { isLoading } = this.props;
+        const { showPassword, code, password } = this.state;
         return (
             <Container>
+                {/* <Header /> */}
                 <Content
                     padder={false}
-                    scrollEnabled={false}>
-                    
-                    <View style={{ alignItems: 'center', margin: 20 }}>
-                        <Image style={{ height: 200, width: 200 }} resizeMode='cover' source={require('../../../../../assets/driver.png')}/>
+                    // scrollEnabled={false}
+                    contentContainerStyle={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
+                >
+
+                    <View style={{ alignItems: 'center', marginHorizontal: 20 }}>
+                        <Text style={{ textAlign: 'center' }}>
+                            Te hemos enviado un código por SMS a su celular
+                        </Text>
+                        <Text style={{ textAlign: 'center' }}>
+                            Para completar el proceso de verificación de su numero de telefono, por favor, ingresa el código de activación de 6 digitos y una contraseña
+                        </Text>
                     </View>
 
                     <Form style={{ padding: 20 }}>
                         <Item rounded error={false} style={{ marginVertical: 10 }}>
                             <Icon name='keypad-outline' />
                             <Input 
+                                maxLength={6}
                                 keyboardType="number-pad" 
                                 placeholder="Ingrese el código que le llego al celular"
                                 onChangeText={code => this.setState({ code })}
-                                value={this.state.code}/>
+                                value={code}/>
                             {false && <Icon name='close-circle' />}
                         </Item>
                         <Item rounded error={false} style={{ marginVertical: 10 }}>
                             <Icon name='lock-closed' />
                             <Input 
                                 keyboardType="default" 
-                                placeholder="Ingrese una contraseña nueva"
+                                secureTextEntry={!showPassword} 
+                                autoCapitalize="none"
+                                placeholder="Ingrese una contraseña"
                                 onChangeText={password => this.setState({ password })}
-                                value={this.state.password}/>
+                                value={password}/>
+                            <Button transparent onPress={() => this.setState({ showPassword: !showPassword})}>
+                                <Icon name={showPassword ? 'eye-off-outline' : 'eye-outline'} />
+                            </Button>
                             {false && <Icon name='close-circle' />}
                         </Item>
-                        <Item rounded error={false} style={{ marginVertical: 10 }}>
+                        {/* <Item rounded error={false} style={{ marginVertical: 10 }}>
                             <Icon name='lock-closed' />
                             <Input 
                                 keyboardType="default" 
+                                secureTextEntry={true} 
+                                autoCapitalize="none"
                                 placeholder="Repite la contraseña nueva"
                                 onChangeText={repassword => this.setState({ repassword })}
                                 value={this.state.repassword}/>
                             {false && <Icon name='close-circle' />}
-                        </Item>
+                        </Item> */}
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10, paddingVertical: 10 }}>
                             <Button 
                                 disable={isLoading}

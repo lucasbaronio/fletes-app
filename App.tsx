@@ -8,7 +8,6 @@ import { Root } from "native-base";
 
 import RouterApp from './app/config/routes';
 import store from './app/redux/store';
-import { getValue } from './app/modules/secureStore';
 
 // function cacheFonts(fonts) {
 //     return fonts.map(font => Font.loadAsync(font));

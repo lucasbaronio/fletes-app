@@ -39,8 +39,9 @@ export const logIn = (logInDTO: LogInDTO, callback) => {
     post(API_AUTH_LOG_IN, logInDTO, {}, callback)
 }
 
-export const logOut = (callback) => {
-    deleteMethod(API_AUTH_LOG_OUT, getHeaderToken(), callback)
+export const logOut = async (callback) => {
+    const header = await getHeaderToken();
+    deleteMethod(API_AUTH_LOG_OUT, header, callback)
 }
 
 export const passwordRecoverInit = (mobileNumber: MobileNumberDTO, callback) => {
@@ -51,8 +52,9 @@ export const passwordRecover = (passwordRecovedDTO: CodeAndPwdDTO, callback) => 
     post(API_AUTH_RECOVER, passwordRecovedDTO, {}, callback)
 }
 
-export const usersMe = (callback) => {
-    get(API_USERS_ME, getHeaderToken(), callback)
+export const usersMe = async (callback) => {
+    const header = await getHeaderToken();
+    get(API_USERS_ME, header, callback)
 }
 
 

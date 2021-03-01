@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import Map from '../modules/Map';
 import { isLargeScreen } from "../styles/theme";
 
+import { actions as auth } from "../modules/auth/index"
+const { logOut } = auth;
+
 const Drawer = createDrawerNavigator();
 
-export default class RouterLogged extends Component {
+
+type MyProps = {
+    logOut: (onSuccess, onError) => void,
+}
+type MyState = {
+}
+class RouterLogged extends React.Component<MyProps, MyState> {
     render() {
+        const { logOut } = this.props;
         return (
             <Drawer.Navigator 
                 initialRouteName="Home"
@@ -15,7 +26,21 @@ export default class RouterLogged extends Component {
                 drawerType={isLargeScreen ? 'permanent' : 'back'}
                 drawerStyle={isLargeScreen ? null : { width: '80%' }}
                 // overlayColor="transparent"
-            >
+                drawerContent={props => {
+                    return (
+                      <DrawerContentScrollView {...props}>
+                        <DrawerItemList {...props} />
+                        <DrawerItem 
+                            label="Logout" 
+                            onPress={() => {
+                                logOut(() => props.navigation.navigate("Login"), (error) => {
+                                    props.navigation.navigate("Login");
+                                    console.log(error);
+                                })
+                            }} />
+                      </DrawerContentScrollView>
+                    )
+            }}>
                 <Drawer.Screen 
                 name="Home" 
                 component={Map} 
@@ -45,6 +70,14 @@ export default class RouterLogged extends Component {
         )
     }
 }
+
+function mapStateToProps(state, props) {
+    return {
+        // isLoading: state.authReducer.isLoading,
+    }
+}
+
+export default connect(mapStateToProps, { logOut })(RouterLogged);
 
 function DetailsScreen() {
     return (

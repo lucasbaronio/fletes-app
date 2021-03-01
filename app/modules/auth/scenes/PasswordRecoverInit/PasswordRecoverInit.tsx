@@ -5,6 +5,8 @@ import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinn
 
 import { actions as auth } from "../../index"
 const { passwordRecoverInit } = auth;
+
+import { showToast } from '../../../../components/Toast';
 import { isNotEmpty, validateMobileNumber } from '../../utils/validate';
 import { 
     ERROR_EMPTY_MOBILE_NUMBER, 
@@ -43,26 +45,16 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
 
         const { mobileNumber } = this.state;
         const val1 = isNotEmpty(mobileNumber, () => {
-            this.showToast(ERROR_EMPTY_MOBILE_NUMBER)
+            showToast(ERROR_EMPTY_MOBILE_NUMBER)
         });
         const val2 = val1 && validateMobileNumber(mobileNumber, () => {
-            this.showToast(ERROR_INCORRECT_MOBILE_NUMBER)
+            showToast(ERROR_INCORRECT_MOBILE_NUMBER)
         });
 
         if (val1 && val2) {
             const { passwordRecoverInit } = this.props;
             passwordRecoverInit({ mobileNumber }, this.onSuccess, this.onError);
         }
-    }
-
-    showToast = (msj: string) => {
-        Toast.show({
-            text: msj,
-            buttonText: "Aceptar",
-            buttonTextStyle: { color: "#008000" },
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300000
-        })
     }
 
     onSuccess = () => {
@@ -72,7 +64,7 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
 
     onError = (error) => {
         this.setState({ error });
-        this.showToast(this.state.error);
+        showToast(this.state.error);
     }
 
     render() {
@@ -83,8 +75,8 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
                     padder={false}
                     scrollEnabled={false}>
                     
-                    <View style={{ alignItems: 'center', margin: 20 }}>
-                        <Image style={{ height: 200, width: 200 }} resizeMode='cover' source={require('../../../../../assets/driver.png')}/>
+                    <View style={{ alignItems: 'center', margin: 40 }}>
+                        <Image style={{ height: 180, width: 350 }} resizeMode='cover' source={require('../../../../../assets/fletes_icon.png')}/>
                     </View>
 
                     <Form style={{ padding: 20 }}>
@@ -92,6 +84,7 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
                             <Icon name='phone-portrait' />
                             <Text style={{ color: '#000', fontWeight: 'bold' }}>🇺🇾 (+598)</Text>
                             <Input 
+                                maxLength={9}
                                 keyboardType="phone-pad" 
                                 placeholder="Nro. celular"
                                 onChangeText={mobileNumber => this.setState({ mobileNumber })}
@@ -108,7 +101,7 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
                                     <ActivityIndicator />
                                     :
                                     <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
-                                        Recuperar cuenta
+                                        Recuperar contraseña
                                     </Text>
                                 }
                             </Button>

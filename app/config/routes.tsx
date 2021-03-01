@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import store from '../redux/store'
-import { Toast } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import RouterLogged from './routesLogged';
@@ -14,19 +13,20 @@ import PasswordRecover from '../modules/auth/scenes/PasswordRecover/PasswordReco
 import { checkLoginStatus } from "../modules/auth/actions";
 
 import { getToken } from '../modules/security';
+import { showToast } from '../components/Toast';
 
 const Stack = createStackNavigator();
 
 type MyProps = {
     isLoggedIn: boolean,
+    checkLoginStatus: (onSuccess, onError) => void,
+    navigation: any,
 }
 type MyState = {
     isReady: boolean,
     error: string,
 }
-
 class Router extends Component<MyProps, MyState> {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -36,21 +36,11 @@ class Router extends Component<MyProps, MyState> {
     }
 
     async componentDidMount() {
+        const { checkLoginStatus, isLoggedIn } = this.props;
         const token = await getToken();
         if (token) {
-            store.dispatch(checkLoginStatus(() => {}, this.onError))
+            checkLoginStatus(() => {}, () => {});
         }
-    }
-
-    onError = (error) => {
-        this.setState({ error });
-        Toast.show({
-            text: this.state.error,
-            buttonText: "Aceptar",
-            buttonTextStyle: { color: "#008000" },
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300000
-        })
     }
 
     render() {
@@ -61,57 +51,66 @@ class Router extends Component<MyProps, MyState> {
         return (
             <NavigationContainer>
                 <Stack.Navigator initialRouteName={isLoggedIn ? "RouterLogged" : "Login"}>
-                    <Stack.Screen
-                        name="Login"
-                        component={Login}
-                        options={{
-                            title: 'Iniciar Sesión',
-                            headerShown: false,
-                        }}
-                    />
-                    <Stack.Screen
-                        name="RegisterInit"
-                        component={RegisterInit}
-                        options={{
-                            title: 'Crear cuenta',
-                            headerTransparent: true,
-                            // headerShown: false,
-                        }}
-                    />
-                    <Stack.Screen
-                        name="Register"
-                        component={Register}
-                        options={{
-                            title: 'Crear cuenta',
-                            headerTransparent: true,
-                            // headerShown: false,
-                        }}
-                    />
-                    <Stack.Screen
-                        name="PasswordRecoverInit"
-                        component={PasswordRecoverInit}
-                        options={{
-                            title: 'Recuperar cuenta',
-                            headerTransparent: true,
-                            // headerShown: false,
-                        }}
-                    />
-                    <Stack.Screen
-                        name="PasswordRecover"
-                        component={PasswordRecover}
-                        options={{
-                            title: 'Recuperar cuenta',
-                            headerTransparent: true,
-                            // headerShown: false,
-                        }}
-                    />
-                    <Stack.Screen 
-                        name="RouterLogged" 
-                        component={RouterLogged} 
-                        options={{ 
-                            headerShown: false
-                        }}
-                    />
+                    {!isLoggedIn ?
+                        (<><Stack.Screen
+                            name="Login"
+                            component={Login}
+                            options={{
+                                title: 'Iniciar Sesión',
+                                headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="RegisterInit"
+                            component={RegisterInit}
+                            options={{
+                                title: 'Crear cuenta',
+                                headerTransparent: true,
+                                // headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Register"
+                            component={Register}
+                            options={{
+                                title: 'Crear cuenta',
+                                headerTransparent: true,
+                                // headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="PasswordRecoverInit"
+                            component={PasswordRecoverInit}
+                            options={{
+                                title: 'Recuperar contraseña',
+                                headerTransparent: true,
+                                // headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen
+                            name="PasswordRecover"
+                            component={PasswordRecover}
+                            options={{
+                                title: 'Recuperar contraseña',
+                                headerTransparent: true,
+                                // headerShown: false,
+                            }}
+                        />
+                        <Stack.Screen 
+                            name="RouterLogged" 
+                            component={RouterLogged} 
+                            options={{ 
+                                headerShown: false
+                            }}
+                        /></>)
+                    :
+                        <Stack.Screen 
+                            name="RouterLogged" 
+                            component={RouterLogged} 
+                            options={{ 
+                                headerShown: false
+                            }}
+                        />}
                 </Stack.Navigator>
             </NavigationContainer>
         )

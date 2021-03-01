@@ -25,7 +25,7 @@ export const validateEmail = (email, onError) => {
 }
 
 export const validateMobileNumber = (mobileNumber, onError) => {
-    if (!mobileNumber.match(/^\d{8}$/)) {
+    if (!mobileNumber.match(/^\d{9}$/)) {
         onError();
         return false;
     }

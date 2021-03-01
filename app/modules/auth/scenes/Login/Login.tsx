@@ -6,6 +6,7 @@ import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinn
 import { actions as auth } from "../../index";
 const { login } = auth;
 
+import { showToast } from '../../../../components/Toast';
 import { isNotEmpty, validateMobileNumber } from '../../utils/validate';
 import { 
     ERROR_EMPTY_MOBILE_NUMBER, 
@@ -13,26 +14,16 @@ import {
     ERROR_INCORRECT_MOBILE_NUMBER 
 } from '../../../../config/strings';
 
-// const error = {
-//     general: "",
-//     email: "",
-//     password: ""
-// }
-
 type MyProps = {
     login: (data, onSuccess, onError) => void,
     isLoading: boolean,
     navigation: any,
 }
 type MyState = {
-    // error: {
-    //     general: string,
-    //     email: string,
-    //     password: string
-    // }
     error: string,
     mobileNumber: string,
     password: string,
+    showPassword: boolean,
 }
 
 class Login extends React.Component<MyProps, MyState> {
@@ -40,8 +31,11 @@ class Login extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
-            mobileNumber: '',
+            // mobileNumber: '',
             password: '',
+            mobileNumber: '091000000',
+            // password: 'strongPassword',
+            showPassword: false,
         }
     }
 
@@ -65,29 +59,19 @@ class Login extends React.Component<MyProps, MyState> {
 
         const { mobileNumber, password } = this.state;
         const val1 = isNotEmpty(mobileNumber, () => {
-            this.showToast(ERROR_EMPTY_MOBILE_NUMBER)
+            showToast(ERROR_EMPTY_MOBILE_NUMBER)
         });
         const val2 = val1 && isNotEmpty(password, () => {
-            this.showToast(ERROR_EMPTY_PASSWORD)
+            showToast(ERROR_EMPTY_PASSWORD)
         });
         const val3 = val1 && val2 && validateMobileNumber(mobileNumber, () => {
-            this.showToast(ERROR_INCORRECT_MOBILE_NUMBER)
+            showToast(ERROR_INCORRECT_MOBILE_NUMBER)
         });
 
         if (val1 && val2 && val3) {
             const { login } = this.props;
             login({ mobileNumber, password }, this.onSuccess, this.onError);
         }
-    }
-
-    showToast = (msj) => {
-        Toast.show({
-            text: msj,
-            buttonText: "Aceptar",
-            buttonTextStyle: { color: "#008000" },
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300000
-        })
     }
 
     onSuccess = () => {
@@ -97,24 +81,21 @@ class Login extends React.Component<MyProps, MyState> {
 
     onError = (error) => {
         this.setState({ error });
-        this.showToast(this.state.error);
+        showToast(this.state.error);
     }
 
     render() {
         const { isLoading } = this.props;
+        const { showPassword, mobileNumber, password } = this.state;
         return (
             <Container>
                 <Content 
                     padder={false}
                     scrollEnabled={false}
-                    // contentContainerStyle={{
-                    //     flex: 1,
-                    //     flexDirection: 'column',
-                    //     justifyContent: 'center'
-                    // }}
                 >
-                    <View style={{ alignItems: 'center', margin: 20 }}>
-                        <Image style={{ height: 200, width: 200 }} resizeMode='cover' source={require('../../../../../assets/driver.png')}/>
+                    <View style={{ alignItems: 'center', margin: 40 }}>
+                        <Image style={{ height: 180, width: 350 }} resizeMode='cover' source={require('../../../../../assets/fletes_icon.png')}/>
+                        <Text style={{ color: '#000', fontWeight: 'bold', fontSize: 30 }}>FletesApp</Text>
                     </View>
 
                     <Form style={{ paddingHorizontal: 20 }}>
@@ -122,20 +103,25 @@ class Login extends React.Component<MyProps, MyState> {
                             <Icon name='phone-portrait' />
                             <Text style={{ color: '#000', fontWeight: 'bold' }}>🇺🇾(+598)</Text>
                             <Input 
+                                maxLength={9}
                                 keyboardType="phone-pad" 
-                                placeholder="Nro. celular (Ej: 91234567)"
+                                placeholder="Nro. celular"
                                 onChangeText={mobileNumber => this.setState({ mobileNumber })}
-                                value={this.state.mobileNumber}/>
+                                value={mobileNumber}/>
                             {false && <Icon name='close-circle' />}
                         </Item>
                         <Item rounded error={false} style={{ marginVertical: 10 }}>
                             <Icon name='lock-closed' />
                             <Input 
                                 textContentType="password" 
-                                secureTextEntry={true} 
+                                secureTextEntry={!showPassword} 
+                                autoCapitalize="none"
                                 placeholder="Contraseña"
                                 onChangeText={password => this.setState({ password })}
-                                value={this.state.password}/>
+                                value={password}/>
+                            <Button transparent onPress={() => this.setState({ showPassword: !showPassword})}>
+                                <Icon name={showPassword ? 'eye-off-outline' : 'eye-outline'} />
+                            </Button>
                             {false && <Icon name='close-circle' />}
                         </Item>
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: "flex-end" }}>

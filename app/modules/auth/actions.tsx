@@ -8,9 +8,10 @@ import * as api from './api';
 export const registerInit = (mobileNumber, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.signUpInit(mobileNumber, (isSuccess, data, error) => {
+        api.signUpInit(mobileNumber, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
+                const { data } = response;
                 dispatch({type: t.SIGN_UP_INIT, data});
                 successCB();
             }
@@ -22,10 +23,12 @@ export const registerInit = (mobileNumber, successCB, errorCB) => {
 export const register = (codeAndPwdDTO, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.signUp(codeAndPwdDTO, (isSuccess, data, error) => {
+        api.signUp(codeAndPwdDTO, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
-                dispatch({type: t.SIGN_UP_INIT, data});
+                const { data } = response;
+                console.log(data);
+                dispatch({type: t.SIGN_UP, data});
                 successCB();
             }
             else if (error) errorCB(error)
@@ -33,12 +36,13 @@ export const register = (codeAndPwdDTO, successCB, errorCB) => {
     };
 }
 
-export const login = (data, successCB, errorCB) => {
+export const login = (logInDTO, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.logIn(data, (isSuccess, data, error) => {
+        api.logIn(logInDTO, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
+                const { data } = response;
                 dispatch({type: t.LOG_IN, data});
                 successCB();
             } 
@@ -50,9 +54,10 @@ export const login = (data, successCB, errorCB) => {
 export const passwordRecoverInit = (mobileNumber, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.passwordRecoverInit(mobileNumber, (isSuccess, data, error) => {
+        api.passwordRecoverInit(mobileNumber, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
+                const { data } = response;
                 dispatch({type: t.RECOVER_INIT, data});
                 successCB();
             }
@@ -64,9 +69,10 @@ export const passwordRecoverInit = (mobileNumber, successCB, errorCB) => {
 export const passwordRecover = (codeAndPwdDTO, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.passwordRecover(codeAndPwdDTO, (isSuccess, data, error) => {
+        api.passwordRecover(codeAndPwdDTO, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
+                const { data } = response;
                 dispatch({type: t.RECOVER, data});
                 successCB();
             }
@@ -77,12 +83,13 @@ export const passwordRecover = (codeAndPwdDTO, successCB, errorCB) => {
 
 export const logOut = (successCB, errorCB) => {
     return (dispatch) => {
-        api.logOut((isSuccess, data, error) => {
-            if (isSuccess) {
-                dispatch({type: t.LOG_OUT});
+        api.logOut((isSuccess, response, error) => {
+            console.log('isSuccess', isSuccess);
+            dispatch({type: t.LOG_OUT});
+            if (isSuccess) 
                 successCB();
-            } 
-            else if (error) errorCB(error)
+            else if (error) 
+                errorCB(error);
         });
     };
 }
@@ -96,8 +103,11 @@ export const logOutForce = (successCB) => {
 
 export const checkLoginStatus = (successCB, errorCB) => {
     return (dispatch) => {
-        api.usersMe((isSuccess, data, error) => {
+        console.log('checkLoginStatus');
+        api.usersMe((isSuccess, response, error) => {
+            console.log('usersMe_response', response);
             if (isSuccess) {
+                const { data } = response;
                 dispatch({type: t.USERS_ME, data});
                 successCB();
             } 

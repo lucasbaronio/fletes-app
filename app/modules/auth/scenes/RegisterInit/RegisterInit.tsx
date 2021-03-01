@@ -6,20 +6,12 @@ import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinn
 import { actions as auth } from "../../index"
 const { registerInit } = auth;
 
+import { showToast } from '../../../../components/Toast';
 import { isNotEmpty, validateMobileNumber } from '../../utils/validate';
 import { 
     ERROR_EMPTY_MOBILE_NUMBER,
     ERROR_INCORRECT_MOBILE_NUMBER
 } from '../../../../config/strings';
-
-// const error = {
-//     general: "",
-//     email: "",
-//     fullName: "",
-//     username: "",
-//     password: "",
-//     confirm_password: ""
-// }
 
 type MyProps = {
     registerInit: (data, onSuccess, onError) => void,
@@ -27,11 +19,6 @@ type MyProps = {
     isLoading: boolean,
 }
 type MyState = {
-    // error: {
-    //     general: string,
-    //     email: string,
-    //     password: string
-    // }
     error: string,
     mobileNumber: string,
 }
@@ -58,10 +45,10 @@ class RegisterInit extends React.Component<MyProps, MyState> {
         
         const { mobileNumber } = this.state;
         const val1 = isNotEmpty(mobileNumber, () => {
-            this.showToast(ERROR_EMPTY_MOBILE_NUMBER)
+            showToast(ERROR_EMPTY_MOBILE_NUMBER)
         });
         const val2 = val1 && validateMobileNumber(mobileNumber, () => {
-            this.showToast(ERROR_INCORRECT_MOBILE_NUMBER)
+            showToast(ERROR_INCORRECT_MOBILE_NUMBER)
         });
         
         if (val1 && val2) {
@@ -70,38 +57,14 @@ class RegisterInit extends React.Component<MyProps, MyState> {
         }
     }
 
-    showToast = (msj) => {
-        Toast.show({
-            text: msj,
-            buttonText: "Aceptar",
-            buttonTextStyle: { color: "#008000" },
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300000
-        })
-    }
-
     onSuccess = () => {
         const { navigation } = this.props;
         navigation.navigate('Register');
     }
 
-    // onError(error) {
-    //     let errObj = this.state.error;
-
-    //     if (error.hasOwnProperty("message")) {
-    //         errObj['general'] = error.message;
-    //     } else {
-    //         let keys = Object.keys(error);
-    //         keys.map((key, index) => {
-    //             errObj[key] = error[key];
-    //         })
-    //     }
-    //     this.setState({error: errObj});
-    // }
-
     onError = (error) => {
         this.setState({ error });
-        this.showToast(this.state.error);
+        showToast(this.state.error);
     }
 
     render() {
@@ -112,8 +75,8 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                     padder={false}
                     scrollEnabled={false}>
                     
-                    <View style={{ alignItems: 'center', margin: 20 }}>
-                        <Image style={{ height: 200, width: 200 }} resizeMode='cover' source={require('../../../../../assets/driver.png')}/>
+                    <View style={{ alignItems: 'center', margin: 40 }}>
+                        <Image style={{ height: 180, width: 350 }} resizeMode='cover' source={require('../../../../../assets/fletes_icon.png')}/>
                     </View>
 
                     <Form style={{ paddingHorizontal: 20 }}>
@@ -121,6 +84,7 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                             <Icon name='phone-portrait' />
                             <Text style={{ color: '#000', fontWeight: 'bold' }}>🇺🇾(+598)</Text>
                             <Input 
+                                maxLength={9}
                                 keyboardType="phone-pad" 
                                 placeholder="Nro. celular"
                                 onChangeText={mobileNumber => this.setState({ mobileNumber })}
