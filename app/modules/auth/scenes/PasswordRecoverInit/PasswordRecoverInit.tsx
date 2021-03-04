@@ -17,6 +17,7 @@ type MyProps = {
     passwordRecoverInit: (data, onSuccess, onError) => void,
     navigation: any,
     isLoading: boolean,
+    codeId: string,
 }
 type MyState = {
     error: string,
@@ -58,7 +59,8 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
     }
 
     onSuccess = () => {
-        const { navigation } = this.props;
+        const { navigation, codeId } = this.props;
+        console.log('codeId', codeId);
         navigation.navigate('PasswordRecover');
     }
 
@@ -116,7 +118,8 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
 
 function mapStateToProps(state, props) {
     return {
-        isLoading: state.authReducer.isLoading
+        isLoading: state.authReducer.isLoading,
+        codeId: state.authReducer.codeId,
     }
 }
 
