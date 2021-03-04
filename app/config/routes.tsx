@@ -36,7 +36,7 @@ class Router extends Component<MyProps, MyState> {
     }
 
     async componentDidMount() {
-        const { checkLoginStatus, isLoggedIn } = this.props;
+        const { checkLoginStatus } = this.props;
         const token = await getToken();
         if (token) {
             checkLoginStatus(() => {}, () => {});
@@ -94,13 +94,6 @@ class Router extends Component<MyProps, MyState> {
                                 title: 'Recuperar contraseña',
                                 headerTransparent: true,
                                 // headerShown: false,
-                            }}
-                        />
-                        <Stack.Screen 
-                            name="RouterLogged" 
-                            component={RouterLogged} 
-                            options={{ 
-                                headerShown: false
                             }}
                         /></>)
                     :

@@ -9,8 +9,9 @@ let initialState = {
     codeId: '',
 };
 
-const authReducer = async (state = initialState, action) => {
-    // console.log(action.type);
+const authReducer = (state = initialState, action) => {
+    console.log(action.type);
+    console.log(state);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };
@@ -18,13 +19,6 @@ const authReducer = async (state = initialState, action) => {
 
         case t.LOG_IN: {
             const { user, session } = action.data;
-
-            // save('userId', user.userId);
-            // save('mobileNumber', user.mobileNumber);
-            // save('name', user.name);
-            // save('lastName', user.lastName);
-            // save('pushNotificationID', user.pushNotificationID);
-            // save('token', session.token);
 
             const saveItems = [
                 { key: 'user_userId', value: user.userId },
@@ -40,14 +34,13 @@ const authReducer = async (state = initialState, action) => {
         }
 
         case t.LOG_OUT: {
-            const keys = ['user_userId', 'user_mobileNumber', 'user_name', 'user_lastName', 'user_pushNotificationID', 'session_token'];
-            await deleteMany(keys);
             
-            return { ...state, initialState };
+            return { ...state, ...initialState };
         }
 
         case t.SIGN_UP_INIT: {
             const { codeId } = action.data;
+            console.log('reducer', codeId);
 
             return { ...state, codeId, isLoading: false };
         }
@@ -70,6 +63,7 @@ const authReducer = async (state = initialState, action) => {
 
         case t.RECOVER_INIT: {
             const { codeId } = action.data;
+            console.log('reducer', codeId);
 
             return { ...state, codeId, isLoading: false };
         }

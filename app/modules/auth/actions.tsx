@@ -1,3 +1,4 @@
+import { deleteMany } from '../secureStore';
 import * as t from './actionTypes';
 // import * as tProfile from '../profile/actionTypes';
 import * as api from './api';
@@ -68,6 +69,7 @@ export const passwordRecoverInit = (mobileNumber, successCB, errorCB) => {
 
 export const passwordRecover = (codeAndPwdDTO, successCB, errorCB) => {
     return (dispatch) => {
+        console.log(codeAndPwdDTO);
         dispatch({type: t.LOADING});
         api.passwordRecover(codeAndPwdDTO, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
@@ -84,7 +86,15 @@ export const passwordRecover = (codeAndPwdDTO, successCB, errorCB) => {
 export const logOut = (successCB, errorCB) => {
     return (dispatch) => {
         api.logOut((isSuccess, response, error) => {
-            console.log('isSuccess', isSuccess);
+            const keys = [
+                'user_userId',
+                'user_mobileNumber', 
+                'user_name', 
+                'user_lastName', 
+                'user_pushNotificationID', 
+                'session_token'
+            ];
+            deleteMany(keys);
             dispatch({type: t.LOG_OUT});
             if (isSuccess) 
                 successCB();

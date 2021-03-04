@@ -4,8 +4,8 @@ export const API = 'http://baronio.ddns.net:29832/v1';
 export const API_AUTH = `${API}/auth`;
 export const API_AUTH_LOG_IN = `${API_AUTH}`;
 export const API_AUTH_LOG_OUT = `${API_AUTH}`;
-export const API_AUTH_SIGN_UP_INIT = `${API_AUTH}/signUp/init`;
-export const API_AUTH_SIGN_UP = `${API_AUTH}/signUp`;
+export const API_AUTH_SIGN_UP_INIT = `${API_AUTH}/user/init`;
+export const API_AUTH_SIGN_UP = `${API_AUTH}/user`;
 export const API_AUTH_RECOVER_INIT = `${API_AUTH}/password/recover/init`;
 export const API_AUTH_RECOVER = `${API_AUTH}/password/recover`;
 
