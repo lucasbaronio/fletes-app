@@ -18,6 +18,7 @@ import {
 type MyProps = {
     passwordRecover: (data, onSuccess, onError) => void,
     codeId: string,
+    pushNotificationID: string,
     navigation: any,
     isLoading: boolean,
 }
@@ -58,8 +59,8 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
         });
 
         if (val1 && val2 && val3 && val4) {
-            const { passwordRecover, codeId } = this.props;
-            passwordRecover({ codeId, code, password }, this.onSuccess, this.onError);
+            const { passwordRecover, codeId, pushNotificationID } = this.props;
+            passwordRecover({ codeId, code, password, pushNotificationID }, this.onSuccess, this.onError);
         }
     }
 
@@ -145,6 +146,7 @@ function mapStateToProps(state, props) {
     return {
         isLoading: state.authReducer.isLoading,
         codeId: state.authReducer.codeId,
+        pushNotificationID: state.authReducer.pushNotificationID,
     }
 }
 

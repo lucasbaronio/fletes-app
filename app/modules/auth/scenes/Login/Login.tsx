@@ -16,6 +16,7 @@ import {
 
 type MyProps = {
     login: (data, onSuccess, onError) => void,
+    pushNotificationID: string,
     isLoading: boolean,
     navigation: any,
 }
@@ -69,8 +70,8 @@ class Login extends React.Component<MyProps, MyState> {
         });
 
         if (val1 && val2 && val3) {
-            const { login } = this.props;
-            login({ mobileNumber, password }, this.onSuccess, this.onError);
+            const { login, pushNotificationID } = this.props;
+            login({ mobileNumber, password, pushNotificationID }, this.onSuccess, this.onError);
         }
     }
 
@@ -161,7 +162,8 @@ class Login extends React.Component<MyProps, MyState> {
 
 function mapStateToProps(state, props) {
     return {
-        isLoading: state.authReducer.isLoading
+        isLoading: state.authReducer.isLoading,
+        pushNotificationID: state.authReducer.pushNotificationID,
     }
 }
 

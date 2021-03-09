@@ -28,7 +28,6 @@ export const register = (codeAndPwdDTO, successCB, errorCB) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                console.log(data);
                 dispatch({type: t.SIGN_UP, data});
                 successCB();
             }
@@ -123,6 +122,14 @@ export const checkLoginStatus = (successCB, errorCB) => {
             } 
             else if (error) errorCB(error) // Ver como hacer aca para si expiro su token, mandarlo al login
         });
+    };
+}
+
+export const savePushNotificationID = (pushNotificationID, successCB) => {
+    return (dispatch) => {
+        console.log('savePushNotificationID');
+        dispatch({type: t.SAVE_PUSH_NOTIFICATION_ID, data: { pushNotificationID } });
+        successCB();
     };
 }
 

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import store from '../redux/store'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import withNotificationExpoHOC from '../components/HOCs/push/withNotificationExpoHOC';
 import RouterLogged from './routesLogged';
 import Login from '../modules/auth/scenes/Login/Login';
 import RegisterInit from '../modules/auth/scenes/RegisterInit/RegisterInit';
@@ -116,4 +117,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { checkLoginStatus })(Router);
+export default connect(mapStateToProps, { checkLoginStatus })(withNotificationExpoHOC(Router));

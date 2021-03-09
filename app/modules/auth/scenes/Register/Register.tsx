@@ -20,6 +20,7 @@ import {
 type MyProps = {
     register: (data, onSuccess, onError) => void,
     codeId: string,
+    pushNotificationID: string,
     navigation: any,
     isLoading: boolean,
 }
@@ -60,8 +61,8 @@ class Register extends React.Component<MyProps, MyState> {
         });
 
         if (val1 && val2 && val3 && val4) {
-            const { register, codeId } = this.props;
-            register({ codeId, code, password }, this.onSuccess, this.onError);
+            const { register, codeId, pushNotificationID } = this.props;
+            register({ codeId, code, password, pushNotificationID }, this.onSuccess, this.onError);
         }
     }
 
@@ -169,6 +170,7 @@ function mapStateToProps(state, props) {
     return {
         isLoading: state.authReducer.isLoading,
         codeId: state.authReducer.codeId,
+        pushNotificationID: state.authReducer.pushNotificationID,
     }
 }
 

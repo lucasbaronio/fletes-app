@@ -7,6 +7,7 @@ let initialState = {
     isLoggedIn: false, 
     user: null,
     codeId: '',
+    pushNotificationID: ''
 };
 
 const authReducer = (state = initialState, action) => {
@@ -82,6 +83,12 @@ const authReducer = (state = initialState, action) => {
             saveMany(saveItems);
 
             return { ...state, isLoggedIn: true, user: user, isLoading: false, codeId: '' };
+        }
+
+        case t.SAVE_PUSH_NOTIFICATION_ID: {
+            const { pushNotificationID } = action.data;
+
+            return { ...state, pushNotificationID };
         }
 
         case t.USERS_ME: {

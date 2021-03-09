@@ -21,10 +21,12 @@ type CodeAndPwdDTO = {
     codeId: string,
     code: string,
     password: string,
+    pushNotificationID: string,
 }
 type LogInDTO = {
     mobileNumber: string,
     password: string,
+    pushNotificationID: string,
 }
 
 export const signUpInit = (mobileNumber: MobileNumberDTO, callback) => {
