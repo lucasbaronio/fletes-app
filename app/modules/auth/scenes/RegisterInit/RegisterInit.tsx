@@ -93,6 +93,7 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                         </Item>
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10, paddingVertical: 10 }}>
                             <Button 
+                                // @ts-ignore
                                 disable={isLoading}
                                 style={{ flex: 1, flexDirection: 'row', justifyContent: "center", paddingVertical: 20 }}
                                 onPress={this.onSubmit}>
