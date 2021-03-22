@@ -3,9 +3,9 @@ import { StyleSheet, View, Platform, Dimensions } from 'react-native';
 import MapView from 'react-native-maps';
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
-import { DestinationButton } from '../components/DestinationButton';
-import { CurrentLocationButton } from '../components/CurrentLocationButton';
-import Driver from '../components/Driver';
+import { DestinationButton } from './orders/components/DestinationButton';
+import { CurrentLocationButton } from './orders/components/CurrentLocationButton';
+import Driver from './orders/components/Driver';
 
 class Map extends React.Component {
 

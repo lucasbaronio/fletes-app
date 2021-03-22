@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import Map from '../modules/Map';
+// import Map from '../modules/Map';
+import MapAddressOrigin from '../modules/orders/scenes/MapAddressOrigin/MapAddressOrigin';
 import { isLargeScreen } from "../styles/theme";
 
 import { actions as auth } from "../modules/auth/index"
 import { Button } from 'native-base';
+import HomeRoutes from './homeRoutes';
 const { logOut } = auth;
 
 const Drawer = createDrawerNavigator();
@@ -35,24 +37,11 @@ function RouterLogged({ logOut }) {
                 )}}
         >
             <Drawer.Screen 
-            name="Home" 
-            component={Map} 
-            options={{ 
-                title: 'Mapa', 
-                headerShown: true,
-                headerStyle: {
-                position: 'absolute',
-                backgroundColor: 'transparent',
-                zIndex: 100,
-                top: 0,
-                left: 0,
-                right: 0,
-                elevation: 0,
-                shadowOpacity: 0,
-                borderBottomWidth: 0,
-                },
-                headerTitle: "",
-            }} />
+                name="Home" 
+                component={HomeRoutes} 
+                options={{ 
+                    headerShown: false,
+                }} />
             <Drawer.Screen 
                 name="Details" 
                 component={DetailsScreen} 

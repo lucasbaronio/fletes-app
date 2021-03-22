@@ -10,6 +10,7 @@ import RegisterInit from '../modules/auth/scenes/RegisterInit/RegisterInit';
 import Register from '../modules/auth/scenes/Register/Register';
 import PasswordRecoverInit from '../modules/auth/scenes/PasswordRecoverInit/PasswordRecoverInit';
 import PasswordRecover from '../modules/auth/scenes/PasswordRecover/PasswordRecover';
+import AddressSearchBar from '../modules/orders/components/AddressSearchBar';
 // import Splash from '../components/Splash/Splash';
 import { checkLoginStatus } from "../modules/auth/actions";
 
@@ -98,13 +99,20 @@ class Router extends Component<MyProps, MyState> {
                             }}
                         /></>)
                     :
-                        <Stack.Screen 
+                        <><Stack.Screen 
                             name="RouterLogged" 
                             component={RouterLogged} 
                             options={{ 
                                 headerShown: false
                             }}
-                        />}
+                        />
+                        <Stack.Screen 
+                            name="AddressSearchBar" 
+                            component={AddressSearchBar} 
+                            options={{ 
+                                // headerShown: false
+                            }}
+                        /></>}
                 </Stack.Navigator>
             </NavigationContainer>
         )
