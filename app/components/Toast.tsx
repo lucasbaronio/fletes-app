@@ -9,3 +9,11 @@ export const showToast = (message) => {
         duration: 300000
     })
 }
+
+export const showToastLoading = (message) => {
+    Toast.show({
+        text: message,
+        position: "bottom",
+        duration: 300000
+    })
+}

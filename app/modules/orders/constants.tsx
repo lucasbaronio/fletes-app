@@ -1,5 +1,5 @@
 import {
-    API_AUTH_SIGN_UP_INIT as apiAuthSignUpInit,
+    API_ORDERS_INFO as apiOrdersInfo,
     API_AUTH_SIGN_UP as apiAuthSignUp,
     API_AUTH_LOG_IN as apiAuthLogIn,
     API_AUTH_LOG_OUT as apiAuthLogOut,
@@ -10,7 +10,7 @@ import {
 
 // export const NAME = 'auth';
 
-export const API_AUTH_SIGN_UP_INIT = apiAuthSignUpInit;
+export const API_ORDERS_INFO = apiOrdersInfo;
 export const API_AUTH_SIGN_UP = apiAuthSignUp;
 export const API_AUTH_LOG_IN = apiAuthLogIn;
 export const API_AUTH_LOG_OUT = apiAuthLogOut;

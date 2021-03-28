@@ -24,6 +24,7 @@ export const registerInit = (mobileNumber, successCB, errorCB) => {
 export const register = (codeAndPwdDTO, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
+        console.log(codeAndPwdDTO);
         api.signUp(codeAndPwdDTO, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
@@ -68,7 +69,6 @@ export const passwordRecoverInit = (mobileNumber, successCB, errorCB) => {
 
 export const passwordRecover = (codeAndPwdDTO, successCB, errorCB) => {
     return (dispatch) => {
-        console.log(codeAndPwdDTO);
         dispatch({type: t.LOADING});
         api.passwordRecover(codeAndPwdDTO, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
@@ -127,7 +127,7 @@ export const checkLoginStatus = (successCB, errorCB) => {
 
 export const savePushNotificationID = (pushNotificationID, successCB) => {
     return (dispatch) => {
-        console.log('savePushNotificationID');
+        console.log('savePushNotificationID', pushNotificationID);
         dispatch({type: t.SAVE_PUSH_NOTIFICATION_ID, data: { pushNotificationID } });
         successCB();
     };

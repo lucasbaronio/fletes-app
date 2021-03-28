@@ -10,3 +10,8 @@ export const ERROR_INCORRECT_CODE = () => `El código que recibió por SMS ${ERR
 
 export const ERROR_PASSWORD_DIFF = 'Las contraseñas no son iguales';
 export const ERROR_PASSWORD_LENGTH = 'La contraseña debe contener al menos 8 caracteres';
+
+export const ERROR_EMPTY_STREET_NAME_ORIGIN = 'Debe ingresar el nombre de la calle de recogida';
+export const ERROR_EMPTY_STREET_NUMBER_ORIGIN = 'Debe ingresar el número del domicilio de recogida';
+export const ERROR_EMPTY_STREET_NAME_DESTINATION = 'Debe ingresar el nombre de la calle de destino';
+export const ERROR_EMPTY_STREET_NUMBER_DESTINATION = 'Debe ingresar el número del domicilio de destino';

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import store from '../redux/store'
+import store from '../redux/store';
+// import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import withNotificationExpoHOC from '../components/HOCs/push/withNotificationExpoHOC';
@@ -41,7 +42,11 @@ class Router extends Component<MyProps, MyState> {
         const { checkLoginStatus } = this.props;
         const token = await getToken();
         if (token) {
-            checkLoginStatus(() => {}, () => {});
+            checkLoginStatus(async () => {
+                // await SplashScreen.hideAsync();
+            }, async () => {
+                // await SplashScreen.hideAsync();
+            });
         }
     }
 

@@ -8,34 +8,41 @@ import * as Permissions from "expo-permissions";
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { actions as orders } from "../../index";
-const { setOrderDestinationAddress, getOrdersInfo } = orders;
+const { setOrderOriginAddress, setOrderDestinationAddress, getOrdersInfo } = orders;
 
 import styles from './styles';
 import SlidingPanelAddress from '../../components/SlidingPanelAddress';
 import { showToast, showToastLoading } from '../../../../components/Toast';
-import { ERROR_EMPTY_STREET_NAME, ERROR_EMPTY_STREET_NUMBER } from '../../../../config/strings';
+import { 
+    ERROR_EMPTY_STREET_NAME_ORIGIN, 
+    ERROR_EMPTY_STREET_NUMBER_ORIGIN,
+    ERROR_EMPTY_STREET_NAME_DESTINATION,
+    ERROR_EMPTY_STREET_NUMBER_DESTINATION } from '../../../../config/strings';
 import { isNotEmpty } from '../../utils/validate';
 import MapViewDirections from 'react-native-maps-directions';
+import SlidingPanelDateAddress from '../../components/SlidingPanelDateAddress';
 
 type MyProps = {
+    setOrderOriginAddress: (data, onSuccess) => void,
     setOrderDestinationAddress: (data, onSuccess) => void,
     getOrdersInfo: (onSuccess, onError) => void,
-    originAddress: {
-        streetName: string,
-        streetNumber: string,
-        doorNumber: string,
-        coords: {
-            latitude: number,
-            longitude: number,
-        }
-    },
+    // originAddress: {
+    //     streetName: string,
+    //     streetNumber: string,
+    //     doorNumber: string,
+    //     coords: {
+    //         latitude: number,
+    //         longitude: number,
+    //     }
+    // },
     isLoading: boolean,
     navigation: any,
 }
 type MyState = {
     error: string,
     isLoading: boolean,
-    regionState: any,
+    orderOriginAddress: any,
+    orderDestinationAddress: any,
     currentLocation: any,
 }
 
@@ -47,7 +54,8 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             isLoading: true,
-            regionState: null,
+            orderOriginAddress: null,
+            orderDestinationAddress: null,
             currentLocation: null,
         };
     }
@@ -55,16 +63,6 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     async componentDidMount() {
         showToastLoading('Cargando mapa...');
         await this._getLocationAsync();
-        const { coords } = this.props.originAddress;
-        this.setState({ 
-            regionState: {
-                latitude: coords.latitude + 0.0030,
-                longitude: coords.longitude + 0.0030,
-                latitudeDelta: 0.010,
-                longitudeDelta: 0.010,
-            },
-            isLoading: false
-        })
         Toast.hide();
     }
 
@@ -85,6 +83,13 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
 
         this.setState({ 
             currentLocation,
+            orderOriginAddress: currentLocation,
+            orderDestinationAddress: {
+                ...currentLocation,
+                latitude: currentLocation.latitude + 0.0030,
+                longitude: currentLocation.longitude + 0.0030,
+            },
+            isLoading: false
         })
     }
 
@@ -93,23 +98,34 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     }
 
     onNextScreen = (address) => {
-        const val1 = isNotEmpty(address.streetName, () => {
-            showToast(ERROR_EMPTY_STREET_NAME);
+        const val1 = isNotEmpty(address.originAddress.streetName, () => {
+            showToast(ERROR_EMPTY_STREET_NAME_ORIGIN);
         });
-        const val2 = isNotEmpty(address.streetNumber, () => {
-            showToast(ERROR_EMPTY_STREET_NUMBER);
+        const val2 = isNotEmpty(address.originAddress.streetNumber, () => {
+            showToast(ERROR_EMPTY_STREET_NUMBER_ORIGIN);
+        });
+        const val3 = isNotEmpty(address.destinationAddress.streetName, () => {
+            showToast(ERROR_EMPTY_STREET_NAME_DESTINATION);
+        });
+        const val4 = isNotEmpty(address.destinationAddress.streetNumber, () => {
+            showToast(ERROR_EMPTY_STREET_NUMBER_DESTINATION);
         });
         
-        if (val1 && val2) {
-            const { regionState } = this.state;
-            const { setOrderDestinationAddress, getOrdersInfo } = this.props;
-            setOrderDestinationAddress({
-                streetName: address.streetName,
-                streetNumber: address.streetNumber,
-                doorNumber: address.doorNumber,
+        if (val1 && val2 && val3 && val4) {
+            const { orderOriginAddress, orderDestinationAddress } = this.state;
+            const { setOrderOriginAddress, setOrderDestinationAddress, getOrdersInfo } = this.props;
+            setOrderOriginAddress({
+                ...address.originAddress,
                 coords: {
-                    latitude: regionState.latitude,
-                    longitude: regionState.longitude,
+                    latitude: orderOriginAddress.latitude,
+                    longitude: orderOriginAddress.longitude,
+                }
+            }, () => {});
+            setOrderDestinationAddress({
+                ...address.destinationAddress,
+                coords: {
+                    latitude: orderDestinationAddress.latitude,
+                    longitude: orderDestinationAddress.longitude,
                 }
             }, () => {});
             getOrdersInfo(this.onSuccess, this.onError); 
@@ -127,14 +143,13 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { coords } = this.props.originAddress;
-        const { regionState, isLoading } = this.state;
+        const { orderOriginAddress, orderDestinationAddress, isLoading } = this.state;
         
         return (
             <View style={styles.container}>
                 <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
-                        Por favor, mantén pulsado el marcador azul y arrastrelo hacia el lugar de destino del pedido
+                        Por favor, arrastre los marcadores segun el lugar de inicio (Rojo) y destino (azul) del pedido.
                     </Text>
                 </View>
                 <View style={styles.floatButton}>
@@ -145,7 +160,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                         onPress={() => { this.centrateMap() }} />
                 </View>
                 <MapView 
-                    initialRegion={regionState}
+                    initialRegion={orderOriginAddress}
                     showsCompass={true}
                     rotateEnabled={true}
                     showsUserLocation={true}
@@ -155,51 +170,53 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
 
                     {
                         !isLoading &&
-                        <Marker 
+                        <><Marker 
                             draggable
                             // image={require('../../../../../assets/driver.png')}
                             onDragEnd = {(e) => {
-                                this.setState({ regionState: {
-                                    ...regionState,
+                                this.setState({ orderDestinationAddress: {
+                                    ...orderDestinationAddress,
                                     latitude: e.nativeEvent.coordinate.latitude,
                                     longitude: e.nativeEvent.coordinate.longitude,
                                 } })
                             }}
                             pinColor="blue"
-                            coordinate={regionState}
+                            coordinate={orderDestinationAddress}
                             anchor={{ x: 0.35, y: 0.32}}
                             style={{ width: 10, height: 10 }} >
                             
                         </Marker>
-                    }
 
                     <Marker 
+                        draggable
                         // image={require('../../../../../assets/driver.png')}
-                        pinColor="red"
-                        coordinate={{
-                            ...coords,
-                            // latitudeDelta: 0.010,
-                            // longitudeDelta: 0.010,
+                        onDragEnd = {(e) => {
+                            this.setState({ orderOriginAddress: {
+                                ...orderOriginAddress,
+                                latitude: e.nativeEvent.coordinate.latitude,
+                                longitude: e.nativeEvent.coordinate.longitude,
+                            } })
                         }}
+                        pinColor="red"
+                        coordinate={orderOriginAddress}
                         anchor={{ x: 0.35, y: 0.32}}
                         style={{ width: 10, height: 10 }} >
                         
                     </Marker>
-
-                    {
-                        !isLoading &&
                         <MapViewDirections
-                            origin={coords}
-                            destination={regionState}
+                            origin={orderOriginAddress}
+                            destination={orderDestinationAddress}
                             apikey={'AIzaSyAyv9pHdOrn__bmpDQbVXL41Hg6725qJmk'}
                             region='UY'
                             strokeWidth={3}
                             strokeColor="hotpink"
-                        />
+                        /></>
                     }
                     
                 </MapView>
-                <SlidingPanelAddress 
+                {/* <SlidingPanelAddress 
+                    onNextScreen={this.onNextScreen}/> */}
+                <SlidingPanelDateAddress 
                     onNextScreen={this.onNextScreen}/>
             </View>
         );
@@ -212,4 +229,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderDestinationAddress, getOrdersInfo })(MapAddressDestination);
+export default connect(mapStateToProps, { setOrderOriginAddress, setOrderDestinationAddress, getOrdersInfo })(MapAddressDestination);

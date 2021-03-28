@@ -19,8 +19,11 @@ Notifications.setNotificationHandler({
     }),
 });
 
+type MyProps = {
+    savePushNotificationID: (pushNotificationID, successCB) => void,
+}
 const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { savePushNotificationID })(
-    class extends React.Component {
+    class extends React.Component<MyProps> {
         notificationListener: any;
         responseListener: any;
 
@@ -32,8 +35,10 @@ const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { s
         }
 
         componentDidMount() {
+            const { savePushNotificationID } = this.props;
             registerForPushNotificationsAsync().then(token => {
                 // setExpoPushToken(token)
+                console.log('registerForPushNotificationsAsync', token);
                 savePushNotificationID(token, () => {})
             });
 

@@ -1,20 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, View, Platform, Dimensions } from 'react-native';
-import { Text } from 'native-base';
+import { View } from 'react-native';
+import { Text, Toast } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
-import { DestinationButton } from '../../components/DestinationButton';
-import { CurrentLocationButton } from '../../components/CurrentLocationButton';
+// import { DestinationButton } from '../../components/DestinationButton';
+// import { CurrentLocationButton } from '../../components/CurrentLocationButton';
 import { MaterialIcons } from '@expo/vector-icons';
-import Driver from '../../components/Driver';
+import { showToast, showToastLoading } from '../../../../components/Toast';
+import { 
+    ERROR_EMPTY_STREET_NAME, 
+    ERROR_EMPTY_STREET_NUMBER
+} from '../../../../config/strings';
 
 import { actions as orders } from "../../index";
 const { setOrderOriginAddress } = orders;
 
 import styles from './styles';
-import SlidingPanel from '../../components/SlidingPanel';
+import SlidingPanelAddress from '../../components/SlidingPanelAddress';
+import { isNotEmpty } from '../../utils/validate';
 // import { showToast } from '../../../../components/Toast';
 // import { Toast } from 'native-base';
 
@@ -44,7 +49,9 @@ class MapAddressOrigin extends React.Component<MyProps, MyState> {
     }
 
     async componentDidMount() {
+        showToastLoading('Cargando mapa...');
         await this._getLocationAsync();
+        Toast.hide();
     }
 
     _getLocationAsync = async () => {
@@ -75,17 +82,27 @@ class MapAddressOrigin extends React.Component<MyProps, MyState> {
     }
 
     onNextScreen = (address) => {
-        const { regionState } = this.state;
-        const { navigation, setOrderOriginAddress } = this.props;
-        setOrderOriginAddress({
-            streetName: address.streetName,
-            streetNumber: address.streetNumber,
-            doorNumber: address.doorNumber,
-            coords: {
-                latitude: regionState.latitude,
-                longitude: regionState.longitude,
-            }
-        }, () => navigation.push('MapAddressDestination'));
+        const val1 = isNotEmpty(address.streetName, () => {
+            showToast(ERROR_EMPTY_STREET_NAME);
+        });
+        const val2 = isNotEmpty(address.streetNumber, () => {
+            showToast(ERROR_EMPTY_STREET_NUMBER);
+        });
+
+        if (val1 && val2) {
+            const { regionState } = this.state;
+            const { navigation, setOrderOriginAddress } = this.props;
+            setOrderOriginAddress({
+                streetName: address.streetName,
+                streetNumber: address.streetNumber,
+                doorNumber: address.doorNumber,
+                coords: {
+                    latitude: regionState.latitude,
+                    longitude: regionState.longitude,
+                }
+            }, () => navigation.push('MapAddressDestination'));
+        }
+        
     }
 
     render() {
@@ -96,7 +113,7 @@ class MapAddressOrigin extends React.Component<MyProps, MyState> {
                 {/* <DestinationButton {...this.props}/> */}
                 <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
-                        Por favor arrastre el marcador donde será el lugar de recogida del pedido
+                        Por favor, mantén pulsado el marcador rojo y arrastrelo hacia el lugar de recogida del pedido
                     </Text>
                 </View>
                 <View style={styles.floatButton}>
@@ -111,13 +128,16 @@ class MapAddressOrigin extends React.Component<MyProps, MyState> {
                     // initialRegion={originAddressCoordsRegion}
                     initialRegion={regionState}
                     showsCompass={true}
-                    rotateEnabled={true}
                     // showsMyLocationButton={true}
                     showsUserLocation={true}
                     userLocationAnnotationTitle={'Mi ubicación'}
                     // followsUserLocation={true}
-                    // loadingEnabled={true}
+                    zoomEnabled={!isLoading}
+                    zoomTapEnabled={!isLoading}
+                    zoomControlEnabled={!isLoading}
+                    rotateEnabled={!isLoading}
                     ref={(map) => {this.map = map}}
+                    // cacheEnabled={true}
                     style={styles.mapStyle} >
 
                     {/* <Driver driver={{ uid: 'null', location: (originAddressCoords) ? originAddressCoords : regionState }} /> */}
@@ -142,7 +162,7 @@ class MapAddressOrigin extends React.Component<MyProps, MyState> {
                     }
                     
                 </MapView>
-                <SlidingPanel 
+                <SlidingPanelAddress 
                     onNextScreen={this.onNextScreen}/>
             </View>
         );

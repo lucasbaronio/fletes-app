@@ -11,12 +11,6 @@ export const setOrderOriginAddress = (originAddress, successCB) => {
     };
 }
 
-// export const changeOriginAddressCoords = (originAddressCoords) => {
-//     return (dispatch) => {
-//         dispatch({type: t.CHANGE_ORIGIN_ADDRESS_COORDS, data: { originAddressCoords }});
-//     };
-// }
-
 export const setOrderDestinationAddress = (destinationAddress, successCB) => {
     return (dispatch) => {
         dispatch({type: t.ORDER_DESTINATION_ADDRESS, data: { destinationAddress }});
@@ -24,11 +18,20 @@ export const setOrderDestinationAddress = (destinationAddress, successCB) => {
     };
 }
 
-// export const changeDestinationAddressCoords = (destinationAddressCoords) => {
-//     return (dispatch) => {
-//         dispatch({type: t.CHANGE_DESTINATION_ADDRESS_COORDS, data: { destinationAddressCoords }});
-//     };
-// }
+export const getOrdersInfo = (successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.getOrdersInfo((isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                dispatch({type: t.GET_ORDER_INFO, data});
+                successCB();
+            }
+            else if (error) errorCB(error)
+        });
+    };
+}
 
 export const addOrderDate = (date) => {
     return (dispatch) => {

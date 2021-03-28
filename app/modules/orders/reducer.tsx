@@ -27,6 +27,10 @@ let initialState = {
         extraOptions: [],
         paymentMethodId: null,
     },
+    orderInfo: {
+        vehicleTypes: [],
+        extraOptions: []
+    }
 };
 
 const ordersReducer = (state = initialState, action) => {
@@ -57,6 +61,12 @@ const ordersReducer = (state = initialState, action) => {
         //     return { ...state, destinationAddressCoords };
         // }
 
+        case t.GET_ORDER_INFO: {
+            const { vehicleTypes, extraOptions } = action.data;
+
+            return { ...state, orderInfo: { vehicleTypes, extraOptions } };
+        }
+
         case t.ADD_ORDER_DATE: {
             const { date } = action.data;
 
@@ -66,7 +76,7 @@ const ordersReducer = (state = initialState, action) => {
         case t.ADD_ORDER_VEHICLE_TYPE: {
             const { vehicleType } = action.data;
 
-            return { ...state, createOrder: { ...state.createOrder, vehicleType } };
+            return { ...state, createOrder: { ...state.createOrder, vehicleTypeId: vehicleType.vehicleTypeId } };
         }
 
         case t.ADD_ORDER_EXTRA: {

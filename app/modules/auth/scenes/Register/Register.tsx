@@ -62,6 +62,7 @@ class Register extends React.Component<MyProps, MyState> {
 
         if (val1 && val2 && val3 && val4) {
             const { register, codeId, pushNotificationID } = this.props;
+            console.log('pushNotificationID', pushNotificationID);
             register({ codeId, code, password, pushNotificationID }, this.onSuccess, this.onError);
         }
     }

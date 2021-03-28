@@ -11,8 +11,9 @@ const ios = Platform.OS === 'ios';
 type MyProps = {
   onNextScreen: (address) => void,
 }
-const SlidingPanel: React.FunctionComponent<MyProps> = ({ onNextScreen }) => {
+const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen }) => {
   const deviceHeight = useWindowDimensions().height;
+  const deviceWidth = useWindowDimensions().width;
   const draggableRange = {
     top: deviceHeight * 0.9,
     bottom: deviceHeight * 0.15
@@ -24,6 +25,8 @@ const SlidingPanel: React.FunctionComponent<MyProps> = ({ onNextScreen }) => {
   ];
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
+  const secondTextInputRef = useRef<Input | null>(null);
+  const thirdTextInputRef = useRef<Input | null>(null);
   const [atTop, setAtTop] = useState(false);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
   const [streetName, setStreetName] = useState('');
@@ -153,24 +156,39 @@ const SlidingPanel: React.FunctionComponent<MyProps> = ({ onNextScreen }) => {
                   <View style={{ flex: 3 }}>
                     <Item floatingLabel>
                       <Label>Calle (*)</Label>
-                      <Input 
+                      <Input
                         onChangeText={streetName => setStreetName(streetName)}
+                        returnKeyType='next'
+                        // @ts-ignore
+                        onSubmitEditing={() => { secondTextInputRef.current._root.focus(); }}
+                        blurOnSubmit={false}
                         value={streetName}/>
                     </Item>
                     <Item floatingLabel last>
                       <Label>Numero (*)</Label>
                       <Input 
+                        getRef={(input) => { secondTextInputRef.current = input; }}
                         onChangeText={streetNumber => setStreetNumber(streetNumber)}
+                        returnKeyType='next'
+                        // @ts-ignore
+                        onSubmitEditing={() => { thirdTextInputRef.current._root.focus(); }}
+                        blurOnSubmit={false}
                         value={streetNumber}/>
                     </Item>
                     <Item floatingLabel last>
                       <Label>Apto.</Label>
                       <Input 
+                        getRef={(input) => { thirdTextInputRef.current = input; }}
                         onChangeText={doorNumber => setDoorNumber(doorNumber)}
+                        returnKeyType='done'
+                        // onSubmitEditing={() => onNextScreen({streetName, streetNumber, doorNumber})}
                         value={doorNumber}/>
                     </Item>
                   </View>
-                  <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+                  <View style={[styles.button, { 
+                    bottom: (deviceHeight - draggableRange.top) + 20,
+                    left: (deviceWidth * 0.1) / 2
+                  }]}>
                     <Button 
                       // @ts-ignore
                       style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
@@ -210,6 +228,13 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     // justifyContent: 'flex-start',
   },
+  button: {
+    zIndex: 9,
+    elevation: 7,
+    position: 'absolute',
+    flexDirection: 'row',
+    width: '90%',
+  },
 });
 
-export default SlidingPanel;
+export default SlidingPanelAddress;

@@ -5,6 +5,8 @@ import MapAddressOrigin from '../modules/orders/scenes/MapAddressOrigin/MapAddre
 import AddressSearchBar from '../modules/orders/components/AddressSearchBar';
 import { Button, Icon } from 'native-base';
 import MapAddressDestination from '../modules/orders/scenes/MapAddressDestination/MapAddressDestination';
+import VehicleTypesGrid from '../modules/orders/scenes/VehicleTypesGrid/VehicleTypesGrid';
+import MapAddress from '../modules/orders/scenes/MapAddress/MapAddress';
 
 // import { actions as auth } from "../modules/auth/index"
 // const { logOut } = auth;
@@ -15,6 +17,21 @@ function HomeRoutes(props) {
     return (
         <HomeStack.Navigator initialRouteName="MapAddressOrigin" >
             <HomeStack.Screen 
+                name="MapAddress" 
+                component={MapAddress} 
+                options={({ navigation }) => ({
+                    title: '',
+                    headerTransparent: true,
+                    headerLeft: () => (
+                        <Button transparent
+                          onPress={() => navigation.toggleDrawer()}
+                          color="#fff" >
+                            <Icon name="menu-outline"></Icon>
+                        </Button>
+                      ),
+                })}
+            />
+            {/* <HomeStack.Screen 
                 name="MapAddressOrigin" 
                 component={MapAddressOrigin} 
                 options={({ navigation }) => ({
@@ -42,6 +59,13 @@ function HomeRoutes(props) {
                     //         <Icon name="menu-outline"></Icon>
                     //     </Button>
                     //   ),
+                })}
+            /> */}
+            <HomeStack.Screen 
+                name="VehicleTypesGrid" 
+                component={VehicleTypesGrid} 
+                options={({ navigation }) => ({
+                    title: 'Tipo de flete',
                 })}
             />
             <HomeStack.Screen 

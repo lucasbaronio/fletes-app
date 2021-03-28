@@ -12,6 +12,9 @@ export const API_AUTH_RECOVER = `${API_AUTH}/password/recover`;
 export const API_USERS = `${API}/users`;
 export const API_USERS_ME = `${API_USERS}/me`;
 
+export const API_ORDERS = `${API}/orders`;
+export const API_ORDERS_INFO = `${API_ORDERS}/info`;
+
 export const API_EVENT_SIZE = 10;
 export const API_EVENT = `${API}events`;
 export const API_EVENTS_PAGINATION = ({ start }) => `${API_EVENT}/pagination?start=${start}&size=${API_EVENT_SIZE}`;
