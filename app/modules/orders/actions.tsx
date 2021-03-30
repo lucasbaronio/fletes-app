@@ -33,23 +33,26 @@ export const getOrdersInfo = (successCB, errorCB) => {
     };
 }
 
-export const addOrderDate = (date) => {
+export const setOrderDate = (date) => {
     return (dispatch) => {
-        dispatch({type: t.ADD_ORDER_DATE, data: { date }});
+        dispatch({type: t.ORDER_DATE, data: { date }});
     };
 }
-export const addOrderVehicleType = (vehicleType) => {
+
+export const setOrderVehicleType = (vehicleType) => {
     return (dispatch) => {
-        dispatch({type: t.ADD_ORDER_VEHICLE_TYPE, data: { vehicleType }});
+        dispatch({type: t.ORDER_VEHICLE_TYPE, data: { vehicleType }});
     };
 }
-export const addOrderExtraOptions = (extraOptions) => {
+
+export const setOrderExtraOptions = (extraOptions) => {
     return (dispatch) => {
-        dispatch({type: t.ADD_ORDER_EXTRA, data: { extraOptions }});
+        dispatch({type: t.ORDER_EXTRA, data: { extraOptions }});
     };
 }
+
 export const addOrderPaymentMethid = (paymentMethod) => {
     return (dispatch) => {
-        dispatch({type: t.ADD_ORDER_PAYMENT_METHOD, data: { paymentMethod }});
+        dispatch({type: t.ORDER_PAYMENT_METHOD, data: { paymentMethod }});
     };
 }

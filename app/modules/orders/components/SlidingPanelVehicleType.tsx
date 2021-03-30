@@ -1,28 +1,23 @@
-import { Body, Button, Card, CardItem, Form, H1, H2, Icon, Input, Item, Text } from 'native-base';
+import { Body, Button, Card, CardItem, CheckBox, Form, H1, H2, H3, Icon, Input, Item, List, ListItem, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Platform, Animated, StyleSheet,
-  useWindowDimensions, View, Image
+  useWindowDimensions, View, Image, SafeAreaView, ScrollView
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 
 const ios = Platform.OS === 'ios';
 
 type MyProps = {
-  vehicleType: {
-    name: string,
-    open: boolean,
-    pricePerHour: number,
-    vehicleTypeId: number,
-  },
-  onNextScreen: (address) => void,
+  onNextScreen: (vehicleType, extraOptionsSelected) => void,
   forwardRef: any,
+  extraOptions: any,
 }
-const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScreen, forwardRef }) => {
+const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScreen, forwardRef, extraOptions }) => {
   const deviceHeight = useWindowDimensions().height;
   const deviceWidth = useWindowDimensions().width;
   const draggableRange = {
-    top: deviceHeight * 0.6,
+    top: deviceHeight * 0.7,
     bottom: 0
   };
 
@@ -32,10 +27,10 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
   ];
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
-  const secondTextInputRef = useRef<Input | null>(null);
-  const thirdTextInputRef = useRef<Input | null>(null);
-  const [atTop, setAtTop] = useState(false);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
+  const [extraOptionsSelected, setExtraOptionsSelected] = useState(extraOptions.map((extra) => {
+    return { ...extra, selected: false }
+  }));
   const [vehicleType, setVehicleType] = useState({
     name: '',
     open: false,
@@ -43,61 +38,38 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
     vehicleTypeId: 0,
   });
 
+  const onAddOrRemoveExtraOption = (extra) => {
+    const id = extra.orderAvailableExtraOptionId;
+    const newExtraOptions = extraOptionsSelected.map((item) => {
+      return item.orderAvailableExtraOptionId == id ?
+      { ...item, selected: !item.selected } : { ...item }
+    });
+    setExtraOptionsSelected(newExtraOptions);
+  };
+
   forwardRef((vehicleType) => {
     setVehicleType(vehicleType)
     // @ts-ignore
     panelRef.current.show();
   });
-
-  // fired when panel is finished being dragged up or down
-  // if panel is dragged to 'top' position, then we switch to scrollmode
-  // const onMomentumDragEnd = useCallback((value: number) => {
-  //   if (value === draggableRange.top) {
-  //     setAtTop(true);
-  //   } if (value === draggableRange.bottom) {
-  //     setAtTop(false);
-  //   }
-  // }, [draggableRange]);
   
   const PANEL_VELOCITY = ios ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
     velocity: PANEL_VELOCITY,
     toValue: draggableRange.bottom
   };
-  
-  // if panel is at the top and scrolling is allowed
-  // check the velocity of the drag,
-  // if the velocity is downward, then we animate the panel to its bottom state
-  // if the velocity is upward, we treat the drag like a scroll instead
-  // const onDragStart = useCallback((_: number, gestureState: PanResponderGestureState) => {
-  //   if (atTop) {
-  //     if (gestureState.vy > 0) {
-  //       if (ios) {
-  //         setAllowDragging(true);
-  //       }
-  //       if (panelRef && panelRef.current) {
-  //         panelRef.current.show(hideFullScreenPanelOptions);
-  //       }
-  //     } else {
-        
-        
-  //       if (ios) {
-  //       }
-  //     }
-  //   }
-  // }, [atTop, panelRef]);
 
   const _onAnimatedValueChange = ({ value }) => {
     const {top, bottom} = draggableRange;
     const delta = top - bottom;
     const valuePCT = ((value - bottom) * 100) / delta;
 
-    if (value === top) {
-      setAtTop(true);
-    }
-    if (value === bottom) {
-      setAtTop(false);
-    }
+    // if (value === top) {
+    //   setAtTop(true);
+    // }
+    // if (value === bottom) {
+    //   setAtTop(false);
+    // }
   }
 
   useEffect(() => {
@@ -119,6 +91,7 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
         height={deviceHeight}
         // allowDragging={allowDragging}
         allowDragging={true}
+        minimumDistanceThreshold={deviceHeight > 800 ? 50 : 30}
         // onMomentumDragEnd={onMomentumDragEnd}
         // onDragStart={onDragStart}
         containerStyle={{ zIndex: 10, elevation: 10, borderTopLeftRadius: 30, borderTopRightRadius: 30 }}
@@ -128,7 +101,6 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
             transparent
             style={{ width: '100%', justifyContent: "flex-end" }}
             onPress={() => {
-              setAtTop(false);
               // @ts-ignore
               panelRef.current.show(hideFullScreenPanelOptions);
             }}>
@@ -149,22 +121,39 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
             <View style={{ flex: 1 }}>
               <Text style={{ marginBottom: 10 }}>Tipo: <H2>{vehicleType.name}</H2></Text>
               <Text style={{ marginBottom: 5 }}>Precio: </Text>
-              <Text style={{ marginBottom: 10, marginStart: 30 }}>$ <H1>{vehicleType.pricePerHour}</H1> por hora</Text>
+              <Text style={{ marginBottom: 10, marginStart: 30 }}>$ <H3>{vehicleType.pricePerHour}</H3> por hora</Text>
             </View>
           </View>
-          <View style={{ width: '90%', marginVertical: 10 }}>
+          <View style={{ width: '90%', marginVertical: 5 }}>
             <View style={{ flexDirection: 'column' }}>
-              <View style={{ marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View style={{ marginVertical: 3, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text>Capacidad de carga: </Text>
-                <H2>600 Kg</H2>
+                <H3>600 Kg</H3>
               </View>
-              <View style={{ marginVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View style={{ marginVertical: 3, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text>Caja Abierta/Cerrada: </Text>
-                <H2>{vehicleType.open}pepe</H2>
+                <H3>{vehicleType.open}pepe</H3>
               </View>
             </View>
           </View>
-          
+          <View style={{ flex: 1, width: '90%'}}>
+            <Text style={{ marginBottom: 5 }}>Opciones Extra:</Text>
+            <List
+              style={{ flex: 1, maxHeight: draggableRange.top * 0.3, borderRadius: 5, borderWidth: 1 }}
+              dataArray={extraOptionsSelected}
+              renderRow={(extra) =>
+                <ListItem 
+                  key={extra.orderAvailableExtraOptionId}
+                  onPress={() => onAddOrRemoveExtraOption(extra)}>
+                  <CheckBox checked={extra.selected} />
+                  <Body style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Text>{extra.text}:</Text>
+                    <Text><H3>+</H3> $<H3>{extra.price}</H3></Text>
+                  </Body>
+                </ListItem>
+              }>
+            </List>
+          </View>
           <View style={[styles.button, { 
             bottom: (deviceHeight - draggableRange.top) + 20,
             left: (deviceWidth * 0.1) / 2,
@@ -172,7 +161,7 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
             <Button 
               // @ts-ignore
               style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
-              onPress={() => onNextScreen(vehicleType)}>
+              onPress={() => onNextScreen(vehicleType, extraOptionsSelected)}>
                 <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
                     Siguiente
                 </Text>

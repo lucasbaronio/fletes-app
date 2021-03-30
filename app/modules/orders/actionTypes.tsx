@@ -1,10 +1,10 @@
 export const ORDER_ORIGIN_ADDRESS = 'orders/ORDER_ORIGIN_ADDRESS';
 export const ORDER_DESTINATION_ADDRESS = 'orders/ORDER_DESTINATION_ADDRESS';
 export const GET_ORDER_INFO = 'orders/GET_ORDER_INFO';
-export const ADD_ORDER_DATE = 'orders/ADD_ORDER_DATE';
-export const ADD_ORDER_VEHICLE_TYPE = 'orders/ADD_ORDER_VEHICLE_TYPE';
-export const ADD_ORDER_EXTRA = 'orders/ADD_ORDER_EXTRA';
-export const ADD_ORDER_PAYMENT_METHOD = 'orders/ADD_ORDER_PAYMENT_METHOD';
+export const ORDER_DATE = 'orders/ORDER_DATE';
+export const ORDER_VEHICLE_TYPE = 'orders/ORDER_VEHICLE_TYPE';
+export const ORDER_EXTRA = 'orders/ORDER_EXTRA';
+export const ORDER_PAYMENT_METHOD = 'orders/ORDER_PAYMENT_METHOD';
 export const LOADING = 'orders/LOADING';
 // export const SAVE_PUSH_NOTIFICATION_ID = 'orders/SAVE_PUSH_NOTIFICATION_ID';
 // export const USERS_ME = 'users/USERS_ME';

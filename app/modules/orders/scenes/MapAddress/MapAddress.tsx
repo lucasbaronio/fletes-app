@@ -8,10 +8,9 @@ import * as Permissions from "expo-permissions";
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { actions as orders } from "../../index";
-const { setOrderOriginAddress, setOrderDestinationAddress, getOrdersInfo } = orders;
+const { setOrderOriginAddress, setOrderDestinationAddress, setOrderDate, getOrdersInfo } = orders;
 
 import styles from './styles';
-import SlidingPanelAddress from '../../components/SlidingPanelAddress';
 import { showToast, showToastLoading } from '../../../../components/Toast';
 import { 
     ERROR_EMPTY_STREET_NAME_ORIGIN, 
@@ -25,16 +24,8 @@ import SlidingPanelDateAddress from '../../components/SlidingPanelDateAddress';
 type MyProps = {
     setOrderOriginAddress: (data, onSuccess) => void,
     setOrderDestinationAddress: (data, onSuccess) => void,
+    setOrderDate: (data, onSuccess) => void,
     getOrdersInfo: (onSuccess, onError) => void,
-    // originAddress: {
-    //     streetName: string,
-    //     streetNumber: string,
-    //     doorNumber: string,
-    //     coords: {
-    //         latitude: number,
-    //         longitude: number,
-    //     }
-    // },
     isLoading: boolean,
     navigation: any,
 }
@@ -97,7 +88,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
         this.map.animateToRegion(this.state.currentLocation);
     }
 
-    onNextScreen = (address) => {
+    onNextScreen = (address, date) => {
         const val1 = isNotEmpty(address.originAddress.streetName, () => {
             showToast(ERROR_EMPTY_STREET_NAME_ORIGIN);
         });
@@ -110,10 +101,14 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
         const val4 = isNotEmpty(address.destinationAddress.streetNumber, () => {
             showToast(ERROR_EMPTY_STREET_NUMBER_DESTINATION);
         });
+        // Falta validar que la fecha no sea vacio
+        // const val5 = isNotEmpty(address.destinationAddress.streetNumber, () => {
+        //     showToast(ERROR_EMPTY_STREET_NUMBER_DESTINATION);
+        // });
         
         if (val1 && val2 && val3 && val4) {
             const { orderOriginAddress, orderDestinationAddress } = this.state;
-            const { setOrderOriginAddress, setOrderDestinationAddress, getOrdersInfo } = this.props;
+            const { setOrderOriginAddress, setOrderDestinationAddress, setOrderDate, getOrdersInfo } = this.props;
             setOrderOriginAddress({
                 ...address.originAddress,
                 coords: {
@@ -128,7 +123,8 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                     longitude: orderDestinationAddress.longitude,
                 }
             }, () => {});
-            getOrdersInfo(this.onSuccess, this.onError); 
+            setOrderDate(date, () => {});
+            getOrdersInfo(this.onSuccess, this.onError);
         }
     }
 
@@ -149,7 +145,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
             <View style={styles.container}>
                 <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
-                        Por favor, arrastre los marcadores segun el lugar de inicio (Rojo) y destino (azul) del pedido.
+                        Por favor, arrastre los marcadores segun el lugar de inicio (rojo) y destino (azul) del pedido.
                     </Text>
                 </View>
                 <View style={styles.floatButton}>
@@ -214,8 +210,6 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                     }
                     
                 </MapView>
-                {/* <SlidingPanelAddress 
-                    onNextScreen={this.onNextScreen}/> */}
                 <SlidingPanelDateAddress 
                     onNextScreen={this.onNextScreen}/>
             </View>
@@ -229,4 +223,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderOriginAddress, setOrderDestinationAddress, getOrdersInfo })(MapAddressDestination);
+export default connect(mapStateToProps, { setOrderOriginAddress, setOrderDestinationAddress, setOrderDate, getOrdersInfo })(MapAddressDestination);

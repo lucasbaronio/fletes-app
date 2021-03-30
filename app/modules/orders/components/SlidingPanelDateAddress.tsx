@@ -6,11 +6,14 @@ import {
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import AddressForm from './AddressForm';
+import DateTime from './DateTime';
+import moment from "moment";
+import 'moment/min/locales';
 
 const ios = Platform.OS === 'ios';
 
 type MyProps = {
-  onNextScreen: (address) => void,
+  onNextScreen: (address, date) => void,
 }
 const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen }) => {
   const deviceHeight = useWindowDimensions().height;
@@ -35,10 +38,12 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
   const [streetNameDestination, setStreetNameDestination] = useState('');
   const [streetNumberDestination, setStreetNumberDestination] = useState('');
   const [doorNumberDestination, setDoorNumberDestination] = useState('');
+  const [dateOrder, setDateOrder] = useState<string>(moment(new Date()).format("YYYYMMDDHHmm"));
 
   const dataArray = [
-    { title: "Dirección Origen", content: "origin" },
-    { title: "Dirección Destino", content: "destination" },
+    { title: "Dirección Origen 🔴", content: "origin" },
+    { title: "Dirección Destino 🔵", content: "destination" },
+    { title: "Fecha y hora", content: "datetime" },
   ];
   
   const PANEL_VELOCITY = ios ? 2 : 2.3;
@@ -131,7 +136,8 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
                           padding: 12,
                           justifyContent: "space-between",
                           alignItems: "center" ,
-                          backgroundColor: "#A9DAD6" }}>
+                          backgroundColor: "#A9DAD6" }
+                        }>
                           <Text style={{ fontWeight: "600" }}>
                             {" "}{item.title}
                           </Text>
@@ -141,25 +147,29 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
                         </View>
                       )}
                       renderContent={(item: any) => (
-                          <AddressForm 
-                          streetName = {item.content == 'origin' ? streetNameOrigin : streetNameDestination}
-                          streetNumber = {item.content == 'origin' ? streetNumberOrigin : streetNumberDestination}
-                          doorNumber = {item.content == 'origin' ? doorNumberOrigin : doorNumberDestination}
-                          onSetStreetName={(streetName) => {
-                            item.content == 'origin' ?
-                              setStreetNameOrigin(streetName)
-                              : setStreetNameDestination(streetName)
-                          }}
-                          onSetStreetNumber={(streetNumber) => {
-                            item.content == 'origin' ?
-                            setStreetNumberOrigin(streetNumber)
-                              : setStreetNumberDestination(streetNumber)
-                          }}
-                          onSetDoorNumber={(doorNumber) => {
-                            item.content == 'origin' ?
-                            setDoorNumberOrigin(doorNumber)
-                              : setDoorNumberDestination(doorNumber)
-                          }}/>
+                          item.content == 'datetime' ?
+                            <DateTime 
+                              dateOrder={dateOrder}
+                              onSetDateOrder={(dateOrder) => setDateOrder(dateOrder)}/>
+                            :<AddressForm 
+                              streetName = {item.content == 'origin' ? streetNameOrigin : streetNameDestination}
+                              streetNumber = {item.content == 'origin' ? streetNumberOrigin : streetNumberDestination}
+                              doorNumber = {item.content == 'origin' ? doorNumberOrigin : doorNumberDestination}
+                              onSetStreetName={(streetName) => {
+                                item.content == 'origin' ?
+                                  setStreetNameOrigin(streetName)
+                                  : setStreetNameDestination(streetName)
+                              }}
+                              onSetStreetNumber={(streetNumber) => {
+                                item.content == 'origin' ?
+                                setStreetNumberOrigin(streetNumber)
+                                  : setStreetNumberDestination(streetNumber)
+                              }}
+                              onSetDoorNumber={(doorNumber) => {
+                                item.content == 'origin' ?
+                                setDoorNumberOrigin(doorNumber)
+                                  : setDoorNumberDestination(doorNumber)
+                              }}/>
                       )} />
                 </View>
                 <View style={[styles.button, { 
@@ -180,7 +190,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
                         streetNumber: streetNumberDestination, 
                         doorNumber: doorNumberDestination 
                       },
-                    })}>
+                    }, dateOrder)}>
                       <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
                           Siguiente
                       </Text>

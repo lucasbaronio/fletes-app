@@ -43,23 +43,11 @@ const ordersReducer = (state = initialState, action) => {
             return { ...state, createOrder: { ...state.createOrder, originAddress } };
         }
 
-        // case t.CHANGE_ORIGIN_ADDRESS: {
-        //     const { originAddress } = action.data;
-
-        //     return { ...state, originAddress };
-        // }
-
         case t.ORDER_DESTINATION_ADDRESS: {
             const { destinationAddress } = action.data;
 
             return { ...state, createOrder: { ...state.createOrder, destinationAddress } };
         }
-
-        // case t.CHANGE_DESTINATION_ADDRESS_COORDS: {
-        //     const { destinationAddressCoords } = action.data;
-
-        //     return { ...state, destinationAddressCoords };
-        // }
 
         case t.GET_ORDER_INFO: {
             const { vehicleTypes, extraOptions } = action.data;
@@ -67,25 +55,26 @@ const ordersReducer = (state = initialState, action) => {
             return { ...state, orderInfo: { vehicleTypes, extraOptions } };
         }
 
-        case t.ADD_ORDER_DATE: {
+        case t.ORDER_DATE: {
             const { date } = action.data;
+            console.log(date)
 
             return { ...state, createOrder: { ...state.createOrder, date } };
         }
 
-        case t.ADD_ORDER_VEHICLE_TYPE: {
+        case t.ORDER_VEHICLE_TYPE: {
             const { vehicleType } = action.data;
 
             return { ...state, createOrder: { ...state.createOrder, vehicleTypeId: vehicleType.vehicleTypeId } };
         }
 
-        case t.ADD_ORDER_EXTRA: {
+        case t.ORDER_EXTRA: {
             const { extraOptions } = action.data;
 
             return { ...state, createOrder: { ...state.createOrder, extraOptions } };
         }
 
-        case t.ADD_ORDER_PAYMENT_METHOD: {
+        case t.ORDER_PAYMENT_METHOD: {
             const { paymentMethod } = action.data;
 
             return { ...state, createOrder: { ...state.createOrder, paymentMethod } };

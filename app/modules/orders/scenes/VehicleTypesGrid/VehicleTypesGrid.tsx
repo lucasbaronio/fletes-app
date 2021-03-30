@@ -4,7 +4,7 @@ import { View, Image, TouchableOpacity } from 'react-native';
 import { Button, Text } from 'native-base';
 
 import { actions as orders } from "../../index";
-const { addOrderVehicleType } = orders;
+const { setOrderVehicleType, setOrderExtraOptions } = orders;
 
 import styles from './styles';
 import { showToast, showToastLoading } from '../../../../components/Toast';
@@ -12,8 +12,10 @@ import { FlatGrid } from 'react-native-super-grid';
 import SlidingPanelVehicleType from '../../components/SlidingPanelVehicleType';
 
 type MyProps = {
-    addOrderVehicleType: (vehicleType) => void,
+    setOrderVehicleType: (vehicleType) => void,
+    setOrderExtraOptions: (extraOptionsIds) => void,
     vehicleTypes: any,
+    extraOptions: any,
     isLoading: boolean,
     navigation: any,
 }
@@ -43,11 +45,22 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
         };
     }
 
-    onNextScreen = (vehicleType) => {
-        const { navigation } = this.props;
-        const { addOrderVehicleType } = this.props;
-        addOrderVehicleType(vehicleType);
+    onNextScreen = (vehicleType, extraOptionsSelected) => {
+        const { navigation, setOrderVehicleType, setOrderExtraOptions } = this.props;
+        setOrderVehicleType(vehicleType);
+        const extraOptions = this.getExtraOptionsId(extraOptionsSelected);
+        setOrderExtraOptions(extraOptions);
         // navigation.navigate('MapAddressDestination');
+    }
+
+    getExtraOptionsId = (extraOptionsSelected) => {
+        const extraOptionsIds = new Array();
+        extraOptionsSelected.forEach((item) => {
+            if (item.selected) {
+                extraOptionsIds.push(item.orderAvailableExtraOptionId)
+            }
+        });
+        return extraOptionsIds;
     }
 
     // onSuccess = () => {
@@ -61,8 +74,7 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
     // }
 
     render() {
-        const { vehicleTypes, isLoading } = this.props;
-        const { vehicleTypeSelected, showSlidingPanel } = this.state;
+        const { vehicleTypes, extraOptions } = this.props;
 
         return (
             <View style={styles.container}>
@@ -94,7 +106,8 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
                 <SlidingPanelVehicleType 
                     // ref="slidingPanelVehicleType"
                     forwardRef={c => { this.slidingPanelVehicleType = c }}
-                    vehicleType={vehicleTypeSelected}
+                    // vehicleType={vehicleTypeSelected}
+                    extraOptions={extraOptions}
                     onNextScreen={this.onNextScreen}/>
             </View>
         );
@@ -104,7 +117,8 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
 function mapStateToProps(state, props) {
     return {
         vehicleTypes: state.ordersReducer.orderInfo.vehicleTypes,
+        extraOptions: state.ordersReducer.orderInfo.extraOptions,
     }
 }
 
-export default connect(mapStateToProps, { addOrderVehicleType })(VehicleTypesGrid);
+export default connect(mapStateToProps, { setOrderVehicleType, setOrderExtraOptions })(VehicleTypesGrid);
