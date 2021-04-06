@@ -2,74 +2,63 @@ import { Button, Form, Icon, Input, Item, Label, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Platform, Animated, StyleSheet,
-  useWindowDimensions, View
+  useWindowDimensions, View, ActivityIndicator
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 
 const ios = Platform.OS === 'ios';
 
 type MyProps = {
-  onNextScreen: (address) => void,
+  onPress: (paymentMethod) => void,
+  closeSlidingPanel: any,
+  openSlidingPanel: any,
+  isLoading: boolean,
 }
-const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen }) => {
+const SlidingPanelCreatePaymentMethod: React.FunctionComponent<MyProps> = ({ onPress, closeSlidingPanel, openSlidingPanel, isLoading }) => {
   const deviceHeight = useWindowDimensions().height;
   const deviceWidth = useWindowDimensions().width;
   const draggableRange = {
-    top: deviceHeight * 0.9,
-    bottom: deviceHeight * 0.15
+    top: deviceHeight * 0.8,
+    bottom: 0
   };
 
   const snappingPoints = [
     draggableRange.top,
+    deviceHeight / 2,
     draggableRange.bottom
   ];
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
+  const firstTextInputRef = useRef<Input | null>(null);
   const secondTextInputRef = useRef<Input | null>(null);
   const thirdTextInputRef = useRef<Input | null>(null);
   const [atTop, setAtTop] = useState(false);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  const [streetName, setStreetName] = useState('');
-  const [streetNumber, setStreetNumber] = useState('');
+  const [creditCard, setCreditCard] = useState('');
+  const [exp, setExp] = useState('');
   const [doorNumber, setDoorNumber] = useState('');
 
-  // fired when panel is finished being dragged up or down
-  // if panel is dragged to 'top' position, then we switch to scrollmode
-  // const onMomentumDragEnd = useCallback((value: number) => {
-  //   if (value === draggableRange.top) {
-  //     setAtTop(true);
-  //   } if (value === draggableRange.bottom) {
-  //     setAtTop(false);
-  //   }
-  // }, [draggableRange]);
-  
+  closeSlidingPanel(() => {
+    // @ts-ignore
+    panelRef.current.show(hideFullScreenPanelOptions);
+    // @ts-ignore
+    firstTextInputRef.current._root.clear();
+    // @ts-ignore
+    secondTextInputRef.current._root.clear();
+    // @ts-ignore
+    thirdTextInputRef.current._root.clear();
+  });
+
+  openSlidingPanel(() => {
+    // @ts-ignore
+    panelRef.current.show();
+  });
+
   const PANEL_VELOCITY = ios ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
     velocity: PANEL_VELOCITY,
     toValue: draggableRange.bottom
   };
-  
-  // if panel is at the top and scrolling is allowed
-  // check the velocity of the drag,
-  // if the velocity is downward, then we animate the panel to its bottom state
-  // if the velocity is upward, we treat the drag like a scroll instead
-  // const onDragStart = useCallback((_: number, gestureState: PanResponderGestureState) => {
-  //   if (atTop) {
-  //     if (gestureState.vy > 0) {
-  //       if (ios) {
-  //         setAllowDragging(true);
-  //       }
-  //       if (panelRef && panelRef.current) {
-  //         panelRef.current.show(hideFullScreenPanelOptions);
-  //       }
-  //     } else {
-        
-        
-  //       if (ios) {
-  //       }
-  //     }
-  //   }
-  // }, [atTop, panelRef]);
 
   const _onAnimatedValueChange = ({ value }) => {
     const {top, bottom} = draggableRange;
@@ -82,6 +71,10 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
     if (value === bottom) {
       setAtTop(false);
     }
+  }
+
+  const onCreatePaymentMethod = () => {
+    onPress({creditCard, exp, doorNumber});
   }
 
   useEffect(() => {
@@ -108,12 +101,6 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
         containerStyle={{ zIndex: 10, elevation: 10, borderTopLeftRadius: 30, borderTopRightRadius: 30 }}
     >
         <View style={styles.panelContent}>
-            {/* <ScrollView
-                scrollEnabled={scrollEnabled}
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-                onMomentumScrollEnd={onMomentumScrollEnd}
-            > */}
               {
                 atTop ?
                 <Button 
@@ -140,43 +127,32 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
               }
               
               <Form style={styles.form}>
-                <View style={styles.viewText}>
-                  {
-                    atTop ?
-                    <Text style={{ textAlign: 'center' }}>
-                      Complete los datos con la dirección que seleccionó en el mapa:
-                    </Text>
-                    : 
-                    <Text style={{ textAlign: 'center' }}>
-                      Y a continuación levante este panel hacia arriba.
-                    </Text>
-                  }
-                </View>
                 <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'flex-start' }}>
                   <View style={{ flex: 3 }}>
                     <Item floatingLabel>
-                      <Label>Calle (*)</Label>
+                      <Label>Tarjeta de crédito</Label>
                       <Input
-                        onChangeText={streetName => setStreetName(streetName)}
+                        getRef={(input) => { firstTextInputRef.current = input; }}
+                        onChangeText={creditCard => setCreditCard(creditCard)}
                         returnKeyType='next'
                         // @ts-ignore
                         onSubmitEditing={() => { secondTextInputRef.current._root.focus(); }}
                         blurOnSubmit={false}
-                        value={streetName}/>
+                        value={creditCard}/>
                     </Item>
                     <Item floatingLabel last>
-                      <Label>Numero (*)</Label>
+                      <Label>Expiración</Label>
                       <Input 
                         getRef={(input) => { secondTextInputRef.current = input; }}
-                        onChangeText={streetNumber => setStreetNumber(streetNumber)}
+                        onChangeText={exp => setExp(exp)}
                         returnKeyType='next'
                         // @ts-ignore
                         onSubmitEditing={() => { thirdTextInputRef.current._root.focus(); }}
                         blurOnSubmit={false}
-                        value={streetNumber}/>
+                        value={exp}/>
                     </Item>
                     <Item floatingLabel last>
-                      <Label>Apto.</Label>
+                      <Label>Otra cosa</Label>
                       <Input 
                         getRef={(input) => { thirdTextInputRef.current = input; }}
                         onChangeText={doorNumber => setDoorNumber(doorNumber)}
@@ -192,15 +168,19 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
                     <Button 
                       // @ts-ignore
                       style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
-                      onPress={() => onNextScreen({streetName, streetNumber, doorNumber})}>
-                        <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
-                            Continuar
-                        </Text>
+                      onPress={onCreatePaymentMethod}>
+                        {
+                            isLoading ?
+                              <ActivityIndicator />
+                            :
+                              <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+                                  Crear método de pago
+                              </Text>
+                        }
                     </Button>
                   </View>
                 </View>
               </Form>
-            {/* </ScrollView> */}
         </View>
     </SlidingUpPanel>
   );
@@ -237,4 +217,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SlidingPanelAddress;
+export default SlidingPanelCreatePaymentMethod;

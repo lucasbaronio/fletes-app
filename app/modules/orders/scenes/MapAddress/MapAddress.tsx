@@ -26,7 +26,7 @@ type MyProps = {
     setOrderDestinationAddress: (data, onSuccess) => void,
     setOrderDate: (data, onSuccess) => void,
     getOrdersInfo: (onSuccess, onError) => void,
-    isLoading: boolean,
+    isLoadingNext: boolean,
     navigation: any,
 }
 type MyState = {
@@ -101,10 +101,6 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
         const val4 = isNotEmpty(address.destinationAddress.streetNumber, () => {
             showToast(ERROR_EMPTY_STREET_NUMBER_DESTINATION);
         });
-        // Falta validar que la fecha no sea vacio
-        // const val5 = isNotEmpty(address.destinationAddress.streetNumber, () => {
-        //     showToast(ERROR_EMPTY_STREET_NUMBER_DESTINATION);
-        // });
         
         if (val1 && val2 && val3 && val4) {
             const { orderOriginAddress, orderDestinationAddress } = this.state;
@@ -139,6 +135,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     }
 
     render() {
+        const { isLoadingNext } = this.props;
         const { orderOriginAddress, orderDestinationAddress, isLoading } = this.state;
         
         return (
@@ -211,6 +208,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                     
                 </MapView>
                 <SlidingPanelDateAddress 
+                    isLoading={isLoadingNext}
                     onNextScreen={this.onNextScreen}/>
             </View>
         );
@@ -220,6 +218,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
 function mapStateToProps(state, props) {
     return {
         originAddress: state.ordersReducer.createOrder.originAddress,
+        isLoadingNext: state.ordersReducer.isLoading,
     }
 }
 

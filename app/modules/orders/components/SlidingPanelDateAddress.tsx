@@ -2,7 +2,7 @@ import { Accordion, Button, Form, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Platform, Animated, StyleSheet,
-  useWindowDimensions, View,
+  useWindowDimensions, View, ActivityIndicator,
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import AddressForm from './AddressForm';
@@ -14,8 +14,9 @@ const ios = Platform.OS === 'ios';
 
 type MyProps = {
   onNextScreen: (address, date) => void,
+  isLoading: boolean,
 }
-const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen }) => {
+const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, isLoading }) => {
   const deviceHeight = useWindowDimensions().height;
   const deviceWidth = useWindowDimensions().width;
   const draggableRange = {
@@ -32,11 +33,11 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [atTop, setAtTop] = useState(false);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  const [streetNameOrigin, setStreetNameOrigin] = useState('');
-  const [streetNumberOrigin, setStreetNumberOrigin] = useState('');
+  const [streetNameOrigin, setStreetNameOrigin] = useState('Vazquez Ledesma');
+  const [streetNumberOrigin, setStreetNumberOrigin] = useState('2983');
   const [doorNumberOrigin, setDoorNumberOrigin] = useState('');
-  const [streetNameDestination, setStreetNameDestination] = useState('');
-  const [streetNumberDestination, setStreetNumberDestination] = useState('');
+  const [streetNameDestination, setStreetNameDestination] = useState('18 de Julio');
+  const [streetNumberDestination, setStreetNumberDestination] = useState('1214');
   const [doorNumberDestination, setDoorNumberDestination] = useState('');
   const [dateOrder, setDateOrder] = useState<string>(moment(new Date()).format("YYYYMMDDHHmm"));
 
@@ -191,9 +192,14 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen })
                         doorNumber: doorNumberDestination 
                       },
                     }, dateOrder)}>
-                      <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
-                          Siguiente
-                      </Text>
+                      {
+                          isLoading ?
+                            <ActivityIndicator />
+                          :
+                          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+                            Continuar
+                          </Text>
+                      }
                   </Button>
                 </View>
               </Form>

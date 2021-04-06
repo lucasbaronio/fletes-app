@@ -7,7 +7,6 @@ import { actions as orders } from "../../index";
 const { setOrderVehicleType, setOrderExtraOptions } = orders;
 
 import styles from './styles';
-import { showToast, showToastLoading } from '../../../../components/Toast';
 import { FlatGrid } from 'react-native-super-grid';
 import SlidingPanelVehicleType from '../../components/SlidingPanelVehicleType';
 
@@ -16,12 +15,11 @@ type MyProps = {
     setOrderExtraOptions: (extraOptionsIds) => void,
     vehicleTypes: any,
     extraOptions: any,
-    isLoading: boolean,
+    isLoadingNext: boolean,
     navigation: any,
 }
 type MyState = {
     error: string,
-    isLoading: boolean,
     vehicleTypeSelected: {
         name: string,
         open: boolean,
@@ -38,7 +36,6 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
-            isLoading: true,
             // @ts-ignore
             vehicleTypeSelected: null,
             showSlidingPanel: false,
@@ -50,7 +47,7 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
         setOrderVehicleType(vehicleType);
         const extraOptions = this.getExtraOptionsId(extraOptionsSelected);
         setOrderExtraOptions(extraOptions);
-        // navigation.navigate('MapAddressDestination');
+        navigation.navigate('PaymentMethod');
     }
 
     getExtraOptionsId = (extraOptionsSelected) => {
@@ -63,22 +60,14 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
         return extraOptionsIds;
     }
 
-    // onSuccess = () => {
-    //     const { navigation } = this.props;
-    //     // navigation.navigate('MapAddressDestination');
-    // }
-
-    // onError = (error) => {
-    //     this.setState({ error });
-    //     showToast(this.state.error);
-    // }
-
     render() {
-        const { vehicleTypes, extraOptions } = this.props;
+        const { vehicleTypes, extraOptions, isLoadingNext } = this.props;
 
         return (
             <View style={styles.container}>
                 <FlatGrid
+                    keyExtractor={(item, rowItemIndex) => rowItemIndex.toString()}
+                    // keyExtractor={item => item.vehicleTypeId}
                     itemDimension={130}
                     data={vehicleTypes}
                     style={styles.gridView}
@@ -104,9 +93,8 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
                     />
                 
                 <SlidingPanelVehicleType 
-                    // ref="slidingPanelVehicleType"
+                    isLoading={isLoadingNext}
                     forwardRef={c => { this.slidingPanelVehicleType = c }}
-                    // vehicleType={vehicleTypeSelected}
                     extraOptions={extraOptions}
                     onNextScreen={this.onNextScreen}/>
             </View>
@@ -118,6 +106,7 @@ function mapStateToProps(state, props) {
     return {
         vehicleTypes: state.ordersReducer.orderInfo.vehicleTypes,
         extraOptions: state.ordersReducer.orderInfo.extraOptions,
+        isLoadingNext: state.ordersReducer.isLoading,
     }
 }
 

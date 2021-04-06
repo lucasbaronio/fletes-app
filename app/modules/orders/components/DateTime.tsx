@@ -4,6 +4,7 @@ import { H1, Button, Text, Icon, H3 } from 'native-base';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from "moment";
 import 'moment/min/locales';
+import { displayDate } from '../utils/utils';
 
 type MyProps = {
     dateOrder: string,
@@ -49,17 +50,17 @@ export default class DateTime extends Component<MyProps, MyState> {
         this.setState({ now: isNow })
     };
 
-    displayDate = () => {
-        const { date } = this.state;
-        const dateMoment = moment(date);
-        const now = moment(new Date());
-        const diff = now.diff(dateMoment, 'days');
-        if (diff > 6 || diff < -6) {
-            return moment(date).format('LLLL');
-        } else {
-            return moment(date).calendar();
-        }
-    }
+    // displayDate = () => {
+    //     const { date } = this.state;
+    //     const dateMoment = moment(date);
+    //     const now = moment(new Date());
+    //     const diff = now.diff(dateMoment, 'days');
+    //     if (diff > 6 || diff < -6) {
+    //         return moment(date).format('LLLL');
+    //     } else {
+    //         return moment(date).calendar();
+    //     }
+    // }
 
     render() {
         const { visible, date, now } = this.state;
@@ -83,7 +84,7 @@ export default class DateTime extends Component<MyProps, MyState> {
                 </View>
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                     <Text>{now ? 'El pedido es para ahora:' : 'El pedido va a ser programado para el:'}</Text>
-                    <H1 style={{ padding: 20, textAlign: 'center' }}>{this.displayDate()}</H1>
+                    <H1 style={{ padding: 20, textAlign: 'center' }}>{displayDate(date)}</H1>
                 </View>
                 <DateTimePickerModal
                     date={date}

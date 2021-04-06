@@ -1,8 +1,5 @@
-import { deleteMany } from '../secureStore';
 import * as t from './actionTypes';
 import * as api from './api';
-
-// import { AsyncStorage } from "react-native";
 
 export const setOrderOriginAddress = (originAddress, successCB) => {
     return (dispatch) => {
@@ -51,8 +48,24 @@ export const setOrderExtraOptions = (extraOptions) => {
     };
 }
 
-export const addOrderPaymentMethid = (paymentMethod) => {
+export const setOrderPaymentMethod = (paymentMethod, successCB) => {
     return (dispatch) => {
         dispatch({type: t.ORDER_PAYMENT_METHOD, data: { paymentMethod }});
+        successCB();
+    };
+}
+
+export const createFinalOrder = (createOrder, successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.createOrder(createOrder, (isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                dispatch({type: t.ORDER_CREATE_ORDER, data});
+                successCB();
+            }
+            else if (error) errorCB(error)
+        });
     };
 }

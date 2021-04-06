@@ -3,6 +3,7 @@ import { deleteMany, saveMany } from '../secureStore';
 import * as t from './actionTypes';
 
 let initialState = { 
+    isLoading: false,
     createOrder: {
         originAddress: {
             streetName: '',
@@ -13,7 +14,7 @@ let initialState = {
                 longitude: null,
             }
         },
-        destinationAdderss: {
+        destinationAddress: {
             streetName: '',
             streetNumber: '',
             doorNumber: '',
@@ -35,8 +36,11 @@ let initialState = {
 
 const ordersReducer = (state = initialState, action) => {
     console.log(action.type);
-    console.log(state);
     switch (action.type) {
+        case t.LOADING: {
+            return {...state, isLoading: !state.isLoading };
+        }
+        
         case t.ORDER_ORIGIN_ADDRESS: {
             const { originAddress } = action.data;
 
@@ -77,7 +81,7 @@ const ordersReducer = (state = initialState, action) => {
         case t.ORDER_PAYMENT_METHOD: {
             const { paymentMethod } = action.data;
 
-            return { ...state, createOrder: { ...state.createOrder, paymentMethod } };
+            return { ...state, createOrder: { ...state.createOrder, paymentMethodId: paymentMethod.id } };
         }
 
         default:

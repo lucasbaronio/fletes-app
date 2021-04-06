@@ -2,18 +2,19 @@ import { Body, Button, Card, CardItem, CheckBox, Form, H1, H2, H3, Icon, Input, 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Platform, Animated, StyleSheet,
-  useWindowDimensions, View, Image, SafeAreaView, ScrollView
+  useWindowDimensions, View, Image, SafeAreaView, ScrollView, ActivityIndicator
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 
 const ios = Platform.OS === 'ios';
 
 type MyProps = {
-  onNextScreen: (vehicleType, extraOptionsSelected) => void,
+  onNextScreen: (address, extraOptionsSelected) => void,
   forwardRef: any,
   extraOptions: any,
+  isLoading: boolean,
 }
-const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScreen, forwardRef, extraOptions }) => {
+const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScreen, forwardRef, extraOptions, isLoading }) => {
   const deviceHeight = useWindowDimensions().height;
   const deviceWidth = useWindowDimensions().width;
   const draggableRange = {
@@ -162,9 +163,14 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
               // @ts-ignore
               style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
               onPress={() => onNextScreen(vehicleType, extraOptionsSelected)}>
-                <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
-                    Siguiente
-                </Text>
+                {
+                  isLoading ?
+                    <ActivityIndicator />
+                  :
+                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+                      Continuar
+                    </Text>
+                }
             </Button>
           </View>
         </View>

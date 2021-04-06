@@ -7,6 +7,8 @@ import { Button, Icon } from 'native-base';
 import MapAddressDestination from '../modules/orders/scenes/MapAddressDestination/MapAddressDestination';
 import VehicleTypesGrid from '../modules/orders/scenes/VehicleTypesGrid/VehicleTypesGrid';
 import MapAddress from '../modules/orders/scenes/MapAddress/MapAddress';
+import PaymentMethod from '../modules/orders/scenes/PaymentMethod/PaymentMethod';
+import CreateOrderDetails from '../modules/orders/scenes/CreateOrderDetails/CreateOrderDetails';
 
 // import { actions as auth } from "../modules/auth/index"
 // const { logOut } = auth;
@@ -69,11 +71,25 @@ function HomeRoutes(props) {
                 })}
             />
             <HomeStack.Screen 
+                name="PaymentMethod" 
+                component={PaymentMethod} 
+                options={({ navigation }) => ({
+                    title: 'Metodo de pago',
+                })}
+            />
+            <HomeStack.Screen 
+                name="CreateOrderDetails" 
+                component={CreateOrderDetails} 
+                options={({ navigation }) => ({
+                    title: 'Mi Pedido',
+                })}
+            />
+            {/* <HomeStack.Screen 
                 name="AddressSearchBar" 
                 component={AddressSearchBar} 
                 options={{
                     headerShown: true,
-                }} />
+                }} /> */}
         </HomeStack.Navigator>
     )
 }
