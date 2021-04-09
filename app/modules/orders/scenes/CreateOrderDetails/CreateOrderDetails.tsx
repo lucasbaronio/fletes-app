@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { View, Image, FlatList, SafeAreaView, ScrollView, SectionList } from 'react-native';
-import { Body, Button, CheckBox, ListItem, Separator, Text } from 'native-base';
+import { View, SafeAreaView, SectionList } from 'react-native';
+import { Button, Text } from 'native-base';
 
 import { actions as orders } from "../../index";
 const { setOrderPaymentMethod, createFinalOrder } = orders;
@@ -9,8 +9,8 @@ import { actions as users } from "../../../users/index";
 const { getPaymentMethod, createPaymentMethod } = users;
 
 import styles from './styles';
-import { showToast, showToastLoading } from '../../../../components/Toast';
-import { displayDateFromFormat } from '../../utils/utils';
+import { showToast } from '../../../../components/Toast';
+import { displayDateFromFormat, displayDate } from '../../utils/utils';
 import { windowWidth } from '../../../../styles/theme';
 
 type MyProps = {
@@ -50,7 +50,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
     componentDidMount() {
         const { totalPricePerHour } = this.state;
         const { createOrder, paymentMethods } = this.props;
-        const { originAddress, destinationAddress, date, paymentMethodId } = createOrder;
+        const { originAddress, destinationAddress, originAt, paymentMethodId } = createOrder;
 
         const extraOptionsList = this.getExtraOptions();
         const extraOptionsWithData = this.getExtraOptionsList(extraOptionsList);
@@ -72,7 +72,8 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                 title: "Detalle de la entrega",
                 data: [{
                     subtitle: 'Fecha y hora transportista en Origen',
-                    value: displayDateFromFormat(date, 'YYYYMMDDHHmm')
+                    // value: displayDateFromFormat(date, 'YYYYMMDDHHmm')
+                    value: displayDate(originAt)
                 },{
                     subtitle: 'Método de pago',
                     value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`

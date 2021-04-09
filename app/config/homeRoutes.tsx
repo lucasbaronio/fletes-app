@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
-import MapAddressOrigin from '../modules/orders/scenes/MapAddressOrigin/MapAddressOrigin';
-import AddressSearchBar from '../modules/orders/components/AddressSearchBar';
+// import MapAddressOrigin from '../modules/orders/scenes/MapAddressOrigin/MapAddressOrigin';
+// import MapAddressDestination from '../modules/orders/scenes/MapAddressDestination/MapAddressDestination';
+// import AddressSearchBar from '../modules/orders/components/AddressSearchBar';
 import { Button, Icon } from 'native-base';
-import MapAddressDestination from '../modules/orders/scenes/MapAddressDestination/MapAddressDestination';
 import VehicleTypesGrid from '../modules/orders/scenes/VehicleTypesGrid/VehicleTypesGrid';
 import MapAddress from '../modules/orders/scenes/MapAddress/MapAddress';
 import PaymentMethod from '../modules/orders/scenes/PaymentMethod/PaymentMethod';

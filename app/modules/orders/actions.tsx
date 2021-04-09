@@ -30,9 +30,9 @@ export const getOrdersInfo = (successCB, errorCB) => {
     };
 }
 
-export const setOrderDate = (date) => {
+export const setOrderDate = (originAt) => {
     return (dispatch) => {
-        dispatch({type: t.ORDER_DATE, data: { date }});
+        dispatch({type: t.ORDER_DATE, data: { originAt }});
     };
 }
 
@@ -58,6 +58,7 @@ export const setOrderPaymentMethod = (paymentMethod, successCB) => {
 export const createFinalOrder = (createOrder, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
+        console.log(createOrder);
         api.createOrder(createOrder, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {

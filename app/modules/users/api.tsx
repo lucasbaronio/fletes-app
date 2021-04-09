@@ -13,7 +13,7 @@ export const createPaymentMethod = async (paymentMethod, callback) => {
     const data = {
         data: {
             ...paymentMethod,
-            id: Math.floor(Math.random() * (10000 - 10) ) + 10,
+            id: Math.floor(Math.random() * (300000 - 200000) ) + 200000,
             finalNumbers: Math.floor(Math.random() * (9999 - 1000) ) + 1000,
             default: false,
         }
@@ -28,19 +28,19 @@ export const getPaymentMethod = async (callback) => {
         data: {
             paymentMethods: [
                 {
-                    id: 1,
+                    id: 100001,
                     finalNumbers: 1234,
                     exp: '05/23',
                     default: true,
                 },
                 {
-                    id: 2,
+                    id: 100002,
                     finalNumbers: 4321,
                     exp: '01/22',
                     default: false,
                 },
                 {
-                    id: 3,
+                    id: 100003,
                     finalNumbers: 6789,
                     exp: '09/24',
                     default: false,

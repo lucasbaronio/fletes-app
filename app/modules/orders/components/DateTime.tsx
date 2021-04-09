@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { H1, Button, Text, Icon, H3 } from 'native-base';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import * as Localization from 'expo-localization';
 import moment from "moment";
 import 'moment/min/locales';
-import { displayDate } from '../utils/utils';
+import { displayDate, currentDate, dateToMoment } from '../utils/utils';
 
 type MyProps = {
     dateOrder: string,
@@ -27,9 +28,10 @@ export default class DateTime extends Component<MyProps, MyState> {
     }
 
     componentDidMount() {
-        moment.locale('es');
+        // console.log(Localization.locale)
+        moment.locale(Localization.locale);
         const { dateOrder } = this.props;
-        const date = new Date(moment(dateOrder, "YYYYMMDDHHmm").format());
+        const date = new Date(moment(dateOrder).format());
         this.setState({ date });
     }
 
@@ -44,8 +46,9 @@ export default class DateTime extends Component<MyProps, MyState> {
     handleConfirm = (date, isNow) => {
         this.setState({ date });
         const { onSetDateOrder } = this.props;
-        const dateNumber = moment(date).format("YYYYMMDDHHmm");
-        onSetDateOrder(dateNumber);
+        // const dateNumber = moment(date).format("YYYYMMDDHHmm");
+        // const dateFormat = moment(date).format()
+        onSetDateOrder(dateToMoment(date));
         this.hideDatePicker();
         this.setState({ now: isNow })
     };
@@ -78,7 +81,7 @@ export default class DateTime extends Component<MyProps, MyState> {
                     <Button 
                         info={!now}
                         primary={now}
-                        onPress={() => this.handleConfirm(new Date(), true)} >
+                        onPress={() => this.handleConfirm(currentDate(), true)} >
                         <Text>Ahora</Text>
                     </Button>
                 </View>
@@ -94,7 +97,7 @@ export default class DateTime extends Component<MyProps, MyState> {
                     minimumDate={new Date()}
                     minuteInterval={5}
                     timeZoneOffsetInMinutes={-180}
-                    locale="en_GB"
+                    locale={Localization.locale}
                     is24Hour={true}
                     isVisible={visible}
                     mode='datetime'

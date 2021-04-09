@@ -23,7 +23,7 @@ let initialState = {
                 longitude: null,
             }
         },
-        date: null,
+        originAt: null,
         vehicleTypeId: null,
         extraOptions: [],
         paymentMethodId: null,
@@ -60,10 +60,10 @@ const ordersReducer = (state = initialState, action) => {
         }
 
         case t.ORDER_DATE: {
-            const { date } = action.data;
-            console.log(date)
+            const { originAt } = action.data;
+            console.log(originAt);
 
-            return { ...state, createOrder: { ...state.createOrder, date } };
+            return { ...state, createOrder: { ...state.createOrder, originAt } };
         }
 
         case t.ORDER_VEHICLE_TYPE: {

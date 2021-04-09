@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, Text, View } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-// import Map from '../modules/Map';
-import MapAddressOrigin from '../modules/orders/scenes/MapAddressOrigin/MapAddressOrigin';
 import { isLargeScreen } from "../styles/theme";
 
 import { actions as auth } from "../modules/auth/index"
-import { Button } from 'native-base';
 import HomeRoutes from './homeRoutes';
 const { logOut } = auth;
 
@@ -37,17 +34,17 @@ function RouterLogged({ logOut }) {
                 )}}
         >
             <Drawer.Screen 
-                name="Home" 
+                name="Crear Pedido" 
                 component={HomeRoutes} 
                 options={{ 
                     headerShown: false,
                 }} />
-            <Drawer.Screen 
-                name="Details" 
-                component={DetailsScreen} 
+            {/* <Drawer.Screen 
+                name="Pedidos activos" 
+                component={ActiveUserOrders} 
                 options={{
                     headerShown: true,
-                }} />
+                }} /> */}
             {/* <Drawer.Screen 
                 name="LogOut" 
                 component={LogOutScreen} 
@@ -87,19 +84,19 @@ export default connect(mapStateToProps, { logOut })(RouterLogged);;
 
 // const LogOutScreen =  connect(mapStateToProps, { logOut })(LogOut);
 
-function DetailsScreen() {
-    return (
-      <View style={styles.container}>
-        <Text>Details Screen</Text>
-      </View>
-    );
-}
+// function DetailsScreen() {
+//     return (
+//       <View style={styles.container}>
+//         <Text>Details Screen</Text>
+//       </View>
+//     );
+// }
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }
-});
+// const styles = StyleSheet.create({
+//     container: {
+//       flex: 1,
+//       flexDirection: 'row',
+//       alignItems: 'center',
+//       justifyContent: 'center',
+//     }
+// });

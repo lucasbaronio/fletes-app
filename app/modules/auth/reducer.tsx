@@ -12,7 +12,6 @@ let initialState = {
 
 const authReducer = (state = initialState, action) => {
     console.log(action.type);
-    console.log(state);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };

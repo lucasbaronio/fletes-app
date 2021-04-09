@@ -9,6 +9,7 @@ import AddressForm from './AddressForm';
 import DateTime from './DateTime';
 import moment from "moment";
 import 'moment/min/locales';
+import { currentDate } from '../utils/utils';
 
 const ios = Platform.OS === 'ios';
 
@@ -19,6 +20,7 @@ type MyProps = {
 const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, isLoading }) => {
   const deviceHeight = useWindowDimensions().height;
   const deviceWidth = useWindowDimensions().width;
+  // moment.locale(Localization.locale);
   const draggableRange = {
     // top: deviceHeight * 0.9,
     top: deviceHeight * 0.97,
@@ -33,13 +35,19 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [atTop, setAtTop] = useState(false);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  const [streetNameOrigin, setStreetNameOrigin] = useState('Vazquez Ledesma');
-  const [streetNumberOrigin, setStreetNumberOrigin] = useState('2983');
+  // const [streetNameOrigin, setStreetNameOrigin] = useState('Vazquez Ledesma');
+  // const [streetNumberOrigin, setStreetNumberOrigin] = useState('2983');
+  // const [doorNumberOrigin, setDoorNumberOrigin] = useState('4C');
+  // const [streetNameDestination, setStreetNameDestination] = useState('18 de Julio');
+  // const [streetNumberDestination, setStreetNumberDestination] = useState('1214');
+  // const [doorNumberDestination, setDoorNumberDestination] = useState('3B');
+  const [streetNameOrigin, setStreetNameOrigin] = useState('');
+  const [streetNumberOrigin, setStreetNumberOrigin] = useState('');
   const [doorNumberOrigin, setDoorNumberOrigin] = useState('');
-  const [streetNameDestination, setStreetNameDestination] = useState('18 de Julio');
-  const [streetNumberDestination, setStreetNumberDestination] = useState('1214');
+  const [streetNameDestination, setStreetNameDestination] = useState('');
+  const [streetNumberDestination, setStreetNumberDestination] = useState('');
   const [doorNumberDestination, setDoorNumberDestination] = useState('');
-  const [dateOrder, setDateOrder] = useState<string>(moment(new Date()).format("YYYYMMDDHHmm"));
+  const [dateOrder, setDateOrder] = useState<string>(currentDate());
 
   const dataArray = [
     { title: "Dirección Origen 🔴", content: "origin" },

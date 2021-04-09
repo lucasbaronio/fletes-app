@@ -20,6 +20,7 @@ import {
 import { isNotEmpty } from '../../utils/validate';
 import MapViewDirections from 'react-native-maps-directions';
 import SlidingPanelDateAddress from '../../components/SlidingPanelDateAddress';
+import { dateToBackend } from '../../utils/utils';
 
 type MyProps = {
     setOrderOriginAddress: (data, onSuccess) => void,
@@ -119,7 +120,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                     longitude: orderDestinationAddress.longitude,
                 }
             }, () => {});
-            setOrderDate(date, () => {});
+            setOrderDate(dateToBackend(date), () => {});
             getOrdersInfo(this.onSuccess, this.onError);
         }
     }
