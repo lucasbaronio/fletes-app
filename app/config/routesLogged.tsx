@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { isLargeScreen } from "../styles/theme";
 
 import { actions as auth } from "../modules/auth/index"
 import HomeRoutes from './homeRoutes';
+import ActiveUserOrders from '../modules/userOrders/scenes/ActiveUserOrders/ActiveUserOrders';
 const { logOut } = auth;
 
 const Drawer = createDrawerNavigator();
@@ -13,7 +13,7 @@ const Drawer = createDrawerNavigator();
 function RouterLogged({ logOut }) {
     return (
         <Drawer.Navigator 
-            initialRouteName="Home"
+            initialRouteName="Crear Pedido"
             // openByDefault
             drawerType={isLargeScreen ? 'permanent' : 'back'}
             drawerStyle={isLargeScreen ? null : { width: '80%' }}
@@ -39,12 +39,12 @@ function RouterLogged({ logOut }) {
                 options={{ 
                     headerShown: false,
                 }} />
-            {/* <Drawer.Screen 
+            <Drawer.Screen 
                 name="Pedidos activos" 
                 component={ActiveUserOrders} 
                 options={{
                     headerShown: true,
-                }} /> */}
+                }} />
             {/* <Drawer.Screen 
                 name="LogOut" 
                 component={LogOutScreen} 

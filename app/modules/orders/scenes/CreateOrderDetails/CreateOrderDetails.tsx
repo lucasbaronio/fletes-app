@@ -10,8 +10,7 @@ const { getPaymentMethod, createPaymentMethod } = users;
 
 import styles from './styles';
 import { showToast } from '../../../../components/Toast';
-import { displayDateFromFormat, displayDate } from '../../utils/utils';
-import { windowWidth } from '../../../../styles/theme';
+import { displayDate } from '../../utils/utils';
 
 type MyProps = {
     getPaymentMethod: (successCB, errorCB) => void,
@@ -61,10 +60,10 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
             {
                 title: "Direcciones",
                 data: [{
-                    subtitle: 'Direccion origen',
+                    subtitle: 'Dirección origen',
                     value: `${originAddress.streetName} ${originAddress.streetNumber} / ${originAddress.doorNumber}`
                 },{
-                    subtitle: 'Direccion destino',
+                    subtitle: 'Dirección destino',
                     value: `${destinationAddress.streetName} ${destinationAddress.streetNumber} / ${destinationAddress.doorNumber}`
                 }]
               },
@@ -72,7 +71,6 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                 title: "Detalle de la entrega",
                 data: [{
                     subtitle: 'Fecha y hora transportista en Origen',
-                    // value: displayDateFromFormat(date, 'YYYYMMDDHHmm')
                     value: displayDate(originAt)
                 },{
                     subtitle: 'Método de pago',
@@ -127,11 +125,6 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
         });
     }
 
-    // onNextScreen = () => {
-    //     const { navigation } = this.props;
-    //     navigation.navigate('OrderDetails');
-    // }
-
     onCreateOrder = () => {
         const { createFinalOrder, createOrder } = this.props;
         createFinalOrder(createOrder, this.onSuccessCreateOrder, this.onError);
@@ -154,68 +147,67 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
             <SafeAreaView style={styles.container}>
                 <SectionList
                     ListHeaderComponent={
-                        <View style={{ flex: 1, flexDirection: 'column', backgroundColor: 'white', padding: 15 }}>
+                        <View style={styles.containerHeaderComponent}>
                             {
                                 vehicleType &&
-                                <View style={{ flex: 1, flexDirection: 'column', marginVertical: 5 }}>
-                                    <Text style={{ flex: 1, fontWeight: 'bold' }}>Tipo de vehículo:</Text>
-                                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5, marginLeft: 20 }}>
-                                        <Text style={{ flex: 1 }}>{vehicleType.name}</Text>
-                                        <Text style={{  }}>${vehicleType.pricePerHour} / hora</Text>
+                                <View style={styles.containerHeaderVehicleType}>
+                                    <Text style={styles.titleHeaderVehicleType}>Tipo de vehículo:</Text>
+                                    <View style={styles.subtitleHeaderVehicleType}>
+                                        <Text>{vehicleType.name}</Text>
+                                        <Text>${vehicleType.pricePerHour} / hora</Text>
                                     </View>
                                 </View>
                             }
-                                <View style={{ flex: 1, flexDirection: 'column', marginVertical: 5 }}>
-                                    <Text style={{ flex: 1, fontWeight: 'bold' }}>Extras:</Text>
+                                <View style={styles.containerHeaderExtraOptions}>
+                                    <Text style={styles.titleHeaderExtraOptions}>Extras:</Text>
                                     {
                                         (extraOptions || []).map((item) => (
-                                            <View key={item.orderAvailableExtraOptionId} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5, marginLeft: 20 }}>
-                                                <Text style={{ flex: 1 }}>{item.text}</Text>
-                                                <Text style={{  }}>${item.price}</Text>
+                                            <View 
+                                                key={item.orderAvailableExtraOptionId} 
+                                                style={styles.subtitleHeaderExtraOptions}>
+                                                <Text>{item.text}</Text>
+                                                <Text>${item.price}</Text>
                                             </View>
                                         ))
                                     }
                                 </View>
-                            <View style={{ width: '100%', height: 10, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>
-                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5, marginTop: 20 }}>
-                                <Text style={{ flex: 1, fontWeight: 'bold', fontSize: 18 }}>Total fijo</Text>
-                                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>${totalPriceFixed}</Text>
+                            <View style={styles.separatorHeader}></View>
+                            <View style={[styles.containerTotalHeader,{ marginTop: 20 }]}>
+                                <Text style={styles.keyTextTotalHeader}>Total fijo</Text>
+                                <Text style={styles.valueTextTotalHeader}>${totalPriceFixed}</Text>
                             </View>
-                            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 }}>
-                                <Text style={{ flex: 1, fontWeight: 'bold', fontSize: 18 }}>Total por hora</Text>
-                                <Text style={{ fontWeight: 'bold', fontSize: 18 }}>${totalPricePerHour}</Text>
+                            <View style={styles.containerTotalHeader}>
+                                <Text style={styles.keyTextTotalHeader}>Total por hora</Text>
+                                <Text style={styles.valueTextTotalHeader}>${totalPricePerHour}</Text>
                             </View>
                         </View>
                     }
                     ListFooterComponent={
-                        <View style={{ flex: 1, marginVertical: 40 }}></View>
+                        <View style={styles.footer}></View>
                     }
-                    ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}
+                    ItemSeparatorComponent={() => <View style={styles.separator}></View>}
                     sections={data}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => {
                         return (
-                            <View style={{ flex: 1, flexDirection: 'column', marginHorizontal: 10, padding: 10, backgroundColor: 'white', borderRadius: 5 }}>
-                                <Text style={{ fontWeight: 'bold', marginBottom: 5 }}>{item.subtitle}</Text>
-                                <Text style={{ color: 'grey' }}>{item.value}</Text>
+                            <View style={styles.constinerSectionItem}>
+                                <Text style={styles.subtitleSectionItem}>{item.subtitle}</Text>
+                                <Text style={styles.valueSectionItem}>{item.value}</Text>
                             </View>
                         )
                     }}
                     renderSectionHeader={({ section: { title } }) => (
-                        <View style={{ paddingHorizontal: 20, paddingBottom: 15, paddingTop: 25, backgroundColor: 'whitesmoke', }}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{title}</Text>
+                        <View style={styles.containerSectionHeader}>
+                            <Text style={styles.textSectionHeader}>{title}</Text>
                         </View>
                     )}
                 />
-                <View style={[styles.button, { 
-                    bottom: 20,
-                    left: (windowWidth * 0.1) / 2
-                  }]}>
+                <View style={styles.containerButton}>
                     <Button 
                       // @ts-ignore
-                      style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
+                      style={styles.button}
                       onPress={this.onCreateOrder}>
-                        <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+                        <Text style={styles.textButton}>
                             Crear Pedido
                         </Text>
                     </Button>

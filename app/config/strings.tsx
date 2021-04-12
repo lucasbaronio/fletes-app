@@ -15,3 +15,12 @@ export const ERROR_EMPTY_STREET_NAME_ORIGIN = 'Debe ingresar el nombre de la cal
 export const ERROR_EMPTY_STREET_NUMBER_ORIGIN = 'Debe ingresar el número del domicilio de recogida';
 export const ERROR_EMPTY_STREET_NAME_DESTINATION = 'Debe ingresar el nombre de la calle de destino';
 export const ERROR_EMPTY_STREET_NUMBER_DESTINATION = 'Debe ingresar el número del domicilio de destino';
+
+export const ORDERS_SCENES_MAP_ADDRESS_TITLE = 'Por favor, arrastre los marcadores según el lugar de inicio (rojo) y destino (azul) del pedido.';
+export const ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION = 'Se necesita utilizar el mapa para poder utilizar la aplicación';
+export const ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_1 = 'Complete los datos con las direcciones que seleccionó en el mapa:';
+export const ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_2 = 'Y a continuación levante este panel hacia arriba.';
+
+export const ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1 = 'Capacidad de carga:';
+export const ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2 = 'Caja Abierta/Cerrada:';
+export const ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 = 'Opciones Extra:';

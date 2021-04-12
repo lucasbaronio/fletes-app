@@ -1,13 +1,12 @@
-import Constants from 'expo-constants';
-import { Body, Button, CheckBox, H2, H3, Icon, List, ListItem, Text } from 'native-base';
+import { Body, Button, Card, CardItem, CheckBox, Form, H1, H2, H3, Icon, Input, Item, List, ListItem, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
-  Animated, StyleSheet,
-  View, Image, ActivityIndicator
+  Platform, Animated, StyleSheet,
+  useWindowDimensions, View, Image, SafeAreaView, ScrollView, ActivityIndicator
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
-import { ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 } from '../../../config/strings';
-import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
+
+const ios = Platform.OS === 'ios';
 
 type MyProps = {
   onNextScreen: (address, extraOptionsSelected) => void,
@@ -16,13 +15,10 @@ type MyProps = {
   isLoading: boolean,
 }
 const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScreen, forwardRef, extraOptions, isLoading }) => {
-  const deviceHeight = screenSize.height;
-  const deviceWidth = screenSize.width;
-  const small = require('../../../../assets/vehicleType_chico.jpeg');
-  const regular = require('../../../../assets/vehicleType_mediano.jpeg');
-  const big = require('../../../../assets/vehicleType_grande.jpeg');
+  const deviceHeight = useWindowDimensions().height;
+  const deviceWidth = useWindowDimensions().width;
   const draggableRange = {
-    top: (deviceHeight - Constants.statusBarHeight) * 0.7,
+    top: deviceHeight * 0.7,
     bottom: 0
   };
 
@@ -58,7 +54,7 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
     panelRef.current.show();
   });
   
-  const PANEL_VELOCITY = isiOS ? 2 : 2.3;
+  const PANEL_VELOCITY = ios ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
     velocity: PANEL_VELOCITY,
     toValue: draggableRange.bottom
@@ -84,16 +80,6 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
 		return () => panelPositionVal.removeListener(slidingListener);
 	}, [panelPositionVal]);
 
-  const getVehicleTypeImage = (name) => {
-    if (name == 'chico') {
-        return small;
-    } else if (name == 'mediano') {
-        return regular;
-    } else {
-        return big;
-    }
-  }
-
   return (
     <SlidingUpPanel
         // @ts-ignore
@@ -101,31 +87,37 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
         animatedValue={panelPositionVal}
         draggableRange={draggableRange}
         snappingPoints={snappingPoints}
+        // backdropOpacity={}
         showBackdrop={true}
         height={deviceHeight}
+        // allowDragging={allowDragging}
         allowDragging={true}
         minimumDistanceThreshold={deviceHeight > 800 ? 50 : 30}
         // onMomentumDragEnd={onMomentumDragEnd}
         // onDragStart={onDragStart}
-        containerStyle={styles.slidingUpPanel}
+        containerStyle={{ zIndex: 10, elevation: 10, borderTopLeftRadius: 30, borderTopRightRadius: 30 }}
     >
         <View style={styles.panelContent}>
           <Button 
             transparent
-            style={styles.closeButton}
+            style={{ width: '100%', justifyContent: "flex-end" }}
             onPress={() => {
               // @ts-ignore
               panelRef.current.show(hideFullScreenPanelOptions);
             }}>
-              <Icon fontSize={iconSize.XXL} name='close-outline' />
+              <Icon fontSize={40} name='close-outline' />
           </Button>
 
-          <View style={styles.basicVehicleTypeInfo}>
+          <View style={{ width: '90%', flexDirection: 'row' }}>
             <View style={{ flex: 1 }}>
               <Image 
-                style={styles.imageVehicleType} 
+                style={{ width: 150, height: 90 }} 
                 resizeMode='contain'
-                source={getVehicleTypeImage(vehicleType.name)} />
+                source={vehicleType.name == 'chico' ?
+                    require('../../../../assets/vehicleType_chico.jpeg')
+                    :vehicleType.name == 'mediano' ?
+                    require('../../../../assets/vehicleType_mediano.jpeg')
+                    :require('../../../../assets/vehicleType_grande.jpeg')} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ marginBottom: 10 }}>Tipo: <H2>{vehicleType.name}</H2></Text>
@@ -133,27 +125,29 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
               <Text style={{ marginBottom: 10, marginStart: 30 }}>$ <H3>{vehicleType.pricePerHour}</H3> por hora</Text>
             </View>
           </View>
-          <View style={styles.moreVehicleTypeInfo}>
-            <View style={styles.moreVehicleTypeInfoItem}>
-              <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1}</Text>
-              <H3>600 Kg</H3>
-            </View>
-            <View style={styles.moreVehicleTypeInfoItem}>
-              <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2}</Text>
-              <H3>{vehicleType.open}pepe</H3>
+          <View style={{ width: '90%', marginVertical: 5 }}>
+            <View style={{ flexDirection: 'column' }}>
+              <View style={{ marginVertical: 3, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text>Capacidad de carga: </Text>
+                <H3>600 Kg</H3>
+              </View>
+              <View style={{ marginVertical: 3, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text>Caja Abierta/Cerrada: </Text>
+                <H3>{vehicleType.open}pepe</H3>
+              </View>
             </View>
           </View>
-          <View style={styles.extraOptionsVehicleType}>
-            <Text style={{ marginBottom: 5 }}>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3}</Text>
+          <View style={{ flex: 1, width: '90%'}}>
+            <Text style={{ marginBottom: 5 }}>Opciones Extra:</Text>
             <List
-              style={[styles.listExtraOptionsVehicleType, { maxHeight: draggableRange.top * 0.3 }]}
+              style={{ flex: 1, maxHeight: draggableRange.top * 0.3, borderRadius: 5, borderWidth: 1 }}
               dataArray={extraOptionsSelected}
               renderRow={(extra) =>
                 <ListItem 
                   key={extra.orderAvailableExtraOptionId}
                   onPress={() => onAddOrRemoveExtraOption(extra)}>
                   <CheckBox checked={extra.selected} />
-                  <Body style={styles.listItemExtraOptionsVehicleType}>
+                  <Body style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Text>{extra.text}:</Text>
                     <Text><H3>+</H3> $<H3>{extra.price}</H3></Text>
                   </Body>
@@ -161,19 +155,19 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
               }>
             </List>
           </View>
-          <View style={[styles.containerbutton, { 
+          <View style={[styles.button, { 
             bottom: (deviceHeight - draggableRange.top) + 20,
-            left: (deviceWidth * 0.1) / 2
+            left: (deviceWidth * 0.1) / 2,
           }]}>
             <Button 
               // @ts-ignore
-              style={styles.button}
+              style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
               onPress={() => onNextScreen(vehicleType, extraOptionsSelected)}>
                 {
                   isLoading ?
                     <ActivityIndicator />
                   :
-                  <Text style={styles.textButton}>
+                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
                       Continuar
                     </Text>
                 }
@@ -195,69 +189,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30, 
     borderTopRightRadius: 30,
   },
-  slidingUpPanel: {
-    zIndex: 10, 
-    elevation: 10, 
-    borderTopLeftRadius: 30, 
-    borderTopRightRadius: 30
-  },
   viewText: {
     paddingVertical: 10,
   },
-  closeButton: { 
-    width: '100%', 
-    justifyContent: "flex-end",
-  },
-  basicVehicleTypeInfo:{
-    width: '90%', 
-    flexDirection: 'row',
-  },
-  imageVehicleType: {
-    width: 150, 
-    height: 90
-  },
-  moreVehicleTypeInfo: {
-    width: '90%', 
-    marginVertical: 5,
-    flexDirection: 'column',
-  },
-  moreVehicleTypeInfoItem: {
-    marginVertical: 3, 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center'
-  },
-  extraOptionsVehicleType: {
-    flex: 1, 
-    width: '90%'
-  },
-  listExtraOptionsVehicleType: {
-    flex: 1, 
-    borderRadius: 5, 
-    borderWidth: 1
-  },
-  listItemExtraOptionsVehicleType: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center'
-  },
-  containerbutton: {
+  button: {
     zIndex: 9,
     elevation: 7,
     position: 'absolute',
     flexDirection: 'row',
     width: '90%',
-  },
-  button: {
-    flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: "center"
-  },
-  textButton: {
-    color: color.white.white, 
-    fontSize: fontSize.XXL, 
-    fontWeight: fontWeight.L, 
-    textAlign: 'center'
   },
 });
 

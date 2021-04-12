@@ -1,11 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Alert, View } from 'react-native';
+import { Alert, SafeAreaView, View } from 'react-native';
 import { Text, Toast } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { MaterialIcons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 
 import { actions as orders } from "../../index";
 const { setOrderOriginAddress, setOrderDestinationAddress, setOrderDate, getOrdersInfo } = orders;
@@ -16,11 +17,15 @@ import {
     ERROR_EMPTY_STREET_NAME_ORIGIN, 
     ERROR_EMPTY_STREET_NUMBER_ORIGIN,
     ERROR_EMPTY_STREET_NAME_DESTINATION,
-    ERROR_EMPTY_STREET_NUMBER_DESTINATION } from '../../../../config/strings';
+    ERROR_EMPTY_STREET_NUMBER_DESTINATION, 
+    ORDERS_SCENES_MAP_ADDRESS_TITLE,
+    ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION} from '../../../../config/strings';
 import { isNotEmpty } from '../../utils/validate';
 import MapViewDirections from 'react-native-maps-directions';
 import SlidingPanelDateAddress from '../../components/SlidingPanelDateAddress';
 import { dateToBackend } from '../../utils/utils';
+import { API_KEY_GOOGLE } from '../../../../config/constants';
+import { color, iconSize } from '../../../../styles/theme';
 
 type MyProps = {
     setOrderOriginAddress: (data, onSuccess) => void,
@@ -61,7 +66,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     _getLocationAsync = async () => {
         let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
-            alert("Se necesita utilizar el mapa para poder utilizar la aplicación");
+            alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION);
             console.log('El permiso de ubicacion fue denegado');
         }
 
@@ -138,26 +143,31 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     render() {
         const { isLoadingNext } = this.props;
         const { orderOriginAddress, orderDestinationAddress, isLoading } = this.state;
-        
+
         return (
-            <View style={styles.container}>
+            <SafeAreaView style={styles.container}>
+                <StatusBar style="dark" />
                 <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
-                        Por favor, arrastre los marcadores segun el lugar de inicio (rojo) y destino (azul) del pedido.
+                        {ORDERS_SCENES_MAP_ADDRESS_TITLE}
                     </Text>
                 </View>
-                <View style={styles.floatButton}>
+                <View style={styles.mylocation}>
                     <MaterialIcons 
                         name='my-location'
-                        color='#000000'
-                        size={25}
+                        color={color.black.black}
+                        size={iconSize.XL}
                         onPress={() => { this.centrateMap() }} />
                 </View>
                 <MapView 
+                    // loadingEnabled={isLoading}
+                    // loadingBackgroundColor="black"
+                    // loadingIndicatorColor="white"
                     initialRegion={orderOriginAddress}
                     showsCompass={true}
                     rotateEnabled={true}
                     showsUserLocation={true}
+                    showsTraffic={true}
                     userLocationAnnotationTitle={'Mi ubicación'}
                     ref={(map) => {this.map = map}}
                     style={styles.mapStyle} >
@@ -174,44 +184,43 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                                     longitude: e.nativeEvent.coordinate.longitude,
                                 } })
                             }}
-                            pinColor="blue"
+                            pinColor={color.blue.steelBlue}
                             coordinate={orderDestinationAddress}
                             anchor={{ x: 0.35, y: 0.32}}
                             style={{ width: 10, height: 10 }} >
                             
                         </Marker>
-
-                    <Marker 
-                        draggable
-                        // image={require('../../../../../assets/driver.png')}
-                        onDragEnd = {(e) => {
-                            this.setState({ orderOriginAddress: {
-                                ...orderOriginAddress,
-                                latitude: e.nativeEvent.coordinate.latitude,
-                                longitude: e.nativeEvent.coordinate.longitude,
-                            } })
-                        }}
-                        pinColor="red"
-                        coordinate={orderOriginAddress}
-                        anchor={{ x: 0.35, y: 0.32}}
-                        style={{ width: 10, height: 10 }} >
-                        
-                    </Marker>
+                        <Marker 
+                            draggable
+                            // image={require('../../../../../assets/driver.png')}
+                            onDragEnd = {(e) => {
+                                this.setState({ orderOriginAddress: {
+                                    ...orderOriginAddress,
+                                    latitude: e.nativeEvent.coordinate.latitude,
+                                    longitude: e.nativeEvent.coordinate.longitude,
+                                } })
+                            }}
+                            pinColor={color.red.redTomato}
+                            coordinate={orderOriginAddress}
+                            anchor={{ x: 0.35, y: 0.32}}
+                            style={{ width: 10, height: 10 }} >
+                            
+                        </Marker>
                         <MapViewDirections
                             origin={orderOriginAddress}
                             destination={orderDestinationAddress}
-                            apikey={'AIzaSyAyv9pHdOrn__bmpDQbVXL41Hg6725qJmk'}
-                            region='UY'
+                            apikey={API_KEY_GOOGLE}
+                            // region='UY'
                             strokeWidth={3}
-                            strokeColor="hotpink"
-                        /></>
+                            strokeColor={color.green.greenLima} />
+                        </>
                     }
                     
                 </MapView>
                 <SlidingPanelDateAddress 
                     isLoading={isLoadingNext}
                     onNextScreen={this.onNextScreen}/>
-            </View>
+            </SafeAreaView>
         );
     }
 }

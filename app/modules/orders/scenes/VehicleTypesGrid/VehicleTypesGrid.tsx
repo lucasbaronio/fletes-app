@@ -10,6 +10,10 @@ import styles from './styles';
 import { FlatGrid } from 'react-native-super-grid';
 import SlidingPanelVehicleType from '../../components/SlidingPanelVehicleType';
 
+const small = require('../../../../../assets/vehicleType_chico.jpeg');
+const regular = require('../../../../../assets/vehicleType_mediano.jpeg');
+const big = require('../../../../../assets/vehicleType_grande.jpeg');
+
 type MyProps = {
     setOrderVehicleType: (vehicleType) => void,
     setOrderExtraOptions: (extraOptionsIds) => void,
@@ -60,6 +64,16 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
         return extraOptionsIds;
     }
 
+    getVehicleTypeImage = (name) => {
+        if (name == 'chico') {
+            return small;
+        } else if (name == 'mediano') {
+            return regular;
+        } else {
+            return big;
+        }
+    }
+
     render() {
         const { vehicleTypes, extraOptions, isLoadingNext } = this.props;
 
@@ -71,27 +85,19 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
                     itemDimension={130}
                     data={vehicleTypes}
                     style={styles.gridView}
-                    // staticDimension={300}
-                    // fixed
                     spacing={10}
                     renderItem={({ item }) => (
                         <TouchableOpacity 
                             onPress={() => { this.slidingPanelVehicleType(item) }}
-                            style={[styles.itemContainer, { backgroundColor: 'white' }]}>
+                            style={styles.itemContainer}>
                             <Image 
-                                style={{ width: 150, height: 90 }} 
+                                style={styles.itemImage} 
                                 resizeMode='contain'
-                                source={item.name == 'chico' ?
-                                    require('../../../../../assets/vehicleType_chico.jpeg')
-                                    :item.name == 'mediano' ?
-                                    require('../../../../../assets/vehicleType_mediano.jpeg')
-                                    :require('../../../../../assets/vehicleType_grande.jpeg')} />
+                                source={this.getVehicleTypeImage(item.name)} />
                             <Text style={styles.itemName}>{item.name}</Text>
                             <Text style={styles.itemCode}>$ {item.pricePerHour} por hora</Text>
                         </TouchableOpacity>
-                    )}
-                    />
-                
+                    )}/>
                 <SlidingPanelVehicleType 
                     isLoading={isLoadingNext}
                     forwardRef={c => { this.slidingPanelVehicleType = c }}

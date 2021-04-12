@@ -1,9 +1,10 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { color, fontSize, fontWeight } from '../../../../styles/theme';
 
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: color.white.white,
       flexDirection: 'column',
       justifyContent: 'space-between',
       alignItems: 'center'
@@ -16,23 +17,28 @@ export const styles = StyleSheet.create({
       justifyContent: 'flex-end',
       padding: 10,
       height: 150,
-      shadowColor: '#000000',
+      shadowColor: color.black.black,
       borderRadius: 5,
       zIndex: 9,
       elevation: 7,
       shadowRadius: 3,
       shadowOpacity: .6,
+      backgroundColor: color.white.white,
     },
     itemName: {
-      fontSize: 16,
-      color: 'black',
-      fontWeight: '600',
+      fontSize: fontSize.L,
+      color: color.black.black,
+      fontWeight: fontWeight.L,
     },
     itemCode: {
-      fontWeight: '600',
-      fontSize: 12,
-      color: 'black',
+      fontWeight: fontWeight.L,
+      fontSize: fontSize.S,
+      color: color.black.black,
     },
+    itemImage: {
+      width: 150, 
+      height: 90,
+    }
 });
 
 export default styles;

@@ -9,7 +9,7 @@ import { actions as users } from "../../../users/index";
 const { getPaymentMethod, createPaymentMethod } = users;
 
 import styles from './styles';
-import { windowWidth } from '../../../../styles/theme';
+// import { windowWidth } from '../../../../styles/theme';
 import { showToast, showToastLoading } from '../../../../components/Toast';
 import SlidingPanelCreatePaymentMethod from '../../components/SlidingPanelCreatePaymentMethod';
 
@@ -149,15 +149,12 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
                     }
                     keyExtractor={(item, index) => index.toString()}
                 />
-                <View style={[styles.button, { 
-                    bottom: 20,
-                    left: (windowWidth * 0.1) / 2
-                  }]}>
+                <View style={styles.containerButton}>
                     <Button 
                       // @ts-ignore
-                      style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
+                      style={styles.button}
                       onPress={this.onNextScreen}>
-                        <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+                        <Text style={styles.textButton}>
                             Ver detalle del Pedido
                         </Text>
                     </Button>

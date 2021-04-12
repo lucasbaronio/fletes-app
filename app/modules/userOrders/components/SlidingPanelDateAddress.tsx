@@ -1,27 +1,30 @@
 import { Accordion, Button, Form, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
-  Animated, StyleSheet,
-  View, ActivityIndicator,
+  Platform, Animated, StyleSheet,
+  useWindowDimensions, View, ActivityIndicator,
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
-import Constants from 'expo-constants';
 import AddressForm from './AddressForm';
 import DateTime from './DateTime';
+import moment from "moment";
+import 'moment/min/locales';
 import { currentDate } from '../utils/utils';
-import { color, fontSize, fontWeight, isiOS, screenSize } from '../../../styles/theme';
-import { ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_1, ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_2 } from '../../../config/strings';
+
+const ios = Platform.OS === 'ios';
 
 type MyProps = {
   onNextScreen: (address, date) => void,
   isLoading: boolean,
 }
 const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, isLoading }) => {
-  const deviceHeight = screenSize.height;
-  const deviceWidth = screenSize.width;
+  const deviceHeight = useWindowDimensions().height;
+  const deviceWidth = useWindowDimensions().width;
+  // moment.locale(Localization.locale);
   const draggableRange = {
-    top: deviceHeight - Constants.statusBarHeight,
-    bottom: deviceHeight * 0.13
+    // top: deviceHeight * 0.9,
+    top: deviceHeight * 0.97,
+    bottom: deviceHeight * 0.15
   };
 
   const snappingPoints = [
@@ -32,18 +35,18 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [atTop, setAtTop] = useState(false);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  const [streetNameOrigin, setStreetNameOrigin] = useState('Vazquez Ledesma');
-  const [streetNumberOrigin, setStreetNumberOrigin] = useState('2983');
-  const [doorNumberOrigin, setDoorNumberOrigin] = useState('4C');
-  const [streetNameDestination, setStreetNameDestination] = useState('18 de Julio');
-  const [streetNumberDestination, setStreetNumberDestination] = useState('1214');
-  const [doorNumberDestination, setDoorNumberDestination] = useState('3B');
-  // const [streetNameOrigin, setStreetNameOrigin] = useState('');
-  // const [streetNumberOrigin, setStreetNumberOrigin] = useState('');
-  // const [doorNumberOrigin, setDoorNumberOrigin] = useState('');
-  // const [streetNameDestination, setStreetNameDestination] = useState('');
-  // const [streetNumberDestination, setStreetNumberDestination] = useState('');
-  // const [doorNumberDestination, setDoorNumberDestination] = useState('');
+  // const [streetNameOrigin, setStreetNameOrigin] = useState('Vazquez Ledesma');
+  // const [streetNumberOrigin, setStreetNumberOrigin] = useState('2983');
+  // const [doorNumberOrigin, setDoorNumberOrigin] = useState('4C');
+  // const [streetNameDestination, setStreetNameDestination] = useState('18 de Julio');
+  // const [streetNumberDestination, setStreetNumberDestination] = useState('1214');
+  // const [doorNumberDestination, setDoorNumberDestination] = useState('3B');
+  const [streetNameOrigin, setStreetNameOrigin] = useState('');
+  const [streetNumberOrigin, setStreetNumberOrigin] = useState('');
+  const [doorNumberOrigin, setDoorNumberOrigin] = useState('');
+  const [streetNameDestination, setStreetNameDestination] = useState('');
+  const [streetNumberDestination, setStreetNumberDestination] = useState('');
+  const [doorNumberDestination, setDoorNumberDestination] = useState('');
   const [dateOrder, setDateOrder] = useState<string>(currentDate());
 
   const dataArray = [
@@ -52,7 +55,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
     { title: "Fecha y hora", content: "datetime" },
   ];
   
-  const PANEL_VELOCITY = isiOS ? 2 : 2.3;
+  const PANEL_VELOCITY = ios ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
     velocity: PANEL_VELOCITY,
     toValue: draggableRange.bottom
@@ -88,7 +91,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
         showBackdrop={true}
         height={deviceHeight}
         allowDragging={true}
-        containerStyle={styles.slidingUpPanel}
+        containerStyle={{ zIndex: 10, elevation: 10, borderTopLeftRadius: 30, borderTopRightRadius: 30 }}
     >
         <View style={styles.panelContent}>
               {
@@ -121,11 +124,11 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                   {
                     atTop ?
                     <Text style={{ textAlign: 'center' }}>
-                      {ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_1}
+                      Complete los datos con las direcciones que seleccionó en el mapa:
                     </Text>
                     : 
                     <Text style={{ textAlign: 'center' }}>
-                      {ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_2}
+                      Y a continuación levante este panel hacia arriba.
                     </Text>
                   }
                 </View>
@@ -137,15 +140,19 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                       expanded={[0]}
                       // expanded={true}
                       renderHeader={(item, expanded) => (
-                        <View style={styles.accordion}>
-                          <Text 
-                            // @ts-ignore
-                            style={{ fontWeight: fontWeight.L }}>
-                            {item.title}
+                        <View style={{
+                          flexDirection: "row",
+                          padding: 12,
+                          justifyContent: "space-between",
+                          alignItems: "center" ,
+                          backgroundColor: "#A9DAD6" }
+                        }>
+                          <Text style={{ fontWeight: "600" }}>
+                            {" "}{item.title}
                           </Text>
                           {expanded
-                            ? <Icon style={{ fontSize: fontSize.XL }} name="chevron-up-outline" />
-                            : <Icon style={{ fontSize: fontSize.XL }} name="chevron-down-outline" />}
+                            ? <Icon style={{ fontSize: 18 }} name="chevron-up-outline" />
+                            : <Icon style={{ fontSize: 18 }} name="chevron-down-outline" />}
                         </View>
                       )}
                       renderContent={(item: any) => (
@@ -174,13 +181,13 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                               }}/>
                       )} />
                 </View>
-                <View style={[styles.containerbutton, { 
+                <View style={[styles.button, { 
                   bottom: (deviceHeight - draggableRange.top) + 20,
                   left: (deviceWidth * 0.1) / 2
                 }]}>
                   <Button 
                     // @ts-ignore
-                    style={styles.button}
+                    style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}
                     onPress={() => onNextScreen({ 
                       originAddress: {
                         streetName: streetNameOrigin, 
@@ -197,7 +204,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                           isLoading ?
                             <ActivityIndicator />
                           :
-                          <Text style={styles.textButton}>
+                          <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
                             Continuar
                           </Text>
                       }
@@ -220,19 +227,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30, 
     borderTopRightRadius: 30,
   },
-  slidingUpPanel: {
-    zIndex: 10, 
-    elevation: 10, 
-    borderTopLeftRadius: 30, 
-    borderTopRightRadius: 30
-  },
-  accordion: {
-    flexDirection: "row",
-    padding: 12,
-    justifyContent: "space-between",
-    alignItems: "center" ,
-    backgroundColor: color.blue.lightBlue
-  },
   viewText: {
     paddingVertical: 5,
   },
@@ -240,23 +234,12 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '95%',
   },
-  containerbutton: {
+  button: {
     zIndex: 9,
     elevation: 7,
     position: 'absolute',
     flexDirection: 'row',
     width: '90%',
-  },
-  button: {
-    flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: "center"
-  },
-  textButton: {
-    color: color.white.white, 
-    fontSize: fontSize.XXL, 
-    fontWeight: fontWeight.L, 
-    textAlign: 'center'
   },
 });
 
