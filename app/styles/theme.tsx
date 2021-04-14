@@ -9,7 +9,6 @@ const color = {
     },
     grey: {
         lightGrey: '#D3D3D3',
-        // light_grey: "#eaeaea",
         slateGrey: '#708090',
     },
     black: {
@@ -17,7 +16,7 @@ const color = {
         light_black: "#414141",
     },
     white: {
-        white: "#ffffff",
+        white: "white",
         whitesmoke: 'whitesmoke',
     },
     red: {

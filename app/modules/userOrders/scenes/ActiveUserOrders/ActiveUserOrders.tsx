@@ -1,27 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, SafeAreaView, FlatList } from 'react-native';
+import { View, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
 import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 
 import { actions as orders } from "../../index";
-const { setOrderPaymentMethod, createFinalOrder } = orders;
-import { actions as users } from "../../../users/index";
-const { getPaymentMethod, createPaymentMethod } = users;
+const { setOrderSelected } = orders;
 
 import styles from './styles';
 import { showToast } from '../../../../components/Toast';
-import { displayDate } from '../../utils/utils';
+import { currentDate, displayDate } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
+import { color } from '../../../../styles/theme';
+import { API_KEY_GOOGLE } from '../../../../config/constants';
+import { getOrderStatusText } from '../../../../config/utils';
 
 type MyProps = {
-    getPaymentMethod: (successCB, errorCB) => void,
-    setOrderPaymentMethod: (paymentMethod, successCB) => void,
-    createPaymentMethod: (paymentMethod, successCB, errorCB) => void,
-    createFinalOrder: (createOrder, successCB, errorCB) => void,
-    createOrder: any,
-    orderInfo: any,
-    paymentMethods: any,
+    setOrderSelected: (order, successCB) => void,
     isLoading: boolean,
     navigation: any,
 }
@@ -45,7 +40,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
             data: [
                 {
                     orderId: 1,
-                    originAt: new Date(),
+                    originAt: currentDate(),
                     status: 'PENDING',
                     originAddress: {
                         addressId: 10,
@@ -70,7 +65,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                 },
                 {
                     orderId: 2,
-                    originAt: new Date(),
+                    originAt: currentDate(),
                     status: 'ACCEPTED',
                     originAddress: {
                         addressId: 10,
@@ -97,15 +92,14 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
         })
     }
 
-    onCreateOrder = () => {
-        const { createFinalOrder, createOrder } = this.props;
-        createFinalOrder(createOrder, this.onSuccessCreateOrder, this.onError);
+    onSelectOrderItem = (order) => {
+        const { setOrderSelected } = this.props;
+        setOrderSelected(order, this.onSuccess);
     }
 
-    onSuccessCreateOrder = () => {
+    onSuccess = () => {
         const { navigation } = this.props;
-        // navigation.navigate('OrderDetails');
-        alert('El pedido fue creado!!')
+        navigation.navigate('MapOrderDetails');
     }
 
     onError = (error) => {
@@ -125,7 +119,6 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
             latitudeDelta: Math.abs(coordsA.latitude - midRegion.latitude) * 4,
             longitudeDelta: Math.abs(coordsA.longitude - midRegion.longitude),
         }
-
     }
 
     render() {
@@ -142,7 +135,9 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                     renderItem={({ item }) => {
                         const { originAddress, destinationAddress } = item;
                         return (
-                            <View style={styles.card}>
+                            <TouchableOpacity 
+                            onPress={() => this.onSelectOrderItem(item)}
+                                style={styles.card}>
                                 <MapView 
                                     showsMyLocationButton={false}
                                     showsPointsOfInterest={false}
@@ -159,41 +154,34 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                                     toolbarEnabled={false}
                                     initialRegion={this.getMidPointCoords(originAddress.coords, destinationAddress.coords)}
                                     // ref={(map) => {this.map = map}}
-                                    style={{ width: '100%', height: 150 }} >
+                                    style={styles.containerMapView} >
 
                                     <Marker 
                                         draggable
                                         // image={require('../../../../../assets/driver.png')}
-                                        pinColor="blue"
-                                        coordinate={originAddress.coords}
-                                        // anchor={{ x: 0.35, y: 0.32}}
-                                        style={{ width: 10, height: 10 }} >
-                                        
+                                        pinColor={color.red.redTomato}
+                                        coordinate={originAddress.coords} >
                                     </Marker>
                                     <Marker 
                                         draggable
                                         // image={require('../../../../../assets/driver.png')}
-                                        pinColor="red"
-                                        coordinate={destinationAddress.coords}
-                                        // anchor={{ x: 0.35, y: 0.32}}
-                                        style={{ width: 10, height: 10 }} >
-                                        
+                                        pinColor={color.blue.steelBlue}
+                                        coordinate={destinationAddress.coords} >
                                     </Marker>
                                     <MapViewDirections
                                         origin={originAddress.coords}
                                         destination={destinationAddress.coords}
-                                        apikey={'AIzaSyAyv9pHdOrn__bmpDQbVXL41Hg6725qJmk'}
+                                        apikey={API_KEY_GOOGLE}
                                         region='UY'
                                         strokeWidth={3}
-                                        strokeColor="hotpink"
-                                    />
+                                        strokeColor={color.green.greenLima} />
 
                                 </MapView>
-                                <View style={{ flex: 1, marginTop: 10 }}>
-                                    <Text style={{ fontWeight: 'bold', marginBottom: 5 }}>{displayDate(item.originAt)}</Text>
-                                    <Text style={{ color: 'lightgrey' }}>{item.status}</Text>
+                                <View style={styles.containerItemInfo}>
+                                    <Text style={styles.dateOrder}>{displayDate(item.originAt)}</Text>
+                                    <Text style={styles.statusOrder}>{getOrderStatusText(item.status)}</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )
                     }}
                 />
@@ -211,4 +199,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderPaymentMethod, getPaymentMethod, createPaymentMethod, createFinalOrder })(ActiveUserOrders);
+export default connect(mapStateToProps, { setOrderSelected })(ActiveUserOrders);

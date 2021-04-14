@@ -120,7 +120,7 @@ export const checkLoginStatus = (successCB, errorCB) => {
                 dispatch({type: t.USERS_ME, data});
                 successCB();
             } 
-            else if (error) errorCB(error) // Ver como hacer aca para si expiro su token, mandarlo al login
+            else if (error) errorCB(error)
         });
     };
 }

@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Root } from "native-base";
 import * as SplashScreen from 'expo-splash-screen';
 
-import RouterApp from './app/config/routes';
+import RouterApp from './app/config/routes/routes';
 import store from './app/redux/store';
 
 // function cacheFonts(fonts) {

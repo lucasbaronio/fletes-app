@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import store from '../redux/store';
+import store from '../../redux/store';
 // import * as SplashScreen from 'expo-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import withNotificationExpoHOC from '../components/HOCs/push/withNotificationExpoHOC';
+import withNotificationExpoHOC from '../../components/HOCs/push/withNotificationExpoHOC';
 import RouterLogged from './routesLogged';
-import Login from '../modules/auth/scenes/Login/Login';
-import RegisterInit from '../modules/auth/scenes/RegisterInit/RegisterInit';
-import Register from '../modules/auth/scenes/Register/Register';
-import PasswordRecoverInit from '../modules/auth/scenes/PasswordRecoverInit/PasswordRecoverInit';
-import PasswordRecover from '../modules/auth/scenes/PasswordRecover/PasswordRecover';
-import AddressSearchBar from '../modules/orders/components/AddressSearchBar';
+import Login from '../../modules/auth/scenes/Login/Login';
+import RegisterInit from '../../modules/auth/scenes/RegisterInit/RegisterInit';
+import Register from '../../modules/auth/scenes/Register/Register';
+import PasswordRecoverInit from '../../modules/auth/scenes/PasswordRecoverInit/PasswordRecoverInit';
+import PasswordRecover from '../../modules/auth/scenes/PasswordRecover/PasswordRecover';
+import AddressSearchBar from '../../modules/orders/components/AddressSearchBar';
 // import Splash from '../components/Splash/Splash';
-import { checkLoginStatus } from "../modules/auth/actions";
+import { checkLoginStatus } from "../../modules/auth/actions";
 
-import { getToken } from '../modules/security';
-import { showToast } from '../components/Toast';
+import { getToken } from '../../modules/security';
+import { showToast } from '../../components/Toast';
+import Splash from '../../modules/auth/scenes/Splash/Splash';
 
 const Stack = createStackNavigator();
 
@@ -39,21 +40,21 @@ class Router extends Component<MyProps, MyState> {
     }
 
     async componentDidMount() {
-        const { checkLoginStatus } = this.props;
+        const { checkLoginStatus, navigation } = this.props;
         const token = await getToken();
         if (token) {
             checkLoginStatus(async () => {
-                // await SplashScreen.hideAsync();
+                this.setState({isReady: true})
             }, async () => {
-                // await SplashScreen.hideAsync();
+                this.setState({isReady: true})
             });
         }
     }
 
     render() {
         const { isLoggedIn } = this.props;
-        // if (!this.state.isReady)
-        //     return <Splash/>
+        if (!this.state.isReady)
+            return <Splash/>
 
         return (
             <NavigationContainer>

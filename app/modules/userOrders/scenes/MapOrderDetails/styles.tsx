@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from 'react-native';
-import { color, fontWeight } from '../../../../styles/theme';
+import { color, fontWeight, screenSize } from '../../../../styles/theme';
 
 export const styles = StyleSheet.create({
     container: {
@@ -13,6 +13,10 @@ export const styles = StyleSheet.create({
       padding: 10, 
       backgroundColor: color.grey.slateGrey, 
       borderRadius: 5
+    },
+    mapStyle: {
+      width: screenSize.width,
+      height: screenSize.height * 0.6,
     },
     containerMapView: {
       width: '100%', 

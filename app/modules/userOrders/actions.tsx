@@ -1,9 +1,9 @@
 import * as t from './actionTypes';
 import * as api from './api';
 
-export const setOrderOriginAddress = (originAddress, successCB) => {
+export const setOrderSelected = (order, successCB) => {
     return (dispatch) => {
-        dispatch({type: t.ORDER_ORIGIN_ADDRESS, data: { originAddress }});
+        dispatch({type: t.ORDER_SELECTED, data: { order }});
         successCB();
     };
 }

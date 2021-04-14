@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
-import { isLargeScreen } from "../styles/theme";
+import { isLargeScreen } from "../../styles/theme";
 
-import { actions as auth } from "../modules/auth/index"
-import HomeRoutes from './homeRoutes';
-import ActiveUserOrders from '../modules/userOrders/scenes/ActiveUserOrders/ActiveUserOrders';
+import CreateOrderRoutes from './createOrderRoutes';
+import UserOrdersRoutes from './userOrdersRoutes';
+
+import { actions as auth } from "../../modules/auth/index";
 const { logOut } = auth;
 
 const Drawer = createDrawerNavigator();
@@ -34,16 +35,18 @@ function RouterLogged({ logOut }) {
                 )}}
         >
             <Drawer.Screen 
-                name="Crear Pedido" 
-                component={HomeRoutes} 
+                name="CreateOrderRoutes" 
+                component={CreateOrderRoutes} 
                 options={{ 
+                    title: 'Crear Pedido',
                     headerShown: false,
                 }} />
             <Drawer.Screen 
-                name="Pedidos activos" 
-                component={ActiveUserOrders} 
+                name="UserOrdersRoutes" 
+                component={UserOrdersRoutes} 
                 options={{
-                    headerShown: true,
+                    title: 'Pedidos Activos',
+                    headerShown: false,
                 }} />
             {/* <Drawer.Screen 
                 name="LogOut" 
@@ -61,8 +64,6 @@ function mapStateToProps(state, props) {
     }
 }
 
-
-// export default RouterLogged;
 export default connect(mapStateToProps, { logOut })(RouterLogged);;
 
 // function LogOut({ logOut, navigation }) {
@@ -83,20 +84,3 @@ export default connect(mapStateToProps, { logOut })(RouterLogged);;
 // }
 
 // const LogOutScreen =  connect(mapStateToProps, { logOut })(LogOut);
-
-// function DetailsScreen() {
-//     return (
-//       <View style={styles.container}>
-//         <Text>Details Screen</Text>
-//       </View>
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       flexDirection: 'row',
-//       alignItems: 'center',
-//       justifyContent: 'center',
-//     }
-// });

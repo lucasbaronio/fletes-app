@@ -2,9 +2,19 @@
 import { deleteMany, saveMany } from '../secureStore';
 import * as t from './actionTypes';
 
+enum statusOrder {
+    COMPLETED = 'COMPLETED',
+    TO_DESTINATION = 'TO_DESTINATION',
+    TO_ORIGIN = 'TO_ORIGIN',
+    ACCEPTED = 'ACCEPTED',
+    PENDING = 'PENDING',
+    CANCELED = 'CANCELED',
+}
+
 let initialState = { 
     isLoading: false,
-    createOrder: {
+    orderSelected: {
+        orderId: 0,
         originAddress: {
             streetName: '',
             streetNumber: '',
@@ -24,69 +34,90 @@ let initialState = {
             }
         },
         originAt: null,
-        vehicleTypeId: null,
+        status: statusOrder.PENDING,
+        vehicleType: {
+            vehicleTypeId: 0,
+            capacity: 0,
+            pricePerHour: 0,
+            open: false,
+        },
+        vehicle: {
+            vehicleId: 0,
+            model: '',
+            registration: '',
+            enabled: false,
+            vehicleType: {
+                vehicleTypeId: 0,
+                capacity: 0,
+                pricePerHour: 0,
+                open: false,
+            }
+        },
+        user: {
+
+        },
+        shipper: {
+
+        },
         extraOptions: [],
-        paymentMethodId: null,
+        // paymentMethodId: null,
     },
-    orderInfo: {
-        vehicleTypes: [],
-        extraOptions: []
-    }
+    activeOrders: [],
 };
 
-const ordersReducer = (state = initialState, action) => {
+const userOrdersReducer = (state = initialState, action) => {
     console.log(action.type);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };
         }
         
-        case t.ORDER_ORIGIN_ADDRESS: {
-            const { originAddress } = action.data;
+        case t.ORDER_SELECTED: {
+            const { order } = action.data;
 
-            return { ...state, createOrder: { ...state.createOrder, originAddress } };
+            return { ...state, orderSelected: order };
         }
 
-        case t.ORDER_DESTINATION_ADDRESS: {
-            const { destinationAddress } = action.data;
+        // case t.ORDER_DESTINATION_ADDRESS: {
+        //     const { destinationAddress } = action.data;
 
-            return { ...state, createOrder: { ...state.createOrder, destinationAddress } };
-        }
+        //     return { ...state, createOrder: { ...state.createOrder, destinationAddress } };
+        // }
 
-        case t.GET_ORDER_INFO: {
-            const { vehicleTypes, extraOptions } = action.data;
+        // case t.GET_ORDER_INFO: {
+        //     const { vehicleTypes, extraOptions } = action.data;
 
-            return { ...state, orderInfo: { vehicleTypes, extraOptions } };
-        }
+        //     return { ...state, orderInfo: { vehicleTypes, extraOptions } };
+        // }
 
-        case t.ORDER_DATE: {
-            const { originAt } = action.data;
-            console.log(originAt);
+        // case t.ORDER_DATE: {
+        //     const { originAt } = action.data;
+        //     console.log(originAt);
 
-            return { ...state, createOrder: { ...state.createOrder, originAt } };
-        }
+        //     return { ...state, createOrder: { ...state.createOrder, originAt } };
+        // }
 
-        case t.ORDER_VEHICLE_TYPE: {
-            const { vehicleType } = action.data;
+        // case t.ORDER_VEHICLE_TYPE: {
+        //     const { vehicleType } = action.data;
 
-            return { ...state, createOrder: { ...state.createOrder, vehicleTypeId: vehicleType.vehicleTypeId } };
-        }
+        //     return { ...state, createOrder: { ...state.createOrder, vehicleTypeId: vehicleType.vehicleTypeId } };
+        // }
 
-        case t.ORDER_EXTRA: {
-            const { extraOptions } = action.data;
+        // case t.ORDER_EXTRA: {
+        //     const { extraOptions } = action.data;
 
-            return { ...state, createOrder: { ...state.createOrder, extraOptions } };
-        }
+        //     return { ...state, createOrder: { ...state.createOrder, extraOptions } };
+        // }
 
-        case t.ORDER_PAYMENT_METHOD: {
-            const { paymentMethod } = action.data;
+        // case t.ORDER_PAYMENT_METHOD: {
+        //     const { paymentMethod } = action.data;
 
-            return { ...state, createOrder: { ...state.createOrder, paymentMethodId: paymentMethod.id } };
-        }
+        //     return { ...state, createOrder: { ...state.createOrder, paymentMethodId: paymentMethod.id } };
+        // }
 
         default:
             return state;
     }
 };
 
-export default ordersReducer;
+export default userOrdersReducer;

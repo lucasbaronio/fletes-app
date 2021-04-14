@@ -5,20 +5,21 @@ import { createStackNavigator } from '@react-navigation/stack';
 // import MapAddressDestination from '../modules/orders/scenes/MapAddressDestination/MapAddressDestination';
 // import AddressSearchBar from '../modules/orders/components/AddressSearchBar';
 import { Button, Icon } from 'native-base';
-import VehicleTypesGrid from '../modules/orders/scenes/VehicleTypesGrid/VehicleTypesGrid';
-import MapAddress from '../modules/orders/scenes/MapAddress/MapAddress';
-import PaymentMethod from '../modules/orders/scenes/PaymentMethod/PaymentMethod';
-import CreateOrderDetails from '../modules/orders/scenes/CreateOrderDetails/CreateOrderDetails';
+import VehicleTypesGrid from '../../modules/orders/scenes/VehicleTypesGrid/VehicleTypesGrid';
+import MapAddress from '../../modules/orders/scenes/MapAddress/MapAddress';
+import PaymentMethod from '../../modules/orders/scenes/PaymentMethod/PaymentMethod';
+import CreateOrderDetails from '../../modules/orders/scenes/CreateOrderDetails/CreateOrderDetails';
+import { color, iconSize } from '../../styles/theme';
 
 // import { actions as auth } from "../modules/auth/index"
 // const { logOut } = auth;
 
-const HomeStack = createStackNavigator();
+const CreateOrderStack = createStackNavigator();
 
-function HomeRoutes(props) {
+function CreateOrderRoutes(props) {
     return (
-        <HomeStack.Navigator initialRouteName="MapAddressOrigin" >
-            <HomeStack.Screen 
+        <CreateOrderStack.Navigator initialRouteName="MapAddressOrigin" >
+            <CreateOrderStack.Screen 
                 name="MapAddress" 
                 component={MapAddress} 
                 options={({ navigation }) => ({
@@ -27,10 +28,15 @@ function HomeRoutes(props) {
                     headerLeft: () => (
                         <Button transparent
                           onPress={() => navigation.toggleDrawer()}
-                          color="#fff" >
-                            <Icon name="menu-outline"></Icon>
+                          color={color.black.black} >
+                            <Icon 
+                                name="menu-outline"
+                                style={{
+                                    fontSize: iconSize.XL, 
+                                    color: color.grey.slateGrey
+                                }} />
                         </Button>
-                      ),
+                    ),
                 })}
             />
             {/* <HomeStack.Screen 
@@ -63,21 +69,21 @@ function HomeRoutes(props) {
                     //   ),
                 })}
             /> */}
-            <HomeStack.Screen 
+            <CreateOrderStack.Screen 
                 name="VehicleTypesGrid" 
                 component={VehicleTypesGrid} 
                 options={({ navigation }) => ({
                     title: 'Tipo de flete',
                 })}
             />
-            <HomeStack.Screen 
+            <CreateOrderStack.Screen 
                 name="PaymentMethod" 
                 component={PaymentMethod} 
                 options={({ navigation }) => ({
                     title: 'Metodo de pago',
                 })}
             />
-            <HomeStack.Screen 
+            <CreateOrderStack.Screen 
                 name="CreateOrderDetails" 
                 component={CreateOrderDetails} 
                 options={({ navigation }) => ({
@@ -90,7 +96,7 @@ function HomeRoutes(props) {
                 options={{
                     headerShown: true,
                 }} /> */}
-        </HomeStack.Navigator>
+        </CreateOrderStack.Navigator>
     )
 }
 
@@ -100,4 +106,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { })(HomeRoutes);;
+export default connect(mapStateToProps, { })(CreateOrderRoutes);;
