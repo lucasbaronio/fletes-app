@@ -2,23 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Button, Icon } from 'native-base';
-import MapUserOrderDetails from '../../modules/userOrders/scenes/MapUserOrderDetails/MapUserOrderDetails';
-import { color, iconSize, isiOS } from '../../styles/theme';
-import ActiveUserOrders from '../../modules/userOrders/scenes/ActiveUserOrders/ActiveUserOrders';
+import MapShipperOrderDetails from '../../modules/shipperOrders/scenes/MapShipperOrderDetails/MapShipperOrderDetails';
+import { color, iconSize } from '../../styles/theme';
+import PendingShipperOrders from '../../modules/shipperOrders/scenes/PendingShipperOrders/PendingShipperOrders';
 
-// import { actions as auth } from "../modules/auth/index"
-// const { logOut } = auth;
+const ShipperOrdersStack = createStackNavigator();
 
-const UserOrdersStack = createStackNavigator();
-
-function UserOrdersRoutes(props) {
+function ShipperOrdersRoutes(props) {
     return (
-        <UserOrdersStack.Navigator initialRouteName="ActiveUserOrders" >
-            <UserOrdersStack.Screen 
-                name="ActiveUserOrders" 
-                component={ActiveUserOrders} 
+        <ShipperOrdersStack.Navigator initialRouteName="PendingShipperOrders" >
+            <ShipperOrdersStack.Screen 
+                name="PendingShipperOrders" 
+                component={PendingShipperOrders} 
                 options={({ navigation }) => ({
-                    title: 'Pedidos activos',
+                    title: 'Pedidos Disponibles',
                     headerShown: true,
                     headerLeft: () => (
                         <Button transparent
@@ -33,9 +30,9 @@ function UserOrdersRoutes(props) {
                     ),
                 })}
             />
-            <UserOrdersStack.Screen 
-                name="MapUserOrderDetails" 
-                component={MapUserOrderDetails} 
+            <ShipperOrdersStack.Screen 
+                name="MapShipperOrderDetails" 
+                component={MapShipperOrderDetails} 
                 options={({ navigation }) => ({
                     title: '',
                     headerTransparent: true,
@@ -54,7 +51,7 @@ function UserOrdersRoutes(props) {
                     ),
                 })}
             />
-        </UserOrdersStack.Navigator>
+        </ShipperOrdersStack.Navigator>
     )
 }
 
@@ -64,4 +61,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { })(UserOrdersRoutes);
+export default connect(mapStateToProps, { })(ShipperOrdersRoutes);

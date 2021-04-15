@@ -48,6 +48,8 @@ class Router extends Component<MyProps, MyState> {
             }, async () => {
                 this.setState({isReady: true})
             });
+        } else {
+            this.setState({isReady: true})
         }
     }
 

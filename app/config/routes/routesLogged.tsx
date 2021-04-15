@@ -5,16 +5,18 @@ import { isLargeScreen } from "../../styles/theme";
 
 import CreateOrderRoutes from './createOrderRoutes';
 import UserOrdersRoutes from './userOrdersRoutes';
+import ShipperPendingOrdersRoutes from './shipperPendingOrdersRoutes';
 
 import { actions as auth } from "../../modules/auth/index";
+import { isShipperUser } from '../utils';
 const { logOut } = auth;
 
 const Drawer = createDrawerNavigator();
 
-function RouterLogged({ logOut }) {
+function RouterLogged({ logOut, user }) {
     return (
         <Drawer.Navigator 
-            initialRouteName="Crear Pedido"
+            initialRouteName={isShipperUser(user.userType) ? "ShipperPendingOrdersRoutes" : "CreateOrderRoutes"}
             // openByDefault
             drawerType={isLargeScreen ? 'permanent' : 'back'}
             drawerStyle={isLargeScreen ? null : { width: '80%' }}
@@ -34,20 +36,37 @@ function RouterLogged({ logOut }) {
                     </DrawerContentScrollView>
                 )}}
         >
-            <Drawer.Screen 
-                name="CreateOrderRoutes" 
-                component={CreateOrderRoutes} 
-                options={{ 
-                    title: 'Crear Pedido',
-                    headerShown: false,
-                }} />
-            <Drawer.Screen 
-                name="UserOrdersRoutes" 
-                component={UserOrdersRoutes} 
-                options={{
-                    title: 'Pedidos Activos',
-                    headerShown: false,
-                }} />
+            {
+                isShipperUser(user.userType) ?(
+                    <>
+                        <Drawer.Screen 
+                            name="ShipperPendingOrdersRoutes" 
+                            component={ShipperPendingOrdersRoutes} 
+                            options={{
+                                title: 'Pedidos Disponiles',
+                                headerShown: false,
+                            }} />
+                    </>
+                ) : (
+                    <>
+                        <Drawer.Screen 
+                            name="CreateOrderRoutes" 
+                            component={CreateOrderRoutes} 
+                            options={{ 
+                                title: 'Crear Pedido',
+                                headerShown: false,
+                            }} />
+                        <Drawer.Screen 
+                            name="UserOrdersRoutes" 
+                            component={UserOrdersRoutes} 
+                            options={{
+                                title: 'Pedidos Activos',
+                                headerShown: false,
+                            }} />
+                    </>
+                )
+            }
+            
             {/* <Drawer.Screen 
                 name="LogOut" 
                 component={LogOutScreen} 
@@ -61,6 +80,7 @@ function RouterLogged({ logOut }) {
 function mapStateToProps(state, props) {
     return {
         // isLoading: state.authReducer.isLoading,
+        user: state.authReducer.user
     }
 }
 

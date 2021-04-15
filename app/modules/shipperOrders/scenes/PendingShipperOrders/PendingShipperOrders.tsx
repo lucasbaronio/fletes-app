@@ -17,20 +17,19 @@ import { getOrderStatusText } from '../../../../config/utils';
 
 type MyProps = {
     setOrderSelected: (order, successCB) => void,
+    pendingOrders: any,
     isLoading: boolean,
     navigation: any,
 }
 type MyState = {
     error: string,
-    isLoading: boolean,
     data: any,
 }
-class ActiveUserOrders extends React.Component<MyProps, MyState> {
+class PendingShipperOrders extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
             error: '',
-            isLoading: true,
             data: [],
         };
     }
@@ -66,7 +65,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                 {
                     orderId: 2,
                     originAt: currentDate(),
-                    status: 'ACCEPTED',
+                    status: 'PENDING',
                     originAddress: {
                         addressId: 10,
                         streetName: 'Vazquez Ledesma',
@@ -99,7 +98,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
     onSuccess = () => {
         const { navigation } = this.props;
-        navigation.navigate('MapUserOrderDetails');
+        navigation.navigate('MapShipperOrderDetails');
     }
 
     onError = (error) => {
@@ -172,7 +171,6 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                                         origin={originAddress.coords}
                                         destination={destinationAddress.coords}
                                         apikey={API_KEY_GOOGLE}
-                                        region='UY'
                                         strokeWidth={3}
                                         strokeColor={color.green.greenLima} />
 
@@ -192,11 +190,9 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
 function mapStateToProps(state, props) {
     return {
-        createOrder: state.ordersReducer.createOrder,
-        orderInfo: state.ordersReducer.orderInfo,
-        paymentMethods: state.usersReducer.paymentMethods,
-        isLoading: state.ordersReducer.isLoading,
+        pendingOrders: state.shipperOrdersReducer.pendingOrders,
+        isLoading: state.shipperOrdersReducer.isLoading,
     }
 }
 
-export default connect(mapStateToProps, { setOrderSelected })(ActiveUserOrders);
+export default connect(mapStateToProps, { setOrderSelected })(PendingShipperOrders);

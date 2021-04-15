@@ -5,7 +5,7 @@ import { screenSize, color } from '../../../../styles/theme';
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: color.white.white,
+      // backgroundColor: color.red.red,
       alignItems: 'center',
       justifyContent: 'center',
     },

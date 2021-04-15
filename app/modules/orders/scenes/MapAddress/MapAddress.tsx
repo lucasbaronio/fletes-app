@@ -4,7 +4,6 @@ import { Alert, SafeAreaView, View } from 'react-native';
 import { Text, Toast } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
-import * as Permissions from "expo-permissions";
 import { MaterialIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
@@ -64,7 +63,8 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     }
 
     _getLocationAsync = async () => {
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        // let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
             alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION);
             console.log('El permiso de ubicacion fue denegado');

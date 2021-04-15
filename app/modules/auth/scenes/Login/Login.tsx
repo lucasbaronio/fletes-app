@@ -68,10 +68,11 @@ class Login extends React.Component<MyProps, MyState> {
         const val3 = val1 && val2 && validateMobileNumber(mobileNumber, () => {
             showToast(ERROR_INCORRECT_MOBILE_NUMBER)
         });
+        const mobileNumberWithCode = `598 ${mobileNumber}`
 
         if (val1 && val2 && val3) {
             const { login, pushNotificationID } = this.props;
-            login({ mobileNumber, password, pushNotificationID }, this.onSuccess, this.onError);
+            login({ mobileNumber: mobileNumberWithCode, password, pushNotificationID }, this.onSuccess, this.onError);
         }
     }
 

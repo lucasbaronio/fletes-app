@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, SafeAreaView, FlatList, TouchableOpacity, SectionList } from 'react-native';
-import { Text } from 'native-base';
+// import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
-import { StatusBar } from 'expo-status-bar';
+// import { StatusBar } from 'expo-status-bar';
+import MapViewDirections from 'react-native-maps-directions';
 
 import { actions as orders } from "../../index";
 const { setOrderPaymentMethod, createFinalOrder } = orders;
@@ -13,11 +14,11 @@ const { getPaymentMethod, createPaymentMethod } = users;
 import styles from './styles';
 import { showToast } from '../../../../components/Toast';
 import { displayDate } from '../../utils/utils';
-import MapViewDirections from 'react-native-maps-directions';
+
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
 import { getOrderStatusText } from '../../../../config/utils';
-import SlidingPanelAcceptOrder from '../../components/SlidingPanelAcceptOrder';
+import SlidingPanelOrderDetails from '../../components/SlidingPanelOrderDetails';
 
 type MyProps = {
     acceptOrder: (orderId, onSuccess, onError) => void,
@@ -29,7 +30,7 @@ type MyState = {
     error: string,
     isLoading: boolean,
 }
-class MapOrderDetails extends React.Component<MyProps, MyState> {
+class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -68,7 +69,7 @@ class MapOrderDetails extends React.Component<MyProps, MyState> {
         };
         return {
             ...midRegion,
-            latitudeDelta: Math.abs(coordsA.latitude - midRegion.latitude),
+            latitudeDelta: Math.abs(coordsA.latitude - midRegion.latitude) * 5,
             longitudeDelta: Math.abs(coordsA.longitude - midRegion.longitude) * 3,
         }
     }
@@ -78,7 +79,7 @@ class MapOrderDetails extends React.Component<MyProps, MyState> {
         const { originAddress, destinationAddress, } = order;
         return (
             <SafeAreaView style={styles.container}>
-                <StatusBar style="dark" />
+                {/* <StatusBar style="dark" /> */}
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
                         {ORDERS_SCENES_MAP_ADDRESS_TITLE}
@@ -128,7 +129,7 @@ class MapOrderDetails extends React.Component<MyProps, MyState> {
                         strokeColor={color.green.greenLima} />
                     
                 </MapView>
-                <SlidingPanelAcceptOrder 
+                <SlidingPanelOrderDetails 
                     isLoading={isLoading}
                     order={order}
                     onPressAccept={this.onPressAccept} />
@@ -144,4 +145,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, {  })(MapOrderDetails);
+export default connect(mapStateToProps, {  })(MapUserOrderDetails);

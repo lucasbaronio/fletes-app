@@ -1,25 +1,36 @@
-import moment from "moment";
-import 'moment/min/locales';
-import * as Localization from 'expo-localization';
+
+export enum userTypes {
+    USER = 'USER',
+    SHIPPER = 'SHIPPER',
+}
+
+export enum statusOrder {
+    COMPLETED = 'COMPLETED',
+    TO_DESTINATION = 'TO_DESTINATION',
+    TO_ORIGIN = 'TO_ORIGIN',
+    ACCEPTED = 'ACCEPTED',
+    PENDING = 'PENDING',
+    CANCELED = 'CANCELED',
+}
 
 const orderStatusKeyValue = [{
     text: 'Cancelado',
-    value: 'CANCELED'
+    value: statusOrder.CANCELED,
 },{
     text: 'En espera por transportista',
-    value: 'PENDING'
+    value: statusOrder.PENDING,
 },{
     text: 'Aceptado por un transportista',
-    value: 'ACCEPTED'
+    value: statusOrder.ACCEPTED,
 },{
     text: 'Transportista yendo hacia origen',
-    value: 'TO_ORIGIN'
+    value: statusOrder.TO_ORIGIN,
 },{
     text: 'Transportista yendo hacia destino',
-    value: 'TO_DESTINATION'
+    value: statusOrder.TO_DESTINATION,
 },{
     text: 'Pedido finalizado',
-    value: 'COMPLETED'
+    value: statusOrder.COMPLETED,
 },];
 
 export const getOrderStatusText = (statusValue) => {
@@ -32,3 +43,6 @@ export const getOrderStatusValue = (statusText) => {
     return item ? item.value : null;
 }
 
+export const isShipperUser = (userType) => {
+    return userType === userTypes.SHIPPER;
+}

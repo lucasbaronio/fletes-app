@@ -5,9 +5,16 @@ import * as t from './actionTypes';
 let initialState = { 
     isLoading: false,
     isLoggedIn: false, 
-    user: null,
+    user: {
+        userId: 0,
+        mobileNumber: '',
+        name: null,
+        lastName: null,
+        pushNotificationId: '',
+        userType: ''
+    },
     codeId: '',
-    pushNotificationID: ''
+    pushNotificationID: '',
 };
 
 const authReducer = (state = initialState, action) => {
@@ -34,8 +41,9 @@ const authReducer = (state = initialState, action) => {
         }
 
         case t.LOG_OUT: {
+            const { pushNotificationID } = state;
             
-            return { ...state, ...initialState };
+            return { ...state, ...initialState, pushNotificationID };
         }
 
         case t.SIGN_UP_INIT: {

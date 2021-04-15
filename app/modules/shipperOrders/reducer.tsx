@@ -54,10 +54,11 @@ let initialState = {
         extraOptions: [],
         // paymentMethodId: null,
     },
+    pendingOrders: [],
     activeOrders: [],
 };
 
-const userOrdersReducer = (state = initialState, action) => {
+const shipperOrdersReducer = (state = initialState, action) => {
     console.log(action.type);
     switch (action.type) {
         case t.LOADING: {
@@ -112,4 +113,4 @@ const userOrdersReducer = (state = initialState, action) => {
     }
 };
 
-export default userOrdersReducer;
+export default shipperOrdersReducer;

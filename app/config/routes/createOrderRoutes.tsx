@@ -18,7 +18,7 @@ const CreateOrderStack = createStackNavigator();
 
 function CreateOrderRoutes(props) {
     return (
-        <CreateOrderStack.Navigator initialRouteName="MapAddressOrigin" >
+        <CreateOrderStack.Navigator initialRouteName="MapAddress" >
             <CreateOrderStack.Screen 
                 name="MapAddress" 
                 component={MapAddress} 

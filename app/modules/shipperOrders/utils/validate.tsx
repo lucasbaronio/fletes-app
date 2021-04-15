@@ -25,7 +25,7 @@ export const validateEmail = (email, onError) => {
 }
 
 export const validateMobileNumber = (mobileNumber, onError) => {
-    if (!mobileNumber.match(/^\d{8}$/)) {
+    if (!mobileNumber.match(/^\d{9}$/)) {
         onError();
         return false;
     }
@@ -33,7 +33,7 @@ export const validateMobileNumber = (mobileNumber, onError) => {
 }
 
 export const validatePassword = (password, onError) => {
-    if (password.length < 6) {
+    if (password.length < 8) {
         onError();
         return false;
     }

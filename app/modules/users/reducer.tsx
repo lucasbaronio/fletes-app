@@ -3,7 +3,14 @@ import { deleteMany, saveMany } from '../secureStore';
 import * as t from './actionTypes';
 
 let initialState = { 
-    user: null,
+    user: {
+        userId: 0,
+        mobileNumber: '',
+        name: null,
+        lastName: null,
+        pushNotificationId: '',
+        userType: ''
+    },
     paymentMethods: [],
     isLoading: false
 };
