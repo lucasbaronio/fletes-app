@@ -50,10 +50,11 @@ class RegisterInit extends React.Component<MyProps, MyState> {
         const val2 = val1 && validateMobileNumber(mobileNumber, () => {
             showToast(ERROR_INCORRECT_MOBILE_NUMBER)
         });
+        const mobileNumberWithCode = `598 ${mobileNumber}`
         
         if (val1 && val2) {
             const { registerInit } = this.props;
-            registerInit({ mobileNumber }, this.onSuccess, this.onError);
+            registerInit({ mobileNumber: mobileNumberWithCode }, this.onSuccess, this.onError);
         }
     }
 

@@ -38,7 +38,7 @@ let initialState = {
             model: '',
             registration: '',
             enabled: false,
-            vehicleType: {
+            type: {
                 vehicleTypeId: 0,
                 capacity: 0,
                 pricePerHour: 0,

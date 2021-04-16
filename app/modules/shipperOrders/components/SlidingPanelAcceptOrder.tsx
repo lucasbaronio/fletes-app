@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   },
   textButton: {
     color: color.white.white, 
-    fontSize: fontSize.XXL, 
+    fontSize: fontSize.XL, 
     fontWeight: fontWeight.L, 
     textAlign: 'center'
   },

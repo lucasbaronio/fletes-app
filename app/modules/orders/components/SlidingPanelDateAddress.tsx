@@ -144,8 +144,8 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                             {item.title}
                           </Text>
                           {expanded
-                            ? <Icon style={{ fontSize: fontSize.XL }} name="chevron-up-outline" />
-                            : <Icon style={{ fontSize: fontSize.XL }} name="chevron-down-outline" />}
+                            ? <Icon style={{ fontSize: fontSize.L }} name="chevron-up-outline" />
+                            : <Icon style={{ fontSize: fontSize.L }} name="chevron-down-outline" />}
                         </View>
                       )}
                       renderContent={(item: any) => (
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   },
   textButton: {
     color: color.white.white, 
-    fontSize: fontSize.XXL, 
+    fontSize: fontSize.XL, 
     fontWeight: fontWeight.L, 
     textAlign: 'center'
   },

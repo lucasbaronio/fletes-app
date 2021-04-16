@@ -17,8 +17,7 @@ export const API_USERS_PAYMENT_METHOD = `${API_USERS}/paymentMethods`;
 
 export const API_ORDERS = `${API}/orders`;
 export const API_ORDERS_INFO = `${API_ORDERS}/info`;
-
-
+// export const API_ORDERS_INFO = `${API}/ordersInfo`;
 
 export const API_EVENT_SIZE = 10;
 export const API_EVENT = `${API}events`;

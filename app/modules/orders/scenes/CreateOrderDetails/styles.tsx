@@ -59,11 +59,11 @@ export const styles = StyleSheet.create({
     keyTextTotalHeader: { 
       flex: 1, 
       fontWeight: fontWeight.L, 
-      fontSize: fontSize.L
+      fontSize: fontSize.M
     },
     valueTextTotalHeader: { 
       fontWeight: fontWeight.L, 
-      fontSize: fontSize.L
+      fontSize: fontSize.M
     },
     footer: {
       flex: 1, 
@@ -85,7 +85,7 @@ export const styles = StyleSheet.create({
     },
     textButton: {
       color: color.white.white, 
-      fontSize: fontSize.XXL, 
+      fontSize: fontSize.L, 
       fontWeight: fontWeight.L, 
       textAlign: 'center'
     },
@@ -112,7 +112,7 @@ export const styles = StyleSheet.create({
     },
     textSectionHeader: {
       fontWeight: fontWeight.L, 
-      fontSize: fontSize.L
+      fontSize: fontSize.M
     },
     separator: {
       flex: 1, 

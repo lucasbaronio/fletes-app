@@ -31,12 +31,13 @@ const color = {
 }
 
 const fontSize = {
-    XS: 10,
-    S: 12,
-    M: 14,
-    L: 16,
-    XL: 18,
-    XXL: 20,
+    XXS: 8,
+    XS: 12,
+    S: 16,
+    M: 18,
+    L: 20,
+    XL: 24,
+    XXL: 30,
 }
 
 enum fontWeight {

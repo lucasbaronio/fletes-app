@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { H1, Button, Text, Icon, H3 } from 'native-base';
+import { H1, Button, Text, Icon } from 'native-base';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Localization from 'expo-localization';
 import moment from "moment";

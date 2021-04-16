@@ -1,5 +1,5 @@
 import Constants from 'expo-constants';
-import { Body, Button, CheckBox, H2, H3, Icon, List, ListItem, Text } from 'native-base';
+import { Body, Button, CheckBox, Icon, List, ListItem, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
@@ -22,7 +22,7 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
   const regular = require('../../../../assets/vehicleType_mediano.jpeg');
   const big = require('../../../../assets/vehicleType_grande.jpeg');
   const draggableRange = {
-    top: (deviceHeight - Constants.statusBarHeight) * 0.7,
+    top: (deviceHeight - Constants.statusBarHeight) * 0.8,
     bottom: 0
   };
 
@@ -117,7 +117,12 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
               // @ts-ignore
               panelRef.current.show(hideFullScreenPanelOptions);
             }}>
-              <Icon fontSize={iconSize.XXL} name='close-outline' />
+              <Icon 
+                name="close-outline"
+                style={{
+                    fontSize: iconSize.XL, 
+                    color: color.grey.slateGrey
+                }} />
           </Button>
 
           <View style={styles.basicVehicleTypeInfo}>
@@ -128,25 +133,31 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
                 source={getVehicleTypeImage(vehicleType.name)} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ marginBottom: 10 }}>Tipo: <H2>{vehicleType.name}</H2></Text>
+              <Text style={{ marginBottom: 10 }}>
+                Tipo: <Text style={{ fontSize: fontSize.XL }}>{vehicleType.name}</Text>
+              </Text>
               <Text style={{ marginBottom: 5 }}>Precio: </Text>
-              <Text style={{ marginBottom: 10, marginStart: 30 }}>$ <H3>{vehicleType.pricePerHour}</H3> por hora</Text>
+              <Text style={{ marginBottom: 10, marginStart: 30 }}>$ 
+                <Text style={{ fontSize: fontSize.XL }}>
+                  {vehicleType.pricePerHour}
+                </Text> p/hora
+              </Text>
             </View>
           </View>
           <View style={styles.moreVehicleTypeInfo}>
             <View style={styles.moreVehicleTypeInfoItem}>
               <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1}</Text>
-              <H3>600 Kg</H3>
+              <Text style={{ fontSize: fontSize.XL }}>600 Kg</Text>
             </View>
             <View style={styles.moreVehicleTypeInfoItem}>
               <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2}</Text>
-              <H3>{vehicleType.open}pepe</H3>
+              <Text style={{ fontSize: fontSize.XL }}>{vehicleType.open}pepe</Text>
             </View>
           </View>
           <View style={styles.extraOptionsVehicleType}>
             <Text style={{ marginBottom: 5 }}>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3}</Text>
             <List
-              style={[styles.listExtraOptionsVehicleType, { maxHeight: draggableRange.top * 0.3 }]}
+              style={[styles.listExtraOptionsVehicleType, { maxHeight: draggableRange.top * 0.35 }]}
               dataArray={extraOptionsSelected}
               renderRow={(extra) =>
                 <ListItem 
@@ -155,7 +166,9 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
                   <CheckBox checked={extra.selected} />
                   <Body style={styles.listItemExtraOptionsVehicleType}>
                     <Text>{extra.text}:</Text>
-                    <Text><H3>+</H3> $<H3>{extra.price}</H3></Text>
+                    <Text>
+                      <Text style={{ fontSize: fontSize.L }}>+</Text> $ <Text style={{ fontSize: fontSize.L }}>{extra.price}</Text>
+                    </Text>
                   </Body>
                 </ListItem>
               }>
@@ -255,7 +268,7 @@ const styles = StyleSheet.create({
   },
   textButton: {
     color: color.white.white, 
-    fontSize: fontSize.XXL, 
+    fontSize: fontSize.XL, 
     fontWeight: fontWeight.L, 
     textAlign: 'center'
   },

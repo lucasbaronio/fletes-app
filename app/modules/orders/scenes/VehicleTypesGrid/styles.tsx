@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
       backgroundColor: color.white.white,
     },
     itemName: {
-      fontSize: fontSize.L,
+      fontSize: fontSize.M,
       color: color.black.black,
       fontWeight: fontWeight.L,
     },
