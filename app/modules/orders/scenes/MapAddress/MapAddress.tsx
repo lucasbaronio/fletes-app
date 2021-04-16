@@ -156,7 +156,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                     <MaterialIcons 
                         name='my-location'
                         color={color.black.black}
-                        size={iconSize.XL}
+                        size={iconSize.L}
                         onPress={() => { this.centrateMap() }} />
                 </View>
                 <MapView 

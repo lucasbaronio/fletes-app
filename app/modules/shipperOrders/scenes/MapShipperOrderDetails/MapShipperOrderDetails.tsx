@@ -5,10 +5,8 @@ import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import { StatusBar } from 'expo-status-bar';
 
-import { actions as orders } from "../../index";
-const { setOrderPaymentMethod, createFinalOrder } = orders;
-import { actions as users } from "../../../users/index";
-const { getPaymentMethod, createPaymentMethod } = users;
+// import { actions as users } from "../../../users/index";
+// const { getPaymentMethod, createPaymentMethod } = users;
 
 import styles from './styles';
 import { showToast } from '../../../../components/Toast';

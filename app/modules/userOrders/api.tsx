@@ -1,16 +1,15 @@
 import {
-    API_ORDERS,
-    API_ORDERS_INFO,
+    API_ORDER,
 } from './constants';
 import { get, post, deleteMethod } from '../globalApi';
 import { getHeaderToken } from '../security';
 
-export const getOrdersInfo = async (callback) => {
+export const getOrder = async (orderId, callback) => {
     const header = await getHeaderToken();
-    get(API_ORDERS_INFO, header, callback);
+    get(API_ORDER(orderId), header, callback);
 }
 
-export const createOrder = async (createOrder, callback) => {
-    const header = await getHeaderToken();
-    post(API_ORDERS, createOrder, header, callback)
-}
+// export const createOrder = async (createOrder, callback) => {
+//     const header = await getHeaderToken();
+//     post(API_ORDERS, createOrder, header, callback)
+// }

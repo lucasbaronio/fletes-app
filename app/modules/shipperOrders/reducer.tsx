@@ -38,7 +38,7 @@ let initialState = {
             model: '',
             registration: '',
             enabled: false,
-            vehicleType: {
+            type: {
                 vehicleTypeId: 0,
                 capacity: 0,
                 pricePerHour: 0,
@@ -54,8 +54,9 @@ let initialState = {
         extraOptions: [],
         // paymentMethodId: null,
     },
-    pendingOrders: [],
-    activeOrders: [],
+    pendingOrders: [], // Pedidos que estan pendientes a ser aceptadas por el shipper 
+    activeOrders: [], // Pedidos que ya fueron aceptados por el shipper y siguen activas
+    historyOrders: [], // Pedidos que fueron aceptados por el shipper y que ya finalizaron (COMPLETED o CANCELED)
 };
 
 const shipperOrdersReducer = (state = initialState, action) => {
@@ -69,6 +70,37 @@ const shipperOrdersReducer = (state = initialState, action) => {
             const { order } = action.data;
 
             return { ...state, orderSelected: order };
+        }
+
+        case t.ORDER: {
+            const { order } = action.data;
+            const { pendingOrders, activeOrders, historyOrders } = state;
+            switch (order.status) {
+                case statusOrder.PENDING:
+                    return { 
+                        ...state, 
+                        orderSelected: order, 
+                        pendingOrders: pendingOrders.concat(order),
+                    };
+                case statusOrder.CANCELED:
+                    return { 
+                        ...state, 
+                        orderSelected: order, 
+                        historyOrders: historyOrders.concat(order),
+                    };
+                case statusOrder.COMPLETED:
+                    return { 
+                        ...state, 
+                        orderSelected: order, 
+                        historyOrders: historyOrders.concat(order),
+                    };
+                default: // Active order
+                    return { 
+                        ...state, 
+                        orderSelected: order, 
+                        activeOrders: activeOrders.concat(order),
+                    };
+            }
         }
 
         // case t.ORDER_DESTINATION_ADDRESS: {

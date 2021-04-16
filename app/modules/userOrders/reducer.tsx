@@ -54,7 +54,8 @@ let initialState = {
         extraOptions: [],
         // paymentMethodId: null,
     },
-    activeOrders: [],
+    activeOrders: [], // Pedidos que fueron creados por el user y aún siguen activos
+    historyOrders: [], // Pedidos que fueron creados por el user pero que ya finalizaron (COMPLETED o CANCELED)
 };
 
 const userOrdersReducer = (state = initialState, action) => {
@@ -68,6 +69,31 @@ const userOrdersReducer = (state = initialState, action) => {
             const { order } = action.data;
 
             return { ...state, orderSelected: order };
+        }
+
+        case t.ORDER: {
+            const { order } = action.data;
+            const { activeOrders, historyOrders } = state;
+            switch (order.status) {
+                case statusOrder.CANCELED:
+                    return { 
+                        ...state, 
+                        orderSelected: order, 
+                        historyOrders: historyOrders.concat(order),
+                    };
+                case statusOrder.COMPLETED:
+                    return { 
+                        ...state, 
+                        orderSelected: order, 
+                        historyOrders: historyOrders.concat(order),
+                    };
+                default: // Active order
+                    return { 
+                        ...state, 
+                        orderSelected: order, 
+                        activeOrders: activeOrders.concat(order),
+                    };
+            }
         }
 
         // case t.ORDER_DESTINATION_ADDRESS: {

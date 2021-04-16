@@ -7,6 +7,10 @@ import { View } from 'react-native';
 
 import { actions as auth } from "../../../modules/auth/index"
 const { savePushNotificationID } = auth;
+import { actions as shipperOrders } from "../../../modules/shipperOrders/index"
+const { getOrderShipper } = shipperOrders;
+import { actions as userOrders } from "../../../modules/userOrders/index"
+const { getOrderUser } = userOrders;
 
 import { registerForPushNotificationsAsync } from './registerForPushNotificationsAsync';
 import notificationRouter from './notificationRouter';
@@ -21,8 +25,11 @@ Notifications.setNotificationHandler({
 
 type MyProps = {
     savePushNotificationID: (pushNotificationID, successCB) => void,
+    getOrderShipper: (orderId, successCB, errorCB) => void,
+    getOrderUser: (orderId, successCB, errorCB) => void,
+    navigation: any,
 }
-const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { savePushNotificationID })(
+const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { savePushNotificationID, getOrderShipper, getOrderUser })(
     class extends React.Component<MyProps> {
         notificationListener: any;
         responseListener: any;
@@ -37,7 +44,6 @@ const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { s
         componentDidMount() {
             const { savePushNotificationID } = this.props;
             registerForPushNotificationsAsync().then(token => {
-                // setExpoPushToken(token)
                 console.log('registerForPushNotificationsAsync', token);
                 savePushNotificationID(token, () => {})
             });

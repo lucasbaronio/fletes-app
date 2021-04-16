@@ -1,9 +1,5 @@
 import {
-    API_ORDERS_INFO as apiOrdersInfo,
-    API_ORDERS as apiOrders
+    API_ORDER as apiOrder,
 } from "../../config/constants"
 
-// export const NAME = 'auth';
-
-export const API_ORDERS_INFO = apiOrdersInfo;
-export const API_ORDERS = apiOrders;
+export const API_ORDER = apiOrder;

@@ -16,6 +16,7 @@ export const API_USERS_ME = `${API_USERS}/me`;
 export const API_USERS_PAYMENT_METHOD = `${API_USERS}/paymentMethods`;
 
 export const API_ORDERS = `${API}/orders`;
+export const API_ORDER = ({ orderId }) => `${API_ORDERS}/${orderId}`;
 export const API_ORDERS_INFO = `${API_ORDERS}/info`;
 // export const API_ORDERS_INFO = `${API}/ordersInfo`;
 
