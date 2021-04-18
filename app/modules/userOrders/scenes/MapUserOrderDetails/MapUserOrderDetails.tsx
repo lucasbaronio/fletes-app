@@ -7,7 +7,7 @@ import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
 import { actions as orders } from "../../index";
-const { setOrderPaymentMethod, createFinalOrder } = orders;
+// const { setOrderPaymentMethod, createFinalOrder } = orders;
 import { actions as users } from "../../../users/index";
 const { getPaymentMethod, createPaymentMethod } = users;
 

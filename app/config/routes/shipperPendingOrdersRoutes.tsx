@@ -38,7 +38,8 @@ function ShipperOrdersRoutes(props) {
                     headerTransparent: true,
                     headerLeft: () => (
                         <Button transparent
-                          onPress={() => navigation.pop()}
+                            // Aca despues hay que cambiarlo porque va haber un ActiveShipperOrders 
+                          onPress={() => navigation.navigate('PendingShipperOrders')}
                           color={color.black.black} >
                             <Icon 
                                 ios='chevron-back-circle-outline' 

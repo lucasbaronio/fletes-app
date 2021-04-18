@@ -6,8 +6,11 @@ import {
   View, Image, ActivityIndicator
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
+import * as Progress from 'react-native-progress';
 import { ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 } from '../../../config/strings';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
+import { displayDate } from '../../orders/utils/utils';
+import { getOrderStatusText } from '../../../config/utils';
 
 type MyProps = {
   onPressAccept: () => void,
@@ -110,7 +113,55 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPressAcc
               </View>
           </Button>
 
-          <View style={styles.basicVehicleTypeInfo}>
+          <View style={styles.timeNextStatusContainer}>
+            <View>
+              <Text style={styles.timeNextStatusText}>
+                Fecha/Hora de llegada del transportista
+                </Text>
+            </View>
+            <View>
+              <Text style={styles.timeNextStatusValue}>
+                {displayDate(order.originAt)}
+                </Text>
+            </View>
+          </View>
+          <View style={styles.progressBarContainer}>
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              // indeterminate 
+              progress={1}
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              // indeterminate 
+              progress={1}
+              // width={70} 
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              indeterminate 
+              // width={70} 
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              // indeterminate 
+              progress={0}
+              // width={70} 
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+          </View>
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusText}>{getOrderStatusText(order.status)}</Text>
+          </View>
+
+          {/* <View style={styles.basicVehicleTypeInfo}>
             <View style={{ flex: 1 }}>
               <Image 
                 style={styles.imageVehicleType} 
@@ -132,10 +183,10 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPressAcc
               <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2}</Text>
               <H3>{vehicleType.open}pepe</H3>
             </View>
-          </View>
-          <View style={styles.extraOptionsVehicleType}>
+          </View> */}
+          {/* <View style={styles.extraOptionsVehicleType}>
             <Text style={{ marginBottom: 5 }}>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3}</Text>
-            {/* <List
+            <List
               style={[styles.listExtraOptionsVehicleType, { maxHeight: draggableRange.top * 0.3 }]}
               dataArray={extraOptionsSelected}
               renderRow={(extra) =>
@@ -149,8 +200,8 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPressAcc
                   </Body>
                 </ListItem>
               }>
-            </List> */}
-          </View>
+            </List>
+          </View> */}
           <View style={[styles.containerbutton, { 
             bottom: (deviceHeight - draggableRange.top) + 20,
             left: (deviceWidth * 0.1) / 2
@@ -195,33 +246,32 @@ const styles = StyleSheet.create({
     width: '100%', 
     justifyContent: "center",
   },
-  basicVehicleTypeInfo:{
+  timeNextStatusContainer:{
     width: '90%', 
-    flexDirection: 'row',
-  },
-  imageVehicleType: {
-    width: 150, 
-    height: 90
-  },
-  moreVehicleTypeInfo: {
-    width: '90%', 
-    marginVertical: 5,
     flexDirection: 'column',
   },
-  moreVehicleTypeInfoItem: {
-    marginVertical: 3, 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center'
+  timeNextStatusText: {
+    marginVertical: 5,
+    fontSize: fontSize.XS,
+    color: color.grey.slateGrey
   },
-  extraOptionsVehicleType: {
-    flex: 1, 
-    width: '90%'
+  timeNextStatusValue: {
+    fontSize: fontSize.L,
+    fontWeight: fontWeight.L
   },
-  listExtraOptionsVehicleType: {
-    flex: 1, 
-    borderRadius: 5, 
-    borderWidth: 1
+  progressBarContainer: {
+    width: '90%', 
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 15
+  },
+  statusContainer: {
+    width: '90%',
+    marginVertical: 5,
+  },
+  statusText: {
+    fontSize: fontSize.M, 
+    fontWeight: fontWeight.M
   },
   listItemExtraOptionsVehicleType: {
     flexDirection: 'row', 

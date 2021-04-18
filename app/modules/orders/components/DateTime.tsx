@@ -90,7 +90,7 @@ export default class DateTime extends Component<MyProps, MyState> {
                     <H1 style={{ padding: 20, textAlign: 'center' }}>{displayDate(date)}</H1>
                 </View>
                 <DateTimePickerModal
-                    date={date}
+                    date={new Date(date)}
                     cancelTextIOS='Cancelar'
                     confirmTextIOS='Confirmar'
                     headerTextIOS='Programar el pedido'

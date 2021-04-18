@@ -41,7 +41,8 @@ function UserOrdersRoutes(props) {
                     headerTransparent: true,
                     headerLeft: () => (
                         <Button transparent
-                          onPress={() => navigation.pop()}
+                            // Aca despues hay que cambiarlo porque va haber un HistoryUserOrders
+                          onPress={() => navigation.navigate('ActiveUserOrders')}
                           color={color.black.black} >
                             <Icon 
                                 ios='chevron-back-circle-outline' 

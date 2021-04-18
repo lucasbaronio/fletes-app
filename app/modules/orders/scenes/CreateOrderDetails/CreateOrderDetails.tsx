@@ -75,6 +75,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                 },{
                     subtitle: 'Método de pago',
                     value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`
+                    // value: '...1234'
                 }]
               },
               {
@@ -127,13 +128,14 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
 
     onCreateOrder = () => {
         const { createFinalOrder, createOrder } = this.props;
+        console.log(createOrder);
         createFinalOrder(createOrder, this.onSuccessCreateOrder, this.onError);
     }
 
     onSuccessCreateOrder = () => {
         const { navigation } = this.props;
-        // navigation.navigate('OrderDetails');
-        alert('El pedido fue creado!!')
+        navigation.popToTop();
+        navigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
     }
 
     onError = (error) => {

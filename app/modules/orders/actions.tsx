@@ -1,4 +1,5 @@
 import * as t from './actionTypes';
+import * as tUserOrders from '../userOrders/actionTypes';
 import * as api from './api';
 
 export const setOrderOriginAddress = (originAddress, successCB) => {
@@ -58,12 +59,12 @@ export const setOrderPaymentMethod = (paymentMethod, successCB) => {
 export const createFinalOrder = (createOrder, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        console.log(createOrder);
         api.createOrder(createOrder, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                dispatch({type: t.ORDER_CREATE_ORDER, data});
+                console.log(data);
+                dispatch({type: tUserOrders.ORDER, data});
                 successCB();
             }
             else if (error) errorCB(error)

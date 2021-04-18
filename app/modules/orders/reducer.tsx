@@ -26,7 +26,7 @@ let initialState = {
         originAt: null,
         vehicleTypeId: null,
         extraOptions: [],
-        paymentMethodId: null,
+        // paymentMethodId: null,
     },
     orderInfo: {
         vehicleTypes: [],

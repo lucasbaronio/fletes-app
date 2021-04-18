@@ -72,7 +72,8 @@ const userOrdersReducer = (state = initialState, action) => {
         }
 
         case t.ORDER: {
-            const { order } = action.data;
+            const order = action.data;
+            // const { order } = action.data;
             const { activeOrders, historyOrders } = state;
             switch (order.status) {
                 case statusOrder.CANCELED:

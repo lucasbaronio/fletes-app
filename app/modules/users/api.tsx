@@ -34,13 +34,13 @@ export const getPaymentMethod = async (callback) => {
                     default: true,
                 },
                 {
-                    id: 100002,
+                    id: 100001,
                     finalNumbers: 4321,
                     exp: '01/22',
                     default: false,
                 },
                 {
-                    id: 100003,
+                    id: 100001,
                     finalNumbers: 6789,
                     exp: '09/24',
                     default: false,

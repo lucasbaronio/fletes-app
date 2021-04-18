@@ -4,12 +4,11 @@ import { View, Image, TouchableOpacity, useWindowDimensions, FlatList } from 're
 import { Body, Button, CheckBox, List, ListItem, Text } from 'native-base';
 
 import { actions as orders } from "../../index";
-const { setOrderPaymentMethod, createFinalOrder } = orders;
+const { setOrderPaymentMethod } = orders;
 import { actions as users } from "../../../users/index";
 const { getPaymentMethod, createPaymentMethod } = users;
 
 import styles from './styles';
-// import { windowWidth } from '../../../../styles/theme';
 import { showToast, showToastLoading } from '../../../../components/Toast';
 import SlidingPanelCreatePaymentMethod from '../../components/SlidingPanelCreatePaymentMethod';
 
@@ -17,7 +16,6 @@ type MyProps = {
     getPaymentMethod: (successCB, errorCB) => void,
     setOrderPaymentMethod: (paymentMethod, successCB) => void,
     createPaymentMethod: (paymentMethod, successCB, errorCB) => void,
-    createFinalOrder: (createOrder, successCB, errorCB) => void,
     createOrder: any,
     paymentMethods: any,
     isLoading: boolean,
@@ -78,16 +76,6 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
         const { navigation } = this.props;
         navigation.navigate('CreateOrderDetails');
     }
-
-    // onCreateOrder = () => {
-    //     const { createFinalOrder, createOrder } = this.props;
-    //     createFinalOrder(createOrder, this.onSuccessCreateOrder, this.onError);
-    // }
-
-    // onSuccessCreateOrder = () => {
-    //     const { navigation } = this.props;
-    //     // navigation.navigate('OrderDetails');
-    // }
 
     onError = (error) => {
         this.setState({ error });
@@ -178,4 +166,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderPaymentMethod, getPaymentMethod, createPaymentMethod, createFinalOrder })(PaymentMethod);
+export default connect(mapStateToProps, { setOrderPaymentMethod, getPaymentMethod, createPaymentMethod })(PaymentMethod);

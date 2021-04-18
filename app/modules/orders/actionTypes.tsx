@@ -5,7 +5,6 @@ export const ORDER_DATE = 'orders/ORDER_DATE';
 export const ORDER_VEHICLE_TYPE = 'orders/ORDER_VEHICLE_TYPE';
 export const ORDER_EXTRA = 'orders/ORDER_EXTRA';
 export const ORDER_PAYMENT_METHOD = 'orders/ORDER_PAYMENT_METHOD';
-export const ORDER_CREATE_ORDER = 'orders/ORDER_CREATE_ORDER';
 export const LOADING = 'orders/LOADING';
 // export const SAVE_PUSH_NOTIFICATION_ID = 'orders/SAVE_PUSH_NOTIFICATION_ID';
 // export const USERS_ME = 'users/USERS_ME';
