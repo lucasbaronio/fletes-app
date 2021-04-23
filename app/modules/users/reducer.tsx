@@ -1,4 +1,3 @@
-// import { AsyncStorage } from 'react-native';
 import { deleteMany, saveMany } from '../secureStore';
 import * as t from './actionTypes';
 
@@ -12,12 +11,11 @@ let initialState = {
         userType: ''
     },
     paymentMethods: [],
+    vehicles: [],
     isLoading: false
 };
 
 const ordersReducer = (state = initialState, action) => {
-    // console.log(action.type);
-    // console.log(state);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };
@@ -34,6 +32,12 @@ const ordersReducer = (state = initialState, action) => {
             const { paymentMethods } = action.data;
 
             return { ...state, paymentMethods };
+        }
+
+        case t.GET_VEHICLES: {
+            const { vehicles } = action.data;
+
+            return { ...state, vehicles };
         }
 
         default:

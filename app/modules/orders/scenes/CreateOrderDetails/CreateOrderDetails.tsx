@@ -74,8 +74,8 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                     value: displayDate(originAt)
                 },{
                     subtitle: 'Método de pago',
-                    value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`
-                    // value: '...1234'
+                    // value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`
+                    value: '...1234'
                 }]
               },
               {

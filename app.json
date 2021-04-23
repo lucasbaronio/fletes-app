@@ -17,7 +17,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ],
+        "NSLocationWhenInUseUsageDescription": "La aplicación necesita la ubicación en segundo plano para mejorar la experiencia del usuario.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "La aplicación necesita la ubicación en segundo plano para mejorar la experiencia del usuario.",
+        "NSLocationAlwaysUsageDescription": "La aplicación necesita la ubicación en segundo plano para mejorar la experiencia del usuario."
+      }
     },
     "android": {
       "adaptiveIcon": {

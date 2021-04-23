@@ -60,7 +60,6 @@ let initialState = {
 };
 
 const shipperOrdersReducer = (state = initialState, action) => {
-    console.log(action.type);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };
@@ -103,42 +102,65 @@ const shipperOrdersReducer = (state = initialState, action) => {
             }
         }
 
-        // case t.ORDER_DESTINATION_ADDRESS: {
-        //     const { destinationAddress } = action.data;
+        case t.ORDER_ACCEPTED: {
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.ACCEPTED 
+                } 
+            };
+        }
 
-        //     return { ...state, createOrder: { ...state.createOrder, destinationAddress } };
-        // }
+        case t.ORDER_TO_ORIGIN: {
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.TO_ORIGIN 
+                } 
+            };
+        }
 
-        // case t.GET_ORDER_INFO: {
-        //     const { vehicleTypes, extraOptions } = action.data;
+        case t.ORDER_AT_ORIGIN: {
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.AT_ORIGIN 
+                } 
+            };
+        }
 
-        //     return { ...state, orderInfo: { vehicleTypes, extraOptions } };
-        // }
+        case t.ORDER_TO_DESTINATION: {
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.TO_DESTINATION 
+                } 
+            };
+        }
 
-        // case t.ORDER_DATE: {
-        //     const { originAt } = action.data;
-        //     console.log(originAt);
+        case t.ORDER_AT_DESTINATION: {
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.AT_DESTINATION 
+                } 
+            };
+        }
 
-        //     return { ...state, createOrder: { ...state.createOrder, originAt } };
-        // }
-
-        // case t.ORDER_VEHICLE_TYPE: {
-        //     const { vehicleType } = action.data;
-
-        //     return { ...state, createOrder: { ...state.createOrder, vehicleTypeId: vehicleType.vehicleTypeId } };
-        // }
-
-        // case t.ORDER_EXTRA: {
-        //     const { extraOptions } = action.data;
-
-        //     return { ...state, createOrder: { ...state.createOrder, extraOptions } };
-        // }
-
-        // case t.ORDER_PAYMENT_METHOD: {
-        //     const { paymentMethod } = action.data;
-
-        //     return { ...state, createOrder: { ...state.createOrder, paymentMethodId: paymentMethod.id } };
-        // }
+        case t.ORDER_COMPLETED: {
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.COMPLETE_PENDING 
+                } 
+            };
+        }
 
         default:
             return state;

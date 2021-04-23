@@ -55,7 +55,7 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
                     return { ...payment, selected: payment.default }
                 }),
             });
-            setOrderPaymentMethod(paymentMethods.find(item => item.default), () => {});
+            // setOrderPaymentMethod(paymentMethods.find(item => item.default), () => {});
         }, this.onError);
     }
 
@@ -90,7 +90,7 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
           return { ...item, selected: item.id == id }
         });
         this.setState({ paymentMethodSelected: newPaymentMethodSelected })
-        setOrderPaymentMethod(paymentMethod, () => {});
+        // setOrderPaymentMethod(paymentMethod, () => {});
     };
 
     render() {

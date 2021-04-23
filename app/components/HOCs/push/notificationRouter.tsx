@@ -1,30 +1,31 @@
 import { showToast } from '../../Toast';
 import * as t from './actionTypes';
+import * as RootNavigation from '../../../config/routes/rootNavigation';
 
 export default function notificationRouter({ notification,
-    navigation, 
+    // navigation, 
     getOrderShipper, 
     getOrderUser,
 }) {
     const { data } = notification.request.content;
+    console.log(data);
     if (data.actionType) {
         switch (data.actionType) {
             case t.ORDER_PENDING_TO_SHIPPER: {
                 getOrderShipper(data.id, () => {
-                    navigation.navgate('MapShipperOrderDetails');
+                    RootNavigation.navigate('ShipperPendingOrdersRoutes', { screen: 'MapShipperOrderDetails' });
                 }, (error) => {
-                    navigation.navgate('MapShipperOrderDetails');
+                    RootNavigation.navigate('ShipperPendingOrdersRoutes', { screen: 'PendingShipperOrders' });
                     showToast(`Se produjo un error al cargar el pedido: ${error}`);
-                    // alert(`Se produjo un error al cargar el pedido: ${error}`);
                 });
                 break;
             }
 
             case t.ORDER_ACCEPTED_TO_USER: {
                 getOrderUser(data.id, () => {
-                    navigation.navgate('MapShipperOrderDetails');
+                    RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
                 }, (error) => {
-                    navigation.navgate('MapShipperOrderDetails');
+                    RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
                     showToast(`Se produjo un error al cargar el pedido: ${error}`);
                 });
                 break;

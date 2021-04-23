@@ -26,16 +26,22 @@ export const dateToMoment = (date) => {
 
 export const dateToBackend = (date) => {
     moment.locale(Localization.locale);
-    console.log(moment.utc(date));
-    console.log(moment.utc(date).format());
+    // console.log(moment.utc(date));
+    // console.log(moment.utc(date).format());
     return moment.utc(date).format();
 }
 
 export const dateToFrontend = (date) => {
     moment.locale(Localization.locale);
-    console.log(moment.utc(date));
-    console.log(moment.utc(date).format());
-    return moment.utc(date).format();
+    return moment(date).format();
+}
+
+export const isGreaterThan = (date1, date2) => {
+    return moment(date1).isSameOrAfter(moment(date2));
+}
+
+export const isLessThan = (date1, date2) => {
+    return moment(date1).isSameOrBefore(moment(date2));
 }
 
 // export const displayDateFromFormat = (date, format) => {

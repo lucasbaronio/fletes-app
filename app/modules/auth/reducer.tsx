@@ -18,7 +18,6 @@ let initialState = {
 };
 
 const authReducer = (state = initialState, action) => {
-    console.log(action.type);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };
@@ -48,7 +47,6 @@ const authReducer = (state = initialState, action) => {
 
         case t.SIGN_UP_INIT: {
             const { codeId } = action.data;
-            console.log('reducer', codeId);
 
             return { ...state, codeId, isLoading: false };
         }
@@ -71,7 +69,6 @@ const authReducer = (state = initialState, action) => {
 
         case t.RECOVER_INIT: {
             const { codeId } = action.data;
-            console.log('reducer', codeId);
 
             return { ...state, codeId, isLoading: false };
         }

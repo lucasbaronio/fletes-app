@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 
 import { actions as orders } from "../../index";
-const { setOrderSelected } = orders;
+const { setOrderSelected, getActiveOrdersUser } = orders;
 
 import styles from './styles';
 import { showToast } from '../../../../components/Toast';
-import { currentDate, displayDate } from '../../utils/utils';
+import { currentDate, displayDate, isLessThan, dateToFrontend } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
@@ -17,79 +17,25 @@ import { getOrderStatusText } from '../../../../config/utils';
 
 type MyProps = {
     setOrderSelected: (order, successCB) => void,
+    getActiveOrdersUser: (successCB, errorCB) => void,
+    activeOrders: any,
     isLoading: boolean,
     navigation: any,
 }
 type MyState = {
-    error: string,
-    isLoading: boolean,
-    data: any,
+    error: string
 }
 class ActiveUserOrders extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
             error: '',
-            isLoading: true,
-            data: [],
         };
     }
 
     componentDidMount() {
-        this.setState({
-            data: [
-                {
-                    orderId: 1,
-                    originAt: currentDate(),
-                    status: 'PENDING',
-                    originAddress: {
-                        addressId: 10,
-                        streetName: 'Vazquez Ledesma',
-                        streetNumber: '2983',
-                        doorNumber: '2D',
-                        coords: {
-                            latitude: -34.920704,
-                            longitude: -56.152935,
-                        }
-                    },
-                    destinationAddress: {
-                        addressId: 10,
-                        streetName: '18 de Julio',
-                        streetNumber: '1214',
-                        doorNumber: '3B',
-                        coords: {
-                            latitude: -34.867648,
-                            longitude: -56.019677,
-                        }
-                    }
-                },
-                {
-                    orderId: 2,
-                    originAt: currentDate(),
-                    status: 'ACCEPTED',
-                    originAddress: {
-                        addressId: 10,
-                        streetName: 'Vazquez Ledesma',
-                        streetNumber: '2983',
-                        doorNumber: '2D',
-                        coords: {
-                            latitude: -34.920704,
-                            longitude: -56.152935,
-                        }
-                    },
-                    destinationAddress: {
-                        addressId: 10,
-                        streetName: '18 de Julio',
-                        streetNumber: '1214',
-                        doorNumber: '3B',
-                        coords: {
-                            latitude: -34.917702,
-                            longitude: -56.149937,
-                        }
-                    }
-                },
-            ]
-        })
+        const { getActiveOrdersUser } = this.props; 
+        getActiveOrdersUser(() => {}, this.onError);
     }
 
     onSelectOrderItem = (order) => {
@@ -122,7 +68,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { data } = this.state;
+        const { activeOrders, isLoading } = this.props; 
         return (
             <SafeAreaView style={styles.container}>
                 <FlatList
@@ -130,14 +76,30 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                     //     <View style={{ flex: 1, marginVertical: 40 }}></View>
                     // }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}
-                    data={data}
+                    data={activeOrders}
                     keyExtractor={(item, index) => index.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            colors={[color.black.black]}
+                            tintColor={color.black.black}
+                            refreshing={isLoading}
+                            onRefresh={() => getActiveOrdersUser(() => {}, this.onError)}
+                        />
+                    }
                     renderItem={({ item }) => {
                         const { originAddress, destinationAddress } = item;
                         return (
                             <TouchableOpacity 
-                            onPress={() => this.onSelectOrderItem(item)}
+                                onPress={() => this.onSelectOrderItem(item)}
                                 style={styles.card}>
+                                {
+                                    isLessThan(dateToFrontend(item.originAt), currentDate()) &&
+                                    <View style={styles.floatText}>
+                                        <Text style={{ textAlign: 'center', color: color.red.redTomato }}>
+                                            Vencida
+                                        </Text>
+                                    </View>
+                                }
                                 <MapView 
                                     showsMyLocationButton={false}
                                     showsPointsOfInterest={false}
@@ -172,7 +134,6 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                                         origin={originAddress.coords}
                                         destination={destinationAddress.coords}
                                         apikey={API_KEY_GOOGLE}
-                                        region='UY'
                                         strokeWidth={3}
                                         strokeColor={color.green.greenLima} />
 
@@ -192,11 +153,9 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
 function mapStateToProps(state, props) {
     return {
-        createOrder: state.ordersReducer.createOrder,
-        orderInfo: state.ordersReducer.orderInfo,
-        paymentMethods: state.usersReducer.paymentMethods,
-        isLoading: state.ordersReducer.isLoading,
+        activeOrders: state.userOrdersReducer.activeOrders,
+        isLoading: state.userOrdersReducer.isLoading,
     }
 }
 
-export default connect(mapStateToProps, { setOrderSelected })(ActiveUserOrders);
+export default connect(mapStateToProps, { setOrderSelected, getActiveOrdersUser })(ActiveUserOrders);

@@ -14,11 +14,30 @@ export const API_AUTH_RECOVER = `${API_AUTH}/password/recover`;
 export const API_USERS = `${API}/users`;
 export const API_USERS_ME = `${API_USERS}/me`;
 export const API_USERS_PAYMENT_METHOD = `${API_USERS}/paymentMethods`;
+export const API_USERS_VEHICLES = `${API_USERS}/vehicles`;
 
 export const API_ORDERS = `${API}/orders`;
-export const API_ORDER = ({ orderId }) => `${API_ORDERS}/${orderId}`;
-// export const API_ORDERS_INFO = `${API_ORDERS}/info`;
-export const API_ORDERS_INFO = `${API}/ordersInfo`;
+export const API_ORDER = (orderId) => `${API_ORDERS}?orderId=${orderId}`;
+export const API_ORDERS_INFO = `${API}/orders/info`;
+
+export const API_ORDERS_ACTIVE = `${API_ORDERS}/mine/active`;
+
+
+
+export const API_ORDER_ACCEPTED = (orderId) => `${API_ORDERS}/status/${orderId}/accepted`;
+export const API_ORDER_TO_ORIGIN = (orderId) => `${API_ORDERS}/status/${orderId}/origin/pending`;
+export const API_ORDER_AT_ORIGIN = (orderId) => `${API_ORDERS}/status/${orderId}/origin/completed`;
+export const API_ORDER_TO_DESTINATION = (orderId) => `${API_ORDERS}/status/${orderId}/destination/pending`;
+export const API_ORDER_AT_DESTINATION = (orderId) => `${API_ORDERS}/status/${orderId}/destination/completed`;
+export const API_ORDER_COMPLETE_PENDING = (orderId) => `${API_ORDERS}/status/${orderId}/end/pending`;
+export const API_ORDER_COMPLETED = (orderId) => `${API_ORDERS}/status/${orderId}/end/completed`;
+
+
+
+
+
+
+
 
 export const API_EVENT_SIZE = 10;
 export const API_EVENT = `${API}events`;

@@ -35,7 +35,6 @@ let initialState = {
 };
 
 const ordersReducer = (state = initialState, action) => {
-    console.log(action.type);
     switch (action.type) {
         case t.LOADING: {
             return {...state, isLoading: !state.isLoading };

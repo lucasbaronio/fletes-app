@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet } from 'react-native';
-import { color, fontWeight } from '../../../../styles/theme';
+import { color, fontWeight, screenSize } from '../../../../styles/theme';
 
 export const styles = StyleSheet.create({
     container: {
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
       flexDirection: 'column', 
       margin: 10, 
       padding: 10, 
-      backgroundColor: color.grey.slateGrey, 
+      backgroundColor: color.grey.lightGrey, 
       borderRadius: 5
     },
     containerMapView: {
@@ -27,8 +27,26 @@ export const styles = StyleSheet.create({
       marginBottom: 5
     },
     statusOrder: {
-      color: color.grey.lightGrey
-    }
+      color: color.grey.slateGrey
+    },
+    floatText: {
+      zIndex: 9,
+      elevation: 7,
+
+      position: 'absolute',
+      flexDirection: 'row',
+      right: 15,
+      top: 15,
+      backgroundColor: color.translucent,
+      // opacity: 1,
+      alignItems: 'center',
+      // shadowColor: '#000000',
+      
+      shadowRadius: 10,
+      shadowOpacity: .6,
+      padding: 5,
+      borderRadius: 10,
+    },
 });
 
 export default styles;

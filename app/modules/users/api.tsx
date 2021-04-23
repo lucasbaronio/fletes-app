@@ -1,5 +1,6 @@
 import {
     API_USERS_PAYMENT_METHOD,
+    API_USERS_VEHICLES,
 } from './constants';
 import { get, post, deleteMethod } from '../globalApi';
 import { getHeaderToken } from '../security';
@@ -50,3 +51,9 @@ export const getPaymentMethod = async (callback) => {
     }
     callback && callback(true, data, null);
 }
+
+export const getVehicles = async (callback) => {
+    const header = await getHeaderToken();
+    get(API_USERS_VEHICLES, header, callback);
+}
+

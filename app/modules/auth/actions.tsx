@@ -16,7 +16,12 @@ export const registerInit = (mobileNumber, successCB, errorCB) => {
                 dispatch({type: t.SIGN_UP_INIT, data});
                 successCB();
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: t.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -32,7 +37,12 @@ export const register = (codeAndPwdDTO, successCB, errorCB) => {
                 dispatch({type: t.SIGN_UP, data});
                 successCB();
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: t.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -47,7 +57,12 @@ export const login = (logInDTO, successCB, errorCB) => {
                 dispatch({type: t.LOG_IN, data});
                 successCB();
             } 
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: t.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -62,7 +77,12 @@ export const passwordRecoverInit = (mobileNumber, successCB, errorCB) => {
                 dispatch({type: t.RECOVER_INIT, data});
                 successCB();
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: t.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -77,7 +97,12 @@ export const passwordRecover = (codeAndPwdDTO, successCB, errorCB) => {
                 dispatch({type: t.RECOVER, data});
                 successCB();
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: t.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -97,8 +122,12 @@ export const logOut = (successCB, errorCB) => {
             dispatch({type: t.LOG_OUT});
             if (isSuccess) 
                 successCB();
-            else if (error) 
-                errorCB(error);
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: t.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -120,7 +149,12 @@ export const checkLoginStatus = (successCB, errorCB) => {
                 dispatch({type: t.USERS_ME, data});
                 successCB();
             } 
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: t.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -132,55 +166,3 @@ export const savePushNotificationID = (pushNotificationID, successCB) => {
         successCB();
     };
 }
-
-// export function checkLoginStatus(callback) {
-//     return (dispatch) => {
-//         auth.onAuthStateChanged((user) => {
-//             let isLoggedIn = (user !== null);
-            
-//             if (isLoggedIn){
-//                 api.getLoggedUser(user.email, function (success, data, error) {
-//                     if (success) {
-//                         const { exists, user } = data;
-//                         if (exists) {
-//                             dispatch({type: t.LOGGED_IN, data: user});
-//                             dispatch({type: tProfile.USER_INFO_AVAILABLE, data: user, isLoggedUser: true });
-//                         }
-//                         callback(exists, isLoggedIn);
-//                     }else if (error) {
-//                         //unable to get user
-//                         dispatch({type: t.LOGGED_OUT});
-//                         callback(false, false);
-//                     }
-//                 });
-//             }else {
-//                 dispatch({type: t.LOGGED_OUT});
-//                 callback(false, isLoggedIn);
-//             }
-//         });
-//     };
-// }
-
-// export function signInWithFacebook(facebookToken, successCB, errorCB) {
-//     return (dispatch) => {
-//         api.signInWithFacebook(facebookToken, function (success, data, error) {
-//             if (success) {
-//                 if (data.hasUserName) dispatch({type: t.LOGGED_IN, data: data.user});
-//                 successCB(data);
-//             }else if (error) errorCB(error)
-//         });
-//     };
-// }
-
-// export function userLoggedInToCache(successCB) {
-//     return async (dispatch) => {
-//         const userId = await AsyncStorage.getItem('user_id');
-//         if (userId) {
-//             api.getUserById(userId, function (success, data, error) {
-//                 if (success) dispatch({ type: t.COMPLETE_USER_INFO, data });
-//                 else if (error) dispatch({ type: t.ONLY_USER_ID_INFO, data: userId });
-//                 successCB();
-//             });
-//         } else successCB();
-//     };
-// }

@@ -1,4 +1,5 @@
 import * as t from './actionTypes';
+import * as tAuth from '../auth/actionTypes';
 import * as api from './api';
 
 export const createPaymentMethod = (paymentMethod, successCB, errorCB) => {
@@ -11,7 +12,12 @@ export const createPaymentMethod = (paymentMethod, successCB, errorCB) => {
                 dispatch({type: t.CREATE_PAYMENT_METHOD, data});
                 successCB(data);
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -26,7 +32,32 @@ export const getPaymentMethod = (successCB, errorCB) => {
                 dispatch({type: t.GET_PAYMENT_METHODS, data});
                 successCB(data);
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
+        });
+    };
+}
+
+export const getVehicles = (successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.getVehicles((isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                dispatch({type: t.GET_VEHICLES, data});
+                successCB();
+            }
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }

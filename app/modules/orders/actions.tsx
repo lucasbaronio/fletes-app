@@ -1,4 +1,5 @@
 import * as t from './actionTypes';
+import * as tAuth from '../auth/actionTypes';
 import * as tUserOrders from '../userOrders/actionTypes';
 import * as api from './api';
 
@@ -26,7 +27,12 @@ export const getOrdersInfo = (successCB, errorCB) => {
                 dispatch({type: t.GET_ORDER_INFO, data});
                 successCB();
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }
@@ -67,7 +73,12 @@ export const createFinalOrder = (createOrder, successCB, errorCB) => {
                 dispatch({type: tUserOrders.ORDER, data});
                 successCB();
             }
-            else if (error) errorCB(error)
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
         });
     };
 }

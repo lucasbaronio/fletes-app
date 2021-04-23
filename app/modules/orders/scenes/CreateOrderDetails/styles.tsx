@@ -102,7 +102,7 @@ export const styles = StyleSheet.create({
       marginBottom: 5
     },
     valueSectionItem: {
-      color: color.grey.lightGrey
+      color: color.grey.slateGrey
     },
     containerSectionHeader: {
       paddingHorizontal: 20, 

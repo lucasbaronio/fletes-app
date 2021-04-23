@@ -6,6 +6,7 @@ const color = {
         steelBlue: '#4682B4',
         midnightBlue: '#191970',
         lightBlue: '#ADD8E6',
+        disable: '#9CAAD6',
     },
     grey: {
         lightGrey: '#D3D3D3',
@@ -22,6 +23,7 @@ const color = {
     red: {
         red: "red",
         redTomato: '#FF6347',
+        disable: '#D69C9C',
     },
     green: {
         greenLima: '#32CD32',

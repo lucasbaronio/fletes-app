@@ -60,7 +60,7 @@ const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { s
                 //     title: notification.data.title ? notification.data.title : 'Sin Título',
                 //     body: notification.data.body ? notification.data.body : 'Notificación sin un body 😀',
                 // });
-                notificationRouter({ notification, ...this.props });
+                // notificationRouter({ notification, ...this.props });
             });
 
             // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)

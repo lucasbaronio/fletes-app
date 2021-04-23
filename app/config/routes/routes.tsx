@@ -18,6 +18,7 @@ import { checkLoginStatus } from "../../modules/auth/actions";
 import { getToken } from '../../modules/security';
 import { showToast } from '../../components/Toast';
 import Splash from '../../modules/auth/scenes/Splash/Splash';
+import { navigationRef } from './rootNavigation';
 
 const Stack = createStackNavigator();
 
@@ -59,7 +60,9 @@ class Router extends Component<MyProps, MyState> {
             return <Splash/>
 
         return (
-            <NavigationContainer>
+            <NavigationContainer 
+                // @ts-ignore
+                ref={navigationRef}>
                 <Stack.Navigator initialRouteName={isLoggedIn ? "RouterLogged" : "Login"}>
                     {!isLoggedIn ?
                         (<><Stack.Screen

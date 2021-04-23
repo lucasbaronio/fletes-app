@@ -1,25 +1,28 @@
 import Constants from 'expo-constants';
-import { Body, Button, CheckBox, H2, H3, Icon, List, ListItem, Text } from 'native-base';
+import { Button, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, Image, ActivityIndicator
+  View, TouchableOpacity, ActivityIndicator
 } from 'react-native';
+import { Foundation } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
-import { ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 } from '../../../config/strings';
+import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
+import { displayDate } from '../../orders/utils/utils';
+import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
 
 type MyProps = {
-  onPressAccept: () => void,
+  onPress: () => void,
   order: any,
+  textButton: string,
+  vehicles: any,
   isLoading: boolean,
 }
-const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPressAccept, order, isLoading }) => {
+const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, order, vehicles, isLoading, textButton }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
-  const small = require('../../../../assets/vehicleType_chico.jpeg');
-  const regular = require('../../../../assets/vehicleType_mediano.jpeg');
-  const big = require('../../../../assets/vehicleType_grande.jpeg');
   const draggableRange = {
     top: (deviceHeight - Constants.statusBarHeight) * 0.9,
     bottom: (deviceHeight - Constants.statusBarHeight) * 0.5,
@@ -32,15 +35,6 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPressAcce
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  // const [extraOptionsSelected, setExtraOptionsSelected] = useState(extraOptions.map((extra) => {
-  //   return { ...extra, selected: false }
-  // }));
-  const [vehicleType, setVehicleType] = useState({
-    name: '',
-    open: false,
-    pricePerHour: 0,
-    vehicleTypeId: 0,
-  });
   
   const PANEL_VELOCITY = isiOS ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
@@ -49,16 +43,9 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPressAcce
   };
 
   const _onAnimatedValueChange = ({ value }) => {
-    const {top, bottom} = draggableRange;
-    const delta = top - bottom;
-    const valuePCT = ((value - bottom) * 100) / delta;
-
-    // if (value === top) {
-    //   setAtTop(true);
-    // }
-    // if (value === bottom) {
-    //   setAtTop(false);
-    // }
+    // const {top, bottom} = draggableRange;
+    // const delta = top - bottom;
+    // const valuePCT = ((value - bottom) * 100) / delta;
   }
 
   useEffect(() => {
@@ -68,14 +55,12 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPressAcce
 		return () => panelPositionVal.removeListener(slidingListener);
 	}, [panelPositionVal]);
 
-  const getVehicleTypeImage = (name) => {
-    if (name == 'chico') {
-        return small;
-    } else if (name == 'mediano') {
-        return regular;
-    } else {
-        return big;
-    }
+  const onPressHelp = () => {
+
+  }
+
+  const onPressMoreDetails = () => {
+
   }
 
   return (
@@ -110,65 +95,147 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPressAcce
               </View>
           </Button>
 
-          <View style={styles.basicVehicleTypeInfo}>
-            <View style={{ flex: 1 }}>
-              <Image 
-                style={styles.imageVehicleType} 
-                resizeMode='contain'
-                source={getVehicleTypeImage(vehicleType.name)} />
+          <View style={styles.timeNextStatusContainer}>
+            <View>
+              <Text style={styles.timeNextStatusText}>
+                Fecha y hora de llegada del transportista al punto de origen
+                </Text>
             </View>
-            <View style={{ flex: 1 }}>
-              <Text style={{ marginBottom: 10 }}>Tipo: <H2>{vehicleType.name}</H2></Text>
-              <Text style={{ marginBottom: 5 }}>Precio: </Text>
-              <Text style={{ marginBottom: 10, marginStart: 30 }}>$ <H3>{vehicleType.pricePerHour}</H3> por hora</Text>
-            </View>
-          </View>
-          <View style={styles.moreVehicleTypeInfo}>
-            <View style={styles.moreVehicleTypeInfoItem}>
-              <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1}</Text>
-              <H3>600 Kg</H3>
-            </View>
-            <View style={styles.moreVehicleTypeInfoItem}>
-              <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2}</Text>
-              <H3>{vehicleType.open}pepe</H3>
+            <View>
+              <Text style={styles.timeNextStatusValue}>
+                {displayDate(order.originAt)}
+                </Text>
             </View>
           </View>
-          <View style={styles.extraOptionsVehicleType}>
-            <Text style={{ marginBottom: 5 }}>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3}</Text>
-            {/* <List
-              style={[styles.listExtraOptionsVehicleType, { maxHeight: draggableRange.top * 0.3 }]}
-              dataArray={extraOptionsSelected}
-              renderRow={(extra) =>
-                <ListItem 
-                  key={extra.orderAvailableExtraOptionId}
-                  onPress={() => onAddOrRemoveExtraOption(extra)}>
-                  <CheckBox checked={extra.selected} />
-                  <Body style={styles.listItemExtraOptionsVehicleType}>
-                    <Text>{extra.text}:</Text>
-                    <Text><H3>+</H3> $<H3>{extra.price}</H3></Text>
-                  </Body>
-                </ListItem>
-              }>
-            </List> */}
+          <View style={styles.progressBarContainer}>
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              indeterminate={order.status === statusOrder.PENDING}
+              progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.PENDING) ? 1 : 0}
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              indeterminate={order.status === statusOrder.ACCEPTED}
+              progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.ACCEPTED) ? 1 : 0}
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              indeterminate={order.status === statusOrder.TO_ORIGIN}
+              progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.TO_ORIGIN) ? 1 : 0}
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+            <Icon 
+              name="pin"
+              style={{
+                  fontSize: iconSize.XL, 
+                  color: getOrderStatusIndex(order.status) >= getOrderStatusIndex(statusOrder.AT_ORIGIN)
+                            ? color.red.redTomato 
+                            : color.red.disable
+              }} />
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              indeterminate={order.status === statusOrder.TO_DESTINATION}
+              progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.TO_DESTINATION) ? 1 : 0}
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
+            <Icon 
+              name="pin"
+              style={{
+                  fontSize: iconSize.XL, 
+                  color: getOrderStatusIndex(order.status) >= getOrderStatusIndex(statusOrder.AT_DESTINATION)
+                            ? color.blue.steelBlue 
+                            : color.blue.disable
+              }} />
+            <Progress.Bar 
+              style={{ flex: 1, marginHorizontal: 2 }}
+              indeterminate={order.status === statusOrder.AT_DESTINATION}
+              progress={getOrderStatusIndex(order.status) == getOrderStatusIndex(statusOrder.COMPLETED) ? 1 : 0}
+              height={4}
+              color={color.blue.steelBlue}
+              unfilledColor={color.blue.lightBlue} />
           </View>
-          <View style={[styles.containerbutton, { 
-            bottom: (deviceHeight - draggableRange.top) + 20,
-            left: (deviceWidth * 0.1) / 2
-          }]}>
-            <Button 
-              // @ts-ignore
-              style={styles.button}
-              onPress={() => onPressAccept()}>
-                {
-                  isLoading ?
-                    <ActivityIndicator />
-                  :
-                  <Text style={styles.textButton}>
-                      Continuar
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusText}>{getOrderStatusText(order.status)}</Text>
+          </View>
+          <View style={styles.separator}></View>
+          {
+            !!order.shipper && order.status != statusOrder.PENDING &&
+            <><View style={styles.shipperContainer}>
+              <View>
+                <Text style={styles.shipperText}>
+                  Nombre del transportista
+                </Text>
+              </View>
+              <View>
+                <Text style={styles.shipperValue}>
+                  {order.shipper.name}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.separator}></View></>
+          }
+          <View style={styles.orderContainer}>
+            <View style={styles.orderPriceContainer}>
+              <View style={styles.orderPriceLine}>
+                  <Text style={styles.orderPriceText}>Total fijo</Text>
+                  <Text style={styles.orderPriceValue}>$ 300</Text>
+              </View>
+              <View style={styles.orderPriceLine}>
+                  <Text style={styles.orderPriceText}>Total por hora</Text>
+                  <Text style={styles.orderPriceValue}>$ 100</Text>
+              </View>
+            </View>
+            <View style={styles.orderDetailsContainer}>
+              <TouchableOpacity
+                style={styles.orderDetailsButton}
+                onPress={() => onPressMoreDetails()} >
+                <Foundation 
+                  name="clipboard-notes" 
+                  size={iconSize.XXL} 
+                  color={color.black.black} />
+                <Text style={styles.orderDetailsText}>Detalle</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.separator}></View>
+          <View style={styles.helpContainer}>
+            <TouchableOpacity
+              style={styles.helpButton}
+              onPress={() => onPressHelp()}
+            >
+              <MaterialCommunityIcons name="headset" size={iconSize.M} color={color.black.black} />
+              <Text style={styles.textHelpButton}>Necesitás ayuda?</Text>
+            </TouchableOpacity>
+          </View>
+
+          {
+            textButton != '' &&
+            <View style={[styles.containerbutton, { 
+              bottom: (deviceHeight - draggableRange.top) + 20,
+              left: (deviceWidth * 0.1) / 2
+            }]}>
+              <Button 
+                // @ts-ignore
+                style={styles.button}
+                onPress={onPress}>
+                  {
+                    isLoading ?
+                      <ActivityIndicator />
+                    :
+                    <Text style={styles.textButton}>
+                      {textButton}
                     </Text>
-                }
-            </Button>
-          </View>
+                  }
+              </Button>
+            </View>
+          }
+          
         </View>
     </SlidingUpPanel>
   );
@@ -195,38 +262,110 @@ const styles = StyleSheet.create({
     width: '100%', 
     justifyContent: "center",
   },
-  basicVehicleTypeInfo:{
+  timeNextStatusContainer:{
+    width: '90%', 
+    flexDirection: 'column',
+  },
+  timeNextStatusText: {
+    marginVertical: 5,
+    fontSize: fontSize.XS,
+    color: color.grey.slateGrey
+  },
+  timeNextStatusValue: {
+    fontSize: fontSize.L,
+    fontWeight: fontWeight.L
+  },
+  progressBarContainer: {
+    width: '90%', 
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 15
+  },
+  statusContainer: {
+    width: '90%',
+    marginVertical: 5,
+  },
+  statusText: {
+    fontSize: fontSize.M, 
+    fontWeight: fontWeight.M
+  },
+  separator: {
+    width: '90%',
+    height: 5, 
+    marginVertical: 20, 
+    borderBottomWidth: 1, 
+    borderBottomColor: color.grey.lightGrey,
+  },
+  shipperContainer: {
+    width: '90%', 
+  },
+  shipperText: {
+    marginVertical: 5,
+    fontSize: fontSize.XS,
+    color: color.grey.slateGrey
+  },
+  shipperValue: {
+    fontSize: fontSize.L,
+    fontWeight: fontWeight.L
+  },
+  orderContainer: {
     width: '90%', 
     flexDirection: 'row',
   },
-  imageVehicleType: {
-    width: 150, 
-    height: 90
-  },
-  moreVehicleTypeInfo: {
-    width: '90%', 
-    marginVertical: 5,
+  orderPriceContainer: {
+    flex: .8,
     flexDirection: 'column',
+    alignItems: 'flex-start',
   },
-  moreVehicleTypeInfoItem: {
-    marginVertical: 3, 
+  orderPriceLine: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
-    alignItems: 'center'
+    marginHorizontal: 10,
+    marginVertical: 3,
   },
-  extraOptionsVehicleType: {
+  orderPriceText: { 
     flex: 1, 
-    width: '90%'
+    fontSize: fontSize.S
   },
-  listExtraOptionsVehicleType: {
-    flex: 1, 
-    borderRadius: 5, 
-    borderWidth: 1
+  orderPriceValue: { 
+    fontWeight: fontWeight.L, 
+    fontSize: fontSize.M
   },
-  listItemExtraOptionsVehicleType: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center'
+  orderDetailsContainer: {
+    flex: .2,
+    borderLeftWidth: 1,
+    borderLeftColor: color.grey.lightGrey,
+  },
+  orderDetailsButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  orderDetailsText: {
+    marginTop: 3,
+    textAlign: 'center',
+    fontSize: fontSize.XS,
+    fontWeight: fontWeight.M
+  },
+  helpContainer: {
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  helpButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 6,
+    borderColor: color.grey.lightGrey,
+    backgroundColor: color.grey.lightGrey,
+  },
+  textHelpButton: {
+    color: color.black.black, 
+    fontSize: fontSize.XS, 
+    fontWeight: fontWeight.L, 
+    marginLeft: 3
   },
   containerbutton: {
     zIndex: 9,

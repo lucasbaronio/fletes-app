@@ -13,20 +13,12 @@ type MyProps = {
 }
 type MyState = {
     error: string,
-    mobileNumber: string,
-    password: string,
-    showPassword: boolean,
 }
 class Splash extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
             error: '',
-            // mobileNumber: '',
-            password: '',
-            mobileNumber: '091000000',
-            // password: 'strongPassword',
-            showPassword: false,
         }
     }
 

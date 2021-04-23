@@ -4,6 +4,7 @@ import { Alert, SafeAreaView, View } from 'react-native';
 import { Text, Toast } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
+import * as Permissions from 'expo-permissions';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
@@ -18,13 +19,15 @@ import {
     ERROR_EMPTY_STREET_NAME_DESTINATION,
     ERROR_EMPTY_STREET_NUMBER_DESTINATION, 
     ORDERS_SCENES_MAP_ADDRESS_TITLE,
-    ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION} from '../../../../config/strings';
+    ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION,
+    ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION_IOS
+} from '../../../../config/strings';
 import { isNotEmpty } from '../../utils/validate';
 import MapViewDirections from 'react-native-maps-directions';
 import SlidingPanelDateAddress from '../../components/SlidingPanelDateAddress';
 import { dateToBackend } from '../../utils/utils';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
-import { color, iconSize } from '../../../../styles/theme';
+import { color, iconSize, isiOS } from '../../../../styles/theme';
 
 type MyProps = {
     setOrderOriginAddress: (data, onSuccess) => void,
@@ -65,12 +68,17 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     _getLocationAsync = async () => {
         // let { status } = await Permissions.askAsync(Permissions.LOCATION);
         let { status } = await Location.requestForegroundPermissionsAsync();
+        // const { status, permissions } = await Permissions.askAsync(Permissions.LOCATION_FOREGROUND);
         if (status !== 'granted') {
             alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION);
-            console.log('El permiso de ubicacion fue denegado');
-        }
+            console.log('El permiso de ubicación fue denegado');
+        } 
+        // else if (isiOS && (permissions.ios.scope !== 'always')) {
+        //     alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION_IOS);
+        //     console.log('Permiso de uicación no es del tipo \'always\'');
+        // }
 
-        let location = await Location.getCurrentPositionAsync()
+        let location = await Location.getCurrentPositionAsync({})
         let currentLocation = {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
