@@ -6,11 +6,11 @@ import { statusOrder } from '../../config/utils';
 
 type OrderStatusAccepted = {
     orderId: number,
-    vehicleId: number
+    vehicle: any
 }
 type OrderStatusTo = {
     orderId: number,
-    arrivesAt: string,
+    arrivesAt: any,
 }
 
 export const setOrderSelected = (order, successCB) => {
@@ -40,11 +40,51 @@ export const getOrderShipper = (orderId, successCB, errorCB) => {
     };
 }
 
+export const getOrdersPendingShipper = (successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.getOrdersPendingShipper((isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                dispatch({type: t.ORDERS_PENDING_SHIPPER, data});
+                successCB();
+            }
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
+        });
+    };
+}
+
+export const getActiveOrdersShipper = (successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.getActiveOrdersShipper((isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                dispatch({type: t.ORDERS_ACTIVE_SHIPPER, data});
+                successCB();
+            }
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
+        });
+    };
+}
+
 export const changeOrderStatusAccepted = (orderStatusAccepted: OrderStatusAccepted, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        const { orderId, vehicleId } = orderStatusAccepted;
-        api.orderStatusAccepted(orderId, vehicleId, (isSuccess, response, error) => {
+        const { orderId, vehicle } = orderStatusAccepted;
+        api.orderStatusAccepted(orderId, vehicle, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 dispatch({type: t.ORDER_ACCEPTED});
@@ -100,6 +140,7 @@ export const changeOrderStatusAtOrigin = (orderId, successCB, errorCB) => {
 }
 
 export const changeOrderStatusToDestination = (orderStatusToDestination: OrderStatusTo, successCB, errorCB) => {
+    console.log(orderStatusToDestination);
     return (dispatch) => {
         dispatch({type: t.LOADING});
         const { orderId, arrivesAt } = orderStatusToDestination;
@@ -144,7 +185,7 @@ export const changeOrderStatusCompletePending = (orderId, successCB, errorCB) =>
         api.orderStatusCompletePending(orderId, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
-                dispatch({type: t.ORDER_COMPLETED});
+                dispatch({type: t.ORDER_COMPLETE_PENDING});
                 successCB(statusOrder.COMPLETE_PENDING);
             }
             else if (error) {

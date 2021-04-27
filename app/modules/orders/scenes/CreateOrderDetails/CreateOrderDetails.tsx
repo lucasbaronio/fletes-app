@@ -9,8 +9,8 @@ import { actions as users } from "../../../users/index";
 const { getPaymentMethod, createPaymentMethod } = users;
 
 import styles from './styles';
-import { showToast } from '../../../../components/Toast';
 import { displayDate } from '../../utils/utils';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     getPaymentMethod: (successCB, errorCB) => void,
@@ -25,7 +25,7 @@ type MyProps = {
 }
 type MyState = {
     error: string,
-    isLoading: boolean,
+    visibleModal: boolean,
     data: any,
     extraOptions: any,
     vehicleType: any,
@@ -37,7 +37,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
-            isLoading: true,
+            visibleModal: false,
             data: [],
             extraOptions: [],
             vehicleType: null,
@@ -139,14 +139,18 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     render() {
-        const { data, totalPricePerHour, totalPriceFixed, vehicleType, extraOptions } = this.state;
+        const { data, totalPricePerHour, totalPriceFixed, vehicleType, extraOptions, error, visibleModal } = this.state;
         return (
             <SafeAreaView style={styles.container}>
+                <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <SectionList
                     ListHeaderComponent={
                         <View style={styles.containerHeaderComponent}>

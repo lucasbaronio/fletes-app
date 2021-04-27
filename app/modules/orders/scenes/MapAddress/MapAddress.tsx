@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Alert, SafeAreaView, View } from 'react-native';
-import { Text, Toast } from 'native-base';
+import { ActivityIndicator, Modal, SafeAreaView, View } from 'react-native';
+import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
-import * as Permissions from 'expo-permissions';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
@@ -12,7 +11,6 @@ import { actions as orders } from "../../index";
 const { setOrderOriginAddress, setOrderDestinationAddress, setOrderDate, getOrdersInfo } = orders;
 
 import styles from './styles';
-import { showToast, showToastLoading } from '../../../../components/Toast';
 import { 
     ERROR_EMPTY_STREET_NAME_ORIGIN, 
     ERROR_EMPTY_STREET_NUMBER_ORIGIN,
@@ -28,6 +26,7 @@ import SlidingPanelDateAddress from '../../components/SlidingPanelDateAddress';
 import { dateToBackend } from '../../utils/utils';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
 import { color, iconSize, isiOS } from '../../../../styles/theme';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     setOrderOriginAddress: (data, onSuccess) => void,
@@ -40,6 +39,7 @@ type MyProps = {
 type MyState = {
     error: string,
     isLoading: boolean,
+    visibleModal: boolean,
     orderOriginAddress: any,
     orderDestinationAddress: any,
     currentLocation: any,
@@ -53,6 +53,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             isLoading: true,
+            visibleModal: false,
             orderOriginAddress: null,
             orderDestinationAddress: null,
             currentLocation: null,
@@ -60,9 +61,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     }
 
     async componentDidMount() {
-        showToastLoading('Cargando mapa...');
         await this._getLocationAsync();
-        Toast.hide();
     }
 
     _getLocationAsync = async () => {
@@ -104,16 +103,16 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
 
     onNextScreen = (address, date) => {
         const val1 = isNotEmpty(address.originAddress.streetName, () => {
-            showToast(ERROR_EMPTY_STREET_NAME_ORIGIN);
+            this.setState({ error: ERROR_EMPTY_STREET_NAME_ORIGIN, visibleModal: true });
         });
         const val2 = isNotEmpty(address.originAddress.streetNumber, () => {
-            showToast(ERROR_EMPTY_STREET_NUMBER_ORIGIN);
+            this.setState({ error: ERROR_EMPTY_STREET_NUMBER_ORIGIN, visibleModal: true });
         });
         const val3 = isNotEmpty(address.destinationAddress.streetName, () => {
-            showToast(ERROR_EMPTY_STREET_NAME_DESTINATION);
+            this.setState({ error: ERROR_EMPTY_STREET_NAME_DESTINATION, visibleModal: true });
         });
         const val4 = isNotEmpty(address.destinationAddress.streetNumber, () => {
-            showToast(ERROR_EMPTY_STREET_NUMBER_DESTINATION);
+            this.setState({ error: ERROR_EMPTY_STREET_NUMBER_DESTINATION, visibleModal: true });
         });
         
         if (val1 && val2 && val3 && val4) {
@@ -144,90 +143,106 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     render() {
         const { isLoadingNext } = this.props;
-        const { orderOriginAddress, orderDestinationAddress, isLoading } = this.state;
+        const { orderOriginAddress, orderDestinationAddress, isLoading, error, visibleModal } = this.state;
 
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar style="dark" />
-                <View style={styles.floatText}>
-                    <Text style={{ textAlign: 'center' }}>
-                        {ORDERS_SCENES_MAP_ADDRESS_TITLE}
-                    </Text>
-                </View>
-                <View style={styles.mylocation}>
-                    <MaterialIcons 
-                        name='my-location'
-                        color={color.black.black}
-                        size={iconSize.L}
-                        onPress={() => { this.centrateMap() }} />
-                </View>
-                <MapView 
-                    // loadingEnabled={isLoading}
-                    // loadingBackgroundColor="black"
-                    // loadingIndicatorColor="white"
-                    initialRegion={orderOriginAddress}
-                    showsCompass={true}
-                    rotateEnabled={true}
-                    showsUserLocation={true}
-                    showsTraffic={true}
-                    userLocationAnnotationTitle={'Mi ubicación'}
-                    ref={(map) => {this.map = map}}
-                    style={styles.mapStyle} >
+                <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isLoading} >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalText}>Cargando ubicación</Text>
+                            <ActivityIndicator style={styles.activityIndicator} />
+                        </View>
+                    </View>
+                </Modal>
+                    <View style={styles.floatText}>
+                        <Text style={{ textAlign: 'center' }}>
+                            {ORDERS_SCENES_MAP_ADDRESS_TITLE}
+                        </Text>
+                    </View>
+                    <View style={styles.mylocation}>
+                        <MaterialIcons 
+                            name='my-location'
+                            color={color.black.black}
+                            size={iconSize.L}
+                            onPress={() => { this.centrateMap() }} />
+                    </View>
+                    <MapView 
+                        // loadingEnabled={isLoading}
+                        // loadingBackgroundColor="black"
+                        // loadingIndicatorColor="white"
+                        initialRegion={orderOriginAddress}
+                        showsCompass={true}
+                        rotateEnabled={true}
+                        showsUserLocation={true}
+                        showsTraffic={true}
+                        userLocationAnnotationTitle={'Mi ubicación'}
+                        ref={(map) => {this.map = map}}
+                        style={styles.mapStyle} >
 
-                    {
-                        !isLoading &&
-                        <><Marker 
-                            draggable
-                            // image={require('../../../../../assets/driver.png')}
-                            onDragEnd = {(e) => {
-                                this.setState({ orderDestinationAddress: {
-                                    ...orderDestinationAddress,
-                                    latitude: e.nativeEvent.coordinate.latitude,
-                                    longitude: e.nativeEvent.coordinate.longitude,
-                                } })
-                            }}
-                            pinColor={color.blue.steelBlue}
-                            coordinate={orderDestinationAddress}
-                            anchor={{ x: 0.35, y: 0.32}}
-                            style={{ width: 10, height: 10 }} >
-                            
-                        </Marker>
-                        <Marker 
-                            draggable
-                            // image={require('../../../../../assets/driver.png')}
-                            onDragEnd = {(e) => {
-                                this.setState({ orderOriginAddress: {
-                                    ...orderOriginAddress,
-                                    latitude: e.nativeEvent.coordinate.latitude,
-                                    longitude: e.nativeEvent.coordinate.longitude,
-                                } })
-                            }}
-                            pinColor={color.red.redTomato}
-                            coordinate={orderOriginAddress}
-                            anchor={{ x: 0.35, y: 0.32}}
-                            style={{ width: 10, height: 10 }} >
-                            
-                        </Marker>
-                        <MapViewDirections
-                            origin={orderOriginAddress}
-                            destination={orderDestinationAddress}
-                            apikey={API_KEY_GOOGLE}
-                            // region='UY'
-                            strokeWidth={3}
-                            strokeColor={color.green.greenLima} />
-                        </>
-                    }
-                    
-                </MapView>
-                <SlidingPanelDateAddress 
-                    isLoading={isLoadingNext}
-                    onNextScreen={this.onNextScreen}/>
+                        {
+                            !isLoading &&
+                            <><Marker 
+                                draggable
+                                // image={require('../../../../../assets/driver.png')}
+                                onDragEnd = {(e) => {
+                                    this.setState({ orderDestinationAddress: {
+                                        ...orderDestinationAddress,
+                                        latitude: e.nativeEvent.coordinate.latitude,
+                                        longitude: e.nativeEvent.coordinate.longitude,
+                                    } })
+                                }}
+                                pinColor={color.blue.steelBlue}
+                                coordinate={orderDestinationAddress}
+                                anchor={{ x: 0.35, y: 0.32}}
+                                style={{ width: 10, height: 10 }} >
+                                
+                            </Marker>
+                            <Marker 
+                                draggable
+                                // image={require('../../../../../assets/driver.png')}
+                                onDragEnd = {(e) => {
+                                    this.setState({ orderOriginAddress: {
+                                        ...orderOriginAddress,
+                                        latitude: e.nativeEvent.coordinate.latitude,
+                                        longitude: e.nativeEvent.coordinate.longitude,
+                                    } })
+                                }}
+                                pinColor={color.red.redTomato}
+                                coordinate={orderOriginAddress}
+                                anchor={{ x: 0.35, y: 0.32}}
+                                style={{ width: 10, height: 10 }} >
+                                
+                            </Marker>
+                            <MapViewDirections
+                                origin={orderOriginAddress}
+                                destination={orderDestinationAddress}
+                                apikey={API_KEY_GOOGLE}
+                                // region='UY'
+                                strokeWidth={3}
+                                strokeColor={color.green.greenLima} />
+                            </>
+                        }
+                        
+                    </MapView>
+                    <SlidingPanelDateAddress 
+                        isLoading={isLoadingNext}
+                        onNextScreen={this.onNextScreen}/>
+                
             </SafeAreaView>
         );
     }

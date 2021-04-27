@@ -16,6 +16,7 @@ import {
     ERROR_PASSWORD_DIFF, 
     ERROR_PASSWORD_LENGTH 
 } from '../../../../config/strings';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     register: (data, onSuccess, onError) => void,
@@ -26,6 +27,7 @@ type MyProps = {
 }
 type MyState = {
     error: string,
+    visibleModal: boolean,
     code: string,
     password: string,
     showPassword: boolean,
@@ -36,6 +38,7 @@ class Register extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
+            visibleModal: false,
             code: '',
             password: '',
             showPassword: false,
@@ -43,21 +46,20 @@ class Register extends React.Component<MyProps, MyState> {
     }
 
     onSubmit = () => {
-        Toast.hide();
-        this.setState({ error: '' });
+        this.setState({ error: '', visibleModal: false });
         
         const { code, password} = this.state;
         const val1 = isNotEmpty(code, () => {
-            this.showToast(ERROR_EMPTY_CODE)
+            this.setState({ error: ERROR_EMPTY_CODE, visibleModal: true });
         });
         const val2 = val1 && isNotEmpty(password, () => {
-            this.showToast(ERROR_EMPTY_PASSWORD)
+            this.setState({ error: ERROR_EMPTY_PASSWORD, visibleModal: true });
         });
         const val3 = val1 && val2 && isOnlyNumbers(code, () => {
-            this.showToast(ERROR_INCORRECT_CODE)
+            this.setState({ error: ERROR_INCORRECT_CODE, visibleModal: true });
         });
         const val4 = val1 && val2 && val3 && validatePassword(password, () => {
-            this.showToast(ERROR_PASSWORD_LENGTH)
+            this.setState({ error: ERROR_PASSWORD_LENGTH, visibleModal: true });
         });
 
         if (val1 && val2 && val3 && val4) {
@@ -67,29 +69,22 @@ class Register extends React.Component<MyProps, MyState> {
         }
     }
 
-    showToast = (msj) => {
-        Toast.show({
-            text: msj,
-            buttonText: "Aceptar",
-            buttonTextStyle: { color: "#008000" },
-            buttonStyle: { backgroundColor: "#5cb85c" },
-            duration: 300000
-        })
-    }
-
     onSuccess = () => {
         const { navigation } = this.props;
         navigation.navigate('RouterLogged');
     }
 
     onError = (error) => {
-        this.setState({ error });
-        this.showToast(this.state.error)
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     render() {
         const { isLoading } = this.props;
-        const { showPassword, code, password } = this.state;
+        const { showPassword, code, password, error, visibleModal } = this.state;
         return (
             <Container>
                 {/* <Header /> */}
@@ -98,7 +93,7 @@ class Register extends React.Component<MyProps, MyState> {
                     // scrollEnabled={false}
                     contentContainerStyle={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
                 >
-
+                    <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                     <View style={{ alignItems: 'center', marginHorizontal: 20 }}>
                         <Text style={{ textAlign: 'center' }}>
                             Te hemos enviado un código por SMS a su celular

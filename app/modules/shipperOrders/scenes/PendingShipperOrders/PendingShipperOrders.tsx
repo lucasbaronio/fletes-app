@@ -5,92 +5,42 @@ import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
 
-import { actions as orders } from "../../index";
-const { setOrderSelected } = orders;
+import { actions as shipperOrders } from "../../index";
+const { setOrderSelected, getOrdersPendingShipper } = shipperOrders;
 
 import styles from './styles';
-import { showToast } from '../../../../components/Toast';
-import { currentDate, displayDate } from '../../utils/utils';
+import { currentDate, dateToFrontend, displayDate } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
 import { getOrderStatusText } from '../../../../config/utils';
 import { ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION } from '../../../../config/strings';
+import { isLessThan } from '../../../userOrders/utils/utils';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     setOrderSelected: (order, successCB) => void,
+    getOrdersPendingShipper: (successCB, errorCB) => void,
     pendingOrders: any,
     isLoading: boolean,
     navigation: any,
 }
 type MyState = {
     error: string,
-    data: any,
+    visibleModal: boolean,
 }
 class PendingShipperOrders extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
             error: '',
-            data: [],
+            visibleModal: false,
         };
     }
 
     async componentDidMount() {
-        this.setState({
-            data: [
-                {
-                    orderId: 1,
-                    originAt: currentDate(),
-                    status: 'PENDING',
-                    originAddress: {
-                        addressId: 10,
-                        streetName: 'Vazquez Ledesma',
-                        streetNumber: '2983',
-                        doorNumber: '2D',
-                        coords: {
-                            latitude: -34.920704,
-                            longitude: -56.152935,
-                        }
-                    },
-                    destinationAddress: {
-                        addressId: 10,
-                        streetName: '18 de Julio',
-                        streetNumber: '1214',
-                        doorNumber: '3B',
-                        coords: {
-                            latitude: -34.867648,
-                            longitude: -56.019677,
-                        }
-                    }
-                },
-                {
-                    orderId: 2,
-                    originAt: currentDate(),
-                    status: 'PENDING',
-                    originAddress: {
-                        addressId: 10,
-                        streetName: 'Vazquez Ledesma',
-                        streetNumber: '2983',
-                        doorNumber: '2D',
-                        coords: {
-                            latitude: -34.920704,
-                            longitude: -56.152935,
-                        }
-                    },
-                    destinationAddress: {
-                        addressId: 10,
-                        streetName: '18 de Julio',
-                        streetNumber: '1214',
-                        doorNumber: '3B',
-                        coords: {
-                            latitude: -34.917702,
-                            longitude: -56.149937,
-                        }
-                    }
-                },
-            ]
-        });
+        const { getOrdersPendingShipper } = this.props; 
+        getOrdersPendingShipper(() => {}, this.onError);
         await this.requestPermissions();
     }
 
@@ -127,8 +77,11 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     getMidPointCoords = (coordsA, coordsB) => {
@@ -146,31 +99,40 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { data } = this.state;
-        const { isLoading } = this.props;
+        const { error, visibleModal } = this.state;
+        const { isLoading, pendingOrders, getOrdersPendingShipper } = this.props;
         return (
             <SafeAreaView style={styles.container}>
+                <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <FlatList
                     // ListFooterComponent={
                     //     <View style={{ flex: 1, marginVertical: 40 }}></View>
                     // }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}
-                    data={data}
-                    keyExtractor={(item, index) => index.toString()}
-                    // refreshControl={
-                    //     <RefreshControl
-                    //         colors={[color.black.black]}
-                    //         tintColor={color.black.black}
-                    //         refreshing={isLoading}
-                    //         onRefresh={() => getPendingOrdersShipper(() => {}, this.onError)}
-                    //     />
-                    // }
+                    data={pendingOrders}
+                    keyExtractor={(item, index) => item.orderId.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            colors={[color.black.black]}
+                            tintColor={color.black.black}
+                            refreshing={isLoading}
+                            onRefresh={() => getOrdersPendingShipper(() => {}, this.onError)}
+                        />
+                    }
                     renderItem={({ item }) => {
                         const { originAddress, destinationAddress } = item;
                         return (
                             <TouchableOpacity 
                             onPress={() => this.onSelectOrderItem(item)}
                                 style={styles.card}>
+                                {
+                                    isLessThan(dateToFrontend(item.originAt), currentDate()) &&
+                                    <View style={styles.floatText}>
+                                        <Text style={{ textAlign: 'center', color: color.red.redTomato }}>
+                                            Vencida
+                                        </Text>
+                                    </View>
+                                }
                                 <MapView 
                                     showsMyLocationButton={false}
                                     showsPointsOfInterest={false}
@@ -229,4 +191,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderSelected })(PendingShipperOrders);
+export default connect(mapStateToProps, { setOrderSelected, getOrdersPendingShipper })(PendingShipperOrders);

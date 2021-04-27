@@ -16,7 +16,6 @@ import AddressSearchBar from '../../modules/orders/components/AddressSearchBar';
 import { checkLoginStatus } from "../../modules/auth/actions";
 
 import { getToken } from '../../modules/security';
-import { showToast } from '../../components/Toast';
 import Splash from '../../modules/auth/scenes/Splash/Splash';
 import { navigationRef } from './rootNavigation';
 

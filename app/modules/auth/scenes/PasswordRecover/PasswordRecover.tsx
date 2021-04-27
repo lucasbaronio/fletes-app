@@ -6,7 +6,6 @@ import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text } from
 import { actions as auth } from "../../index"
 const { passwordRecover } = auth;
 
-import { showToast } from '../../../../components/Toast';
 import { isNotEmpty, isOnlyNumbers, validatePassword } from '../../utils/validate';
 import { 
     ERROR_EMPTY_CODE, 
@@ -14,6 +13,7 @@ import {
     ERROR_INCORRECT_CODE, 
     ERROR_PASSWORD_LENGTH 
 } from '../../../../config/strings';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     passwordRecover: (data, onSuccess, onError) => void,
@@ -24,6 +24,7 @@ type MyProps = {
 }
 type MyState = {
     error: string,
+    visibleModal: boolean,
     code: string,
     password: string,
     showPassword: boolean,
@@ -34,6 +35,7 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
+            visibleModal: false,
             code: '',
             password: '',
             showPassword: false,
@@ -41,21 +43,20 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
     }
 
     onSubmit = () => {
-        Toast.hide();
-        this.setState({ error: '' });
+        this.setState({ error: '', visibleModal: false });
         
         const { code, password} = this.state;
         const val1 = isNotEmpty(code, () => {
-            showToast(ERROR_EMPTY_CODE)
+            this.setState({ error: ERROR_EMPTY_CODE, visibleModal: true });
         });
         const val2 = val1 && isNotEmpty(password, () => {
-            showToast(ERROR_EMPTY_PASSWORD)
+            this.setState({ error: ERROR_EMPTY_PASSWORD, visibleModal: true });
         });
         const val3 = val1 && val2 && isOnlyNumbers(code, () => {
-            showToast(ERROR_INCORRECT_CODE)
+            this.setState({ error: ERROR_INCORRECT_CODE, visibleModal: true });
         });
         const val4 = val1 && val2 && val3 && validatePassword(password, () => {
-            showToast(ERROR_PASSWORD_LENGTH)
+            this.setState({ error: ERROR_PASSWORD_LENGTH, visibleModal: true });
         });
 
         if (val1 && val2 && val3 && val4) {
@@ -70,13 +71,16 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     render() {
         const { isLoading } = this.props;
-        const { showPassword, password, code } = this.state;
+        const { showPassword, password, code, error, visibleModal } = this.state;
         return (
             <Container>
                 <Content
@@ -84,7 +88,7 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
                     // scrollEnabled={false}
                     contentContainerStyle={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
                 >
-
+                    <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                     <View style={{ alignItems: 'center', marginHorizontal: 20 }}>
                         <Text style={{ textAlign: 'center' }}>
                             Te hemos enviado un código por SMS a su celular

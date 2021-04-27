@@ -6,13 +6,13 @@ import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinn
 import { actions as auth } from "../../index";
 const { login } = auth;
 
-import { showToast } from '../../../../components/Toast';
 import { isNotEmpty, validateMobileNumber } from '../../utils/validate';
 import { 
     ERROR_EMPTY_MOBILE_NUMBER, 
     ERROR_EMPTY_PASSWORD, 
     ERROR_INCORRECT_MOBILE_NUMBER 
 } from '../../../../config/strings';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     login: (data, onSuccess, onError) => void,
@@ -22,6 +22,7 @@ type MyProps = {
 }
 type MyState = {
     error: string,
+    visibleModal: boolean,
     mobileNumber: string,
     password: string,
     showPassword: boolean,
@@ -32,6 +33,7 @@ class Login extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
+            visibleModal: false,
             // mobileNumber: '',
             password: '',
             mobileNumber: '91000000',
@@ -42,31 +44,28 @@ class Login extends React.Component<MyProps, MyState> {
 
     onForgotPassword = () => {
         const { navigation } = this.props;
-
-        Toast.hide();
+        this.setState({ error: '', visibleModal: false });
         navigation.navigate('PasswordRecoverInit');
     }
 
     goToRegister = () => {
         const { navigation } = this.props;
-
-        Toast.hide();
+        this.setState({ error: '', visibleModal: false });
         navigation.navigate('RegisterInit');
     }
 
     onSubmit = () => {
-        Toast.hide();
-        this.setState({ error: '' });
+        this.setState({ error: '', visibleModal: false });
 
         const { mobileNumber, password } = this.state;
         const val1 = isNotEmpty(mobileNumber, () => {
-            showToast(ERROR_EMPTY_MOBILE_NUMBER)
+            this.setState({ error: ERROR_EMPTY_MOBILE_NUMBER, visibleModal: true });
         });
         const val2 = val1 && isNotEmpty(password, () => {
-            showToast(ERROR_EMPTY_PASSWORD)
+            this.setState({ error: ERROR_EMPTY_PASSWORD, visibleModal: true });
         });
         const val3 = val1 && val2 && validateMobileNumber(mobileNumber, () => {
-            showToast(ERROR_INCORRECT_MOBILE_NUMBER)
+            this.setState({ error: ERROR_INCORRECT_MOBILE_NUMBER, visibleModal: true });
         });
         const mobileNumberWithCode = `598 ${mobileNumber}`
 
@@ -82,19 +81,23 @@ class Login extends React.Component<MyProps, MyState> {
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     render() {
         const { isLoading } = this.props;
-        const { showPassword, mobileNumber, password } = this.state;
+        const { showPassword, mobileNumber, password, error, visibleModal } = this.state;
         return (
             <Container>
                 <Content 
                     padder={false}
                     scrollEnabled={false}
                 >
+                    <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                     <View style={{ alignItems: 'center', margin: 40 }}>
                         <Image style={{ height: 180, width: 350 }} resizeMode='cover' source={require('../../../../../assets/fletes_icon.png')}/>
                         <Text style={{ color: '#000', fontWeight: 'bold', fontSize: 30 }}>FletesApp</Text>

@@ -21,10 +21,13 @@ export const API_ORDER = (orderId) => `${API_ORDERS}?orderId=${orderId}`;
 export const API_ORDERS_INFO = `${API}/orders/info`;
 
 export const API_ORDERS_ACTIVE = `${API_ORDERS}/mine/active`;
+export const API_ORDERS_PENDING_SHIPPER = `${API_ORDERS}/shippers/pending`;
+// export const API_ORDERS_ACTIVE_SHIPPER = `${API_ORDERS}/shippers/active`;
 
 
 
 export const API_ORDER_ACCEPTED = (orderId) => `${API_ORDERS}/status/${orderId}/accepted`;
+export const API_ORDER_CANCELED = (orderId) => `${API_ORDERS}/status/${orderId}/canceled`;
 export const API_ORDER_TO_ORIGIN = (orderId) => `${API_ORDERS}/status/${orderId}/origin/pending`;
 export const API_ORDER_AT_ORIGIN = (orderId) => `${API_ORDERS}/status/${orderId}/origin/completed`;
 export const API_ORDER_TO_DESTINATION = (orderId) => `${API_ORDERS}/status/${orderId}/destination/pending`;

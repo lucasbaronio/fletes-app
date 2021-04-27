@@ -41,6 +41,11 @@ export const dateToFrontend = (date) => {
     return moment(date).format();
 }
 
+// export const timeDiffMinutes = (to, from) => {
+//     return moment(to).diff(moment(from), 'minutes');
+// }
+
+
 // export const displayDateFromFormat = (date, format) => {
 //     moment.locale(Localization.locale);
 //     const dateMoment = moment(date, format);

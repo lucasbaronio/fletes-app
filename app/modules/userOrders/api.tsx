@@ -1,5 +1,6 @@
 import {
     API_ORDER,
+    API_ORDER_CANCELED,
     API_ORDER_COMPLETED,
     API_ORDERS_ACTIVE,
 } from './constants';
@@ -14,6 +15,11 @@ export const getOrder = async (orderId, callback) => {
 export const getActiveOrders = async (callback) => {
     const header = await getHeaderToken();
     get(API_ORDERS_ACTIVE, header, callback);
+}
+
+export const orderStatusCanceled = async (orderId, callback) => {
+    const header = await getHeaderToken();
+    patch(API_ORDER_CANCELED(orderId), null, header, callback)
 }
 
 export const orderStatusCompleted = async (orderId, finalComments, callback) => {

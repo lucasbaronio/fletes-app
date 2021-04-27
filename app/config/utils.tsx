@@ -20,56 +20,57 @@ const orderStatusKeyValue = [{
     text: 'Cancelado',
     value: statusOrder.CANCELED,
     index: -1,
-    textButtonShipper: 'Cancelar Pedido',
-    textButtonUser: 'Cancelar Pedido',
+    textButtonShipper: [],
+    textButtonUser: [],
 },{
     text: 'En espera por transportista',
     value: statusOrder.PENDING,
     index: 0,
-    textButtonShipper: 'Aceptar pedido',
-    textButtonUser: '',
+    textButtonShipper: ['Aceptar pedido'],
+    textButtonUser: ['Cancelar Pedido'],
 },{
     text: 'Aceptado por un transportista',
     value: statusOrder.ACCEPTED,
     index: 1,
-    textButtonShipper: 'Saliendo a punto de origen',
-    textButtonUser: '',
+    // textButtonShipper: 'Saliendo a punto de origen',
+    textButtonShipper: ['Saliendo a punto de origen', 'Cancelar Pedido'],
+    textButtonUser: ['Cancelar Pedido'],
 },{
     text: 'Transportista yendo hacia origen',
     value: statusOrder.TO_ORIGIN,
     index: 2,
-    textButtonShipper: 'En el punto de origen',
-    textButtonUser: '',
+    textButtonShipper: ['En el punto de origen'],
+    textButtonUser: [],
 },{
     text: 'Transportista en punto de origen',
     value: statusOrder.AT_ORIGIN,
     index: 3,
-    textButtonShipper: 'Saliendo a punto de destino',
-    textButtonUser: '',
+    textButtonShipper: ['Saliendo a punto de destino'],
+    textButtonUser: [],
 },{
     text: 'Transportista yendo hacia destino',
     value: statusOrder.TO_DESTINATION,
     index: 4,
-    textButtonShipper: 'En el punto de destino',
-    textButtonUser: '',
+    textButtonShipper: ['En el punto de destino'],
+    textButtonUser: [],
 },{
     text: 'Transportista en punto de destino',
     value: statusOrder.AT_DESTINATION,
     index: 5,
-    textButtonShipper: 'Finalizar Pedido',
-    textButtonUser: '',
+    textButtonShipper: ['Finalizar Pedido'],
+    textButtonUser: [],
 },{
     text: 'Transportista finalizó el pedido',
     value: statusOrder.COMPLETE_PENDING,
     index: 6,
-    textButtonShipper: '',
-    textButtonUser: 'Finalizar Pedido',
+    textButtonShipper: [],
+    textButtonUser: ['Finalizar Pedido'],
 },{
     text: 'Pedido finalizado',
     value: statusOrder.COMPLETED,
     index: 7,
-    textButtonShipper: '',
-    textButtonUser: '',
+    textButtonShipper: [],
+    textButtonUser: [],
 },];
 
 export const getOrderStatusText = (statusValue) => {
@@ -89,12 +90,12 @@ export const getOrderStatusIndex = (statusValue) => {
 
 export const getOrderStatusTextButtonShipper = (statusValue) => {
     const item = orderStatusKeyValue.find(item => item.value == statusValue);
-    return item ? item.textButtonShipper : '';
+    return item ? item.textButtonShipper : [];
 }
 
 export const getOrderStatusTextButtonUser = (statusValue) => {
     const item = orderStatusKeyValue.find(item => item.value == statusValue);
-    return item ? item.textButtonUser : '';
+    return item ? item.textButtonUser : [];
 }
 
 export const isShipperUser = (userType) => {

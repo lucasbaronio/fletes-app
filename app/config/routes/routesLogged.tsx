@@ -9,6 +9,7 @@ import ShipperPendingOrdersRoutes from './shipperPendingOrdersRoutes';
 
 import { actions as auth } from "../../modules/auth/index";
 import { isShipperUser } from '../utils';
+import ActiveShipperOrders from '../../modules/shipperOrders/scenes/ActiveShipperOrders/ActiveShipperOrders';
 const { logOut } = auth;
 
 const Drawer = createDrawerNavigator();
@@ -45,6 +46,13 @@ function RouterLogged({ logOut, user }) {
                             options={{
                                 title: 'Pedidos Disponiles',
                                 headerShown: false,
+                            }} />
+                        <Drawer.Screen 
+                            name="ActiveShipperOrders" 
+                            component={ActiveShipperOrders} 
+                            options={{
+                                title: 'Pedidos Activos',
+                                headerShown: true,
                             }} />
                     </>
                 ) : (

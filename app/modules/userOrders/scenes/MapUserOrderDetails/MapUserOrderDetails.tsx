@@ -1,63 +1,88 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { View, SafeAreaView, FlatList, TouchableOpacity, SectionList } from 'react-native';
-// import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
-// import { StatusBar } from 'expo-status-bar';
 import MapViewDirections from 'react-native-maps-directions';
 
-import { actions as orders } from "../../index";
-// const { setOrderPaymentMethod, createFinalOrder } = orders;
-import { actions as users } from "../../../users/index";
-const { getPaymentMethod, createPaymentMethod } = users;
+import { actions as userOrders } from "../../index";
+const { changeOrderStatusCanceled, changeOrderStatusCompleted } = userOrders;
 
 import styles from './styles';
-import { showToast } from '../../../../components/Toast';
-import { displayDate } from '../../utils/utils';
-
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
-import { getOrderStatusText } from '../../../../config/utils';
+import { getOrderStatusText, getOrderStatusTextButtonUser, statusOrder } from '../../../../config/utils';
 import SlidingPanelOrderDetails from '../../components/SlidingPanelOrderDetails';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
-    acceptOrder: (orderId, onSuccess, onError) => void,
+    changeOrderStatusCompleted: (orderStatusCompleted, onSuccess, onError) => void,
+    changeOrderStatusCanceled: (orderId, onSuccess, onError) => void,
     order: any,
     isLoading: boolean,
     navigation: any,
 }
 type MyState = {
     error: string,
-    isLoading: boolean,
+    textButton: string[],
+    visibleModal: boolean,
 }
 class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
             error: '',
-            isLoading: true,
+            textButton: [],
+            visibleModal: false,
         };
     }
 
     componentDidMount() {
-
+        const { order } = this.props;
+        this.setState({
+            textButton: getOrderStatusTextButtonUser(order.status)
+        });
     }
 
-    onPressAccept = () => {
-        const { navigation, acceptOrder, order } = this.props;
-        // acceptOrder(order.orderId, this.onSuccess, this.onError);
-        this.onSuccess();
+    onPress = () => {
+        const { order, changeOrderStatusCompleted, changeOrderStatusCanceled } = this.props;
+        switch (order.status) {
+            case statusOrder.PENDING:
+                changeOrderStatusCanceled({ 
+                    orderId: order.orderId, 
+                }, this.onSuccess, this.onError);
+                break;
+            case statusOrder.ACCEPTED:
+                changeOrderStatusCanceled({ 
+                    orderId: order.orderId, 
+                }, this.onSuccess, this.onError);
+                break;
+            case statusOrder.COMPLETE_PENDING:
+                changeOrderStatusCompleted({
+                    orderId: order.orderId,
+                    rating: 5,
+                    comments: 'Muy buenooo!!!',
+                }, this.onSuccess, this.onError);
+                break;
+            default:
+                return;
+        }
     }
 
     onSuccess = () => {
-        const { navigation } = this.props;
-        // navigation.navigate('AcceptOrderWithDetails');
-        alert('El pedido fue aceptado!!')
+        const { order } = this.props;
+        this.setState({
+            textButton: getOrderStatusTextButtonUser(order.status),
+            error: 'Estado del pedido: ' + getOrderStatusText(order.status),
+            visibleModal: true,
+        });
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     getMidPointCoords = (coordsA, coordsB) => {
@@ -75,10 +100,12 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     render() {
+        const { textButton, error, visibleModal } = this.state;
         const { order, isLoading } = this.props;
         const { originAddress, destinationAddress, } = order;
         return (
             <SafeAreaView style={styles.container}>
+                <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 {/* <StatusBar style="dark" /> */}
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
@@ -132,7 +159,8 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
                 <SlidingPanelOrderDetails 
                     isLoading={isLoading}
                     order={order}
-                    onPressAccept={this.onPressAccept} />
+                    textButton={textButton}
+                    onPress={this.onPress} />
             </SafeAreaView>
         );
     }
@@ -145,4 +173,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, {  })(MapUserOrderDetails);
+export default connect(mapStateToProps, { changeOrderStatusCompleted, changeOrderStatusCanceled })(MapUserOrderDetails);

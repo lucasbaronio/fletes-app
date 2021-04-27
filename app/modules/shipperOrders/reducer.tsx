@@ -1,7 +1,23 @@
-// import { AsyncStorage } from 'react-native';
 import { statusOrder } from '../../config/utils';
-import { deleteMany, saveMany } from '../secureStore';
+import { currentDate, dateToBackend } from '../orders/utils/utils';
 import * as t from './actionTypes';
+
+type Order = {
+    orderId: number,
+    originAddress: any,
+    destinationAddress: any,
+    originAt: string,
+    status: statusOrder,
+    vehicleType: any,
+    vehicle: any,
+    user, any,
+    shipper: any,
+    extraOptions: any,
+}
+
+let pendingOrders: Order[] = []
+let activeOrders: Order[] = []
+let historyOrders: Order[] = []
 
 let initialState = { 
     isLoading: false,
@@ -26,6 +42,13 @@ let initialState = {
             }
         },
         originAt: null,
+        shipperArrivedAtOriginAt: null,
+        shipperArrivesAtDestinationAt: null,
+        shipperArrivesAtOriginAt: null,
+        shipperCompletedAt: null,
+        picePerHour: null,
+        finalPrice: null,
+        fixedPrice: null,
         status: statusOrder.PENDING,
         vehicleType: {
             vehicleTypeId: 0,
@@ -45,18 +68,14 @@ let initialState = {
                 open: false,
             }
         },
-        user: {
-
-        },
-        shipper: {
-
-        },
+        user: null,
+        shipper: null,
         extraOptions: [],
         // paymentMethodId: null,
     },
-    pendingOrders: [], // Pedidos que estan pendientes a ser aceptadas por el shipper 
-    activeOrders: [], // Pedidos que ya fueron aceptados por el shipper y siguen activas
-    historyOrders: [], // Pedidos que fueron aceptados por el shipper y que ya finalizaron (COMPLETED o CANCELED)
+    pendingOrders, // Pedidos que estan pendientes a ser aceptadas por el shipper 
+    activeOrders, // Pedidos que ya fueron aceptados por el shipper y siguen activas
+    historyOrders, // Pedidos que fueron aceptados por el shipper y que ya finalizaron (COMPLETED o CANCELED)
 };
 
 const shipperOrdersReducer = (state = initialState, action) => {
@@ -85,28 +104,56 @@ const shipperOrdersReducer = (state = initialState, action) => {
                     return { 
                         ...state, 
                         orderSelected: order, 
+                        activeOrders: activeOrders.filter(order => order.orderId !== order.orderId),
+                        pendingOrders: pendingOrders.filter(order => order.orderId !== order.orderId),
                         historyOrders: historyOrders.concat(order),
                     };
                 case statusOrder.COMPLETED:
                     return { 
                         ...state, 
                         orderSelected: order, 
+                        activeOrders: activeOrders.filter(order => order.orderId !== order.orderId),
+                        pendingOrders: pendingOrders.filter(order => order.orderId !== order.orderId),
                         historyOrders: historyOrders.concat(order),
                     };
                 default: // Active order
                     return { 
                         ...state, 
                         orderSelected: order, 
+                        pendingOrders: pendingOrders.filter(order => order.orderId !== order.orderId),
                         activeOrders: activeOrders.concat(order),
                     };
             }
         }
 
-        case t.ORDER_ACCEPTED: {
+        case t.ORDERS_PENDING_SHIPPER: {
+            const { orders } = action.data;
+            
             return { 
                 ...state, 
+                pendingOrders: orders,
+            };
+        }
+
+        case t.ORDERS_ACTIVE_SHIPPER: {
+            const { orders } = action.data;
+            
+            return { 
+                ...state, 
+                activeOrders: orders,
+            };
+        }
+
+        case t.ORDER_ACCEPTED: {
+            const { orderSelected, pendingOrders, activeOrders } = state;
+
+            return { 
+                ...state, 
+                // activeOrders: activeOrders.concat(orderSelected),
+                activeOrders: [...activeOrders, orderSelected],
+                pendingOrders: pendingOrders.filter(order => order.orderId !== orderSelected.orderId),
                 orderSelected: { 
-                    ...state.orderSelected, 
+                    ...orderSelected, 
                     status: statusOrder.ACCEPTED 
                 } 
             };
@@ -127,6 +174,7 @@ const shipperOrdersReducer = (state = initialState, action) => {
                 ...state, 
                 orderSelected: { 
                     ...state.orderSelected, 
+                    shipperArrivedAtOriginAt: dateToBackend(currentDate()),
                     status: statusOrder.AT_ORIGIN 
                 } 
             };
@@ -152,11 +200,12 @@ const shipperOrdersReducer = (state = initialState, action) => {
             };
         }
 
-        case t.ORDER_COMPLETED: {
+        case t.ORDER_COMPLETE_PENDING: {
             return { 
                 ...state, 
                 orderSelected: { 
                     ...state.orderSelected, 
+                    shipperCompletedAt: dateToBackend(currentDate()),
                     status: statusOrder.COMPLETE_PENDING 
                 } 
             };

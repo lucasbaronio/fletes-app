@@ -5,18 +5,25 @@ import MapView, { Marker } from 'react-native-maps';
 import { StatusBar } from 'expo-status-bar';
 import * as Location from 'expo-location';
 
-import { actions as shipperOrders } from "../../../users/index";
-const { getPaymentMethod, createPaymentMethod } = shipperOrders;
+import { actions as shipperOrders } from "../../index";
+const { 
+    changeOrderStatusAccepted,
+    changeOrderStatusToOrigin,
+    changeOrderStatusAtOrigin,
+    changeOrderStatusToDestination,
+    changeOrderStatusAtDestination,
+    changeOrderStatusCompletePending,
+} = shipperOrders;
 import { actions as users } from "../../../users/index";
 const { getVehicles } = users;
 
 import styles from './styles';
-import { showToast } from '../../../../components/Toast';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
-import { getOrderStatusTextButtonShipper, getOrderStatusValue, statusOrder } from '../../../../config/utils';
+import { getOrderStatusText, getOrderStatusTextButtonShipper, statusOrder } from '../../../../config/utils';
 import SlidingPanelAcceptOrder from '../../components/SlidingPanelAcceptOrder';
+import CustomModal from '../../../../components/CustomModal';
 
 const GEOFENCING_ORIGIN = 'GEOFENCING_ORIGIN_TASK';
 const GEOFENCING_DESTINATION = 'GEOFENCING_DESTINATION_TASK';
@@ -36,14 +43,16 @@ type MyProps = {
 }
 type MyState = {
     error: string,
-    textButton: string,
+    textButton: string[],
+    visibleModal: boolean,
 }
 class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
             error: '',
-            textButton: '',
+            textButton: [],
+            visibleModal: false,
         };
     }
 
@@ -82,37 +91,47 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
             changeOrderStatusCompletePending,
         } = this.props;
         switch (order.status) {
-            case statusOrder.CANCELED:
-                // TODO
-                return;
             case statusOrder.PENDING:
                 changeOrderStatusAccepted({ 
-                    order: order.orderId, 
-                    vehicleId: 1
+                    orderId: order.orderId, 
+                    vehicle: {
+                        vehicleId: 1,
+                    }
                 }, this.onSuccess, this.onError);
+                break;
             case statusOrder.ACCEPTED:
+                // TODO: Falta la opcion de si cancela el shipper
                 changeOrderStatusToOrigin({ 
-                    order: order.orderId, 
-                    arrivesAt: '2021-04-04T12:00:00Z'
+                    orderId: order.orderId, 
+                    arrivesAt: {
+                        arrivesAt: "2021-05-12T18:20:00-03:00",
+                    }
                 }, this.onSuccess, this.onError);
+                break;
             case statusOrder.TO_ORIGIN:
                 changeOrderStatusAtOrigin(order.orderId, this.onSuccessCreateTasks, this.onError);
+                break;
             case statusOrder.AT_ORIGIN:
                 changeOrderStatusToDestination({ 
-                    order: order.orderId, 
-                    arrivesAt: '2021-04-04T12:00:00Z'
+                    orderId: order.orderId, 
+                    arrivesAt: {
+                        arrivesAt: "2021-05-12T18:20:00-03:00",
+                    }
                 }, this.onSuccess, this.onError);
+                break;
             case statusOrder.TO_DESTINATION:
                 changeOrderStatusAtDestination(order.orderId, this.onSuccess, this.onError);
+                break;
             case statusOrder.AT_DESTINATION:
                 changeOrderStatusCompletePending(order.orderId, this.onSuccess, this.onError);
+                break;
             default:
                 return;
         }
     }
 
     onSuccessCreateTasks = async (statusOrder) => {
-        showToast('Estado del pedido: ' + getOrderStatusValue(statusOrder))
+        this.onSuccess(statusOrder);
         const { orderId, originAddress, destinationAddress } = this.props.order;
         const { status } = await Location.requestBackgroundPermissionsAsync();
         if (status === 'granted') {
@@ -135,21 +154,30 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     onSuccess = (status) => {
-        showToast('Estado del pedido: ' + getOrderStatusValue(status))
+        const { order } = this.props;
+        this.setState({
+            textButton: getOrderStatusTextButtonShipper(order.status),
+            error: 'Estado del pedido: ' + getOrderStatusText(order.status), 
+            visibleModal: true 
+        });
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     render() {
-        const { textButton } = this.state;
+        const { textButton, error, visibleModal } = this.state;
         const { order, vehicles, isLoading } = this.props;
         const { originAddress, destinationAddress, } = order;
         return (
             <SafeAreaView style={styles.container}>
                 <StatusBar style="dark" />
+                <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
                         {ORDERS_SCENES_MAP_ADDRESS_TITLE}
@@ -218,4 +246,11 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, {  })(MapShipperOrderDetails);
+export default connect(mapStateToProps, { 
+    changeOrderStatusAccepted,
+    changeOrderStatusToOrigin,
+    changeOrderStatusAtOrigin,
+    changeOrderStatusToDestination,
+    changeOrderStatusAtDestination,
+    changeOrderStatusCompletePending,
+})(MapShipperOrderDetails);

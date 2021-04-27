@@ -6,12 +6,12 @@ import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinn
 import { actions as auth } from "../../index"
 const { passwordRecoverInit } = auth;
 
-import { showToast } from '../../../../components/Toast';
 import { isNotEmpty, validateMobileNumber } from '../../utils/validate';
 import { 
     ERROR_EMPTY_MOBILE_NUMBER, 
     ERROR_INCORRECT_MOBILE_NUMBER 
 } from '../../../../config/strings';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     passwordRecoverInit: (data, onSuccess, onError) => void,
@@ -21,6 +21,7 @@ type MyProps = {
 }
 type MyState = {
     error: string,
+    visibleModal: boolean,
     mobileNumber: string,
 }
 
@@ -29,27 +30,26 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
+            visibleModal: false,
             mobileNumber: '',
         }
     }
 
     goToLogIn = () => {
         const { navigation } = this.props;
-
-        Toast.hide();
+        this.setState({ error: '', visibleModal: false });
         navigation.navigate('Login');
     }
 
     onSubmit = () => {
-        Toast.hide();
-        this.setState({ error: '' });
+        this.setState({ error: '', visibleModal: false });
 
         const { mobileNumber } = this.state;
         const val1 = isNotEmpty(mobileNumber, () => {
-            showToast(ERROR_EMPTY_MOBILE_NUMBER)
+            this.setState({ error: ERROR_EMPTY_MOBILE_NUMBER, visibleModal: true });
         });
         const val2 = val1 && validateMobileNumber(mobileNumber, () => {
-            showToast(ERROR_INCORRECT_MOBILE_NUMBER)
+            this.setState({ error: ERROR_INCORRECT_MOBILE_NUMBER, visibleModal: true });
         });
         const mobileNumberWithCode = `598 ${mobileNumber}`
 
@@ -66,18 +66,22 @@ class PasswordRecoverInit extends React.Component<MyProps, MyState> {
     }
 
     onError = (error) => {
-        this.setState({ error });
-        showToast(this.state.error);
+        this.setState({ error, visibleModal: true });
+    }
+
+    onCloseModal = () => {
+        this.setState({ visibleModal: false, error: '' });
     }
 
     render() {
         const { isLoading } = this.props;
+        const { error, visibleModal } = this.state;
         return (
             <Container>
                 <Content
                     padder={false}
                     scrollEnabled={false}>
-                    
+                    <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                     <View style={{ alignItems: 'center', margin: 40 }}>
                         <Image style={{ height: 180, width: 350 }} resizeMode='cover' source={require('../../../../../assets/fletes_icon.png')}/>
                     </View>

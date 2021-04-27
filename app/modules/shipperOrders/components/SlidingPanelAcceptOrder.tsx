@@ -10,19 +10,21 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
-import { displayDate } from '../../orders/utils/utils';
+import { currentDate, dateToFrontend, displayDate, timeDiffMinutes, timeDiffSeconds } from '../../orders/utils/utils';
 import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
 
 type MyProps = {
   onPress: () => void,
   order: any,
-  textButton: string,
+  textButton: string[],
   vehicles: any,
   isLoading: boolean,
 }
 const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, order, vehicles, isLoading, textButton }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
+  setInterval(()=> calculatePricePerHour(), 1000);
+
   const draggableRange = {
     top: (deviceHeight - Constants.statusBarHeight) * 0.9,
     bottom: (deviceHeight - Constants.statusBarHeight) * 0.5,
@@ -35,7 +37,10 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  
+  const [pricePerHourDinamic, setPricePerHourDinamic] = useState(0);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+
   const PANEL_VELOCITY = isiOS ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
     velocity: PANEL_VELOCITY,
@@ -49,6 +54,7 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
   }
 
   useEffect(() => {
+    calculatePricePerHour();
 		const slidingListener = panelPositionVal.addListener(
 			_onAnimatedValueChange,
 		);
@@ -61,6 +67,19 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
 
   const onPressMoreDetails = () => {
 
+  }
+
+  const calculatePricePerHour = () => {
+    const { shipperArrivedAtOriginAt, shipperCompletedAt, picePerHour } = order;
+    let diff = 0;
+    if (!shipperArrivedAtOriginAt && !shipperCompletedAt) diff = 0;
+    else if (!shipperCompletedAt) diff = timeDiffMinutes(currentDate(), dateToFrontend(shipperArrivedAtOriginAt));
+    else diff = timeDiffMinutes(dateToFrontend(shipperCompletedAt), dateToFrontend(shipperArrivedAtOriginAt));
+    // return (picePerHour * diff).toString();
+    setHours(Math.trunc(diff / 60));
+    setMinutes(Math.trunc(diff));
+    // setSeconds(Math.trunc(diff % 60));
+    setPricePerHourDinamic(Math.round(picePerHour * diff / 60))
   }
 
   return (
@@ -183,12 +202,25 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
           <View style={styles.orderContainer}>
             <View style={styles.orderPriceContainer}>
               <View style={styles.orderPriceLine}>
-                  <Text style={styles.orderPriceText}>Total fijo</Text>
-                  <Text style={styles.orderPriceValue}>$ 300</Text>
+                  <Text style={[styles.orderPriceText, { flex: 1 }]}>Precio por hora</Text>
+                  <Text style={styles.orderPriceValue}>$ {order.picePerHour}</Text>
               </View>
+              <View style={styles.separatorMiddle}></View>
+              {
+                getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.PENDING) &&
+                <View style={[styles.orderPriceLine, { paddingVertical: 3 }]}>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
+                        <Text style={[styles.orderPriceText, { fontWeight: fontWeight.L }]}>Total por hora:</Text>
+                        <Text style={{ fontSize: fontSize.XS }}>({hours} hs y {minutes} mins)</Text>
+                    </View>
+                    <View style={{ justifyContent: 'center' }}>
+                      <Text style={[styles.orderPriceValue, { fontWeight: fontWeight.L }]}>$ {pricePerHourDinamic}</Text>
+                    </View>
+                </View>
+              }
               <View style={styles.orderPriceLine}>
-                  <Text style={styles.orderPriceText}>Total por hora</Text>
-                  <Text style={styles.orderPriceValue}>$ 100</Text>
+                  <Text style={[styles.orderPriceText, { flex: 1, fontWeight: fontWeight.L }]}>Total fijo</Text>
+                  <Text style={[styles.orderPriceValue, { fontWeight: fontWeight.L }]}>$ {order.fixedPrice}</Text>
               </View>
             </View>
             <View style={styles.orderDetailsContainer}>
@@ -203,6 +235,14 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
               </TouchableOpacity>
             </View>
           </View>
+          {
+            order.finalPrice &&
+            <><View style={styles.separator}></View>
+            <View style={[styles.orderPriceLine, { marginHorizontal: 20 }]}>
+                <Text style={{ flex: 1, fontSize: fontSize.L }}>Total</Text>
+                <Text style={{ fontSize: fontSize.L, fontWeight: fontWeight.L }}>$ {order.finalPrice}</Text>
+            </View></>
+          }
           <View style={styles.separator}></View>
           <View style={styles.helpContainer}>
             <TouchableOpacity
@@ -215,24 +255,28 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
           </View>
 
           {
-            textButton != '' &&
-            <View style={[styles.containerbutton, { 
+            textButton.length > 0 &&
+            <View style={[styles.containerButton, { 
               bottom: (deviceHeight - draggableRange.top) + 20,
               left: (deviceWidth * 0.1) / 2
             }]}>
-              <Button 
-                // @ts-ignore
-                style={styles.button}
-                onPress={onPress}>
-                  {
-                    isLoading ?
-                      <ActivityIndicator />
-                    :
-                    <Text style={styles.textButton}>
-                      {textButton}
-                    </Text>
-                  }
-              </Button>
+              {
+                textButton.map((text, index) => (
+                  <Button 
+                    key={index}
+                    style={styles.button}
+                    onPress={onPress}>
+                      {
+                        isLoading ?
+                          <ActivityIndicator />
+                        :
+                        <Text style={styles.textButton}>
+                          {text}
+                        </Text>
+                      }
+                  </Button>
+                ))
+              }
             </View>
           }
           
@@ -292,7 +336,14 @@ const styles = StyleSheet.create({
   separator: {
     width: '90%',
     height: 5, 
-    marginVertical: 20, 
+    marginVertical: 15, 
+    borderBottomWidth: 1, 
+    borderBottomColor: color.grey.lightGrey,
+  },
+  separatorMiddle: {
+    width: '95%',
+    height: 5, 
+    marginVertical: 2, 
     borderBottomWidth: 1, 
     borderBottomColor: color.grey.lightGrey,
   },
@@ -300,7 +351,7 @@ const styles = StyleSheet.create({
     width: '90%', 
   },
   shipperText: {
-    marginVertical: 5,
+    // marginVertical: 2,
     fontSize: fontSize.XS,
     color: color.grey.slateGrey
   },
@@ -317,19 +368,17 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-  orderPriceLine: { 
+  orderPriceLine: {
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     marginHorizontal: 10,
-    marginVertical: 3,
+    marginVertical: 1,
   },
   orderPriceText: { 
-    flex: 1, 
-    fontSize: fontSize.S
+    fontSize: fontSize.S,
   },
   orderPriceValue: { 
-    fontWeight: fontWeight.L, 
-    fontSize: fontSize.M
+    fontSize: fontSize.M,
   },
   orderDetailsContainer: {
     flex: .2,
@@ -367,21 +416,23 @@ const styles = StyleSheet.create({
     fontWeight: fontWeight.L, 
     marginLeft: 3
   },
-  containerbutton: {
+  containerButton: {
     zIndex: 9,
     elevation: 7,
     position: 'absolute',
-    flexDirection: 'row',
+    flexDirection: 'column',
     width: '90%',
   },
   button: {
     flex: 1, 
+    width: '100%',
     flexDirection: 'row', 
-    justifyContent: "center"
+    justifyContent: "center",
+    marginVertical: 2,
   },
   textButton: {
     color: color.white.white, 
-    fontSize: fontSize.XL, 
+    fontSize: fontSize.M, 
     fontWeight: fontWeight.L, 
     textAlign: 'center'
   },

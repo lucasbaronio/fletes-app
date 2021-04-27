@@ -36,6 +36,10 @@ export const dateToFrontend = (date) => {
     return moment(date).format();
 }
 
+export const timeDiffMinutes = (to, from) => {
+    return moment(to).diff(moment(from), 'minutes');
+}
+
 export const isGreaterThan = (date1, date2) => {
     return moment(date1).isSameOrAfter(moment(date2));
 }

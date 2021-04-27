@@ -1,7 +1,22 @@
 // import { AsyncStorage } from 'react-native';
 import { statusOrder } from '../../config/utils';
-import { deleteMany, saveMany } from '../secureStore';
 import * as t from './actionTypes';
+
+type Order = {
+    orderId: number,
+    originAddress: any,
+    destinationAddress: any,
+    originAt: string,
+    status: statusOrder,
+    vehicleType: any,
+    vehicle: any,
+    user, any,
+    shipper: any,
+    extraOptions: any,
+}
+
+let activeOrders: Order[] = []
+let historyOrders: Order[] = []
 
 let initialState = { 
     isLoading: false,
@@ -26,6 +41,13 @@ let initialState = {
             }
         },
         originAt: null,
+        shipperArrivedAtOriginAt: null,
+        shipperArrivesAtDestinationAt: null,
+        shipperArrivesAtOriginAt: null,
+        shipperCompletedAt: null,
+        picePerHour: null,
+        finalPrice: null,
+        fixedPrice: null,
         status: statusOrder.PENDING,
         vehicleType: {
             vehicleTypeId: 0,
@@ -45,17 +67,13 @@ let initialState = {
                 open: false,
             }
         },
-        user: {
-
-        },
-        shipper: {
-
-        },
+        user: null,
+        shipper: null,
         extraOptions: [],
         // paymentMethodId: null,
     },
-    activeOrders: [], // Pedidos que fueron creados por el user y aún siguen activos
-    historyOrders: [], // Pedidos que fueron creados por el user pero que ya finalizaron (COMPLETED o CANCELED)
+    activeOrders, // Pedidos que fueron creados por el user y aún siguen activos
+    historyOrders, // Pedidos que fueron creados por el user pero que ya finalizaron (COMPLETED o CANCELED)
 };
 
 const userOrdersReducer = (state = initialState, action) => {
@@ -79,12 +97,14 @@ const userOrdersReducer = (state = initialState, action) => {
                     return { 
                         ...state, 
                         orderSelected: order, 
+                        activeOrders: activeOrders.filter(order => order.orderId !== order.orderId),
                         historyOrders: historyOrders.concat(order),
                     };
                 case statusOrder.COMPLETED:
                     return { 
                         ...state, 
                         orderSelected: order, 
+                        activeOrders: activeOrders.filter(order => order.orderId !== order.orderId),
                         historyOrders: historyOrders.concat(order),
                     };
                 default: // Active order
@@ -102,6 +122,16 @@ const userOrdersReducer = (state = initialState, action) => {
             return { 
                 ...state, 
                 activeOrders: orders,
+            };
+        }
+
+        case t.ORDER_COMPLETED: {
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.COMPLETED 
+                }
             };
         }
 

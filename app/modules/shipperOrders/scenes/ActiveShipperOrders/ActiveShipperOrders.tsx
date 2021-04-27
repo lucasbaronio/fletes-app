@@ -3,21 +3,24 @@ import { connect } from 'react-redux';
 import { View, SafeAreaView, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
+import * as Location from "expo-location";
 
-import { actions as orders } from "../../index";
-const { setOrderSelected, getActiveOrdersUser } = orders;
+import { actions as shipperOrders } from "../../index";
+const { setOrderSelected, getActiveOrdersShipper } = shipperOrders;
 
 import styles from './styles';
-import { currentDate, displayDate, isLessThan, dateToFrontend } from '../../utils/utils';
+import { currentDate, dateToFrontend, displayDate } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
 import { getOrderStatusText } from '../../../../config/utils';
+import { ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION } from '../../../../config/strings';
+import { isLessThan } from '../../../userOrders/utils/utils';
 import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     setOrderSelected: (order, successCB) => void,
-    getActiveOrdersUser: (successCB, errorCB) => void,
+    getActiveOrdersShipper: (successCB, errorCB) => void,
     activeOrders: any,
     isLoading: boolean,
     navigation: any,
@@ -26,7 +29,7 @@ type MyState = {
     error: string,
     visibleModal: boolean,
 }
-class ActiveUserOrders extends React.Component<MyProps, MyState> {
+class ActiveShipperOrders extends React.Component<MyProps, MyState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,9 +38,32 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
         };
     }
 
-    componentDidMount() {
-        const { getActiveOrdersUser } = this.props; 
-        getActiveOrdersUser(() => {}, this.onError);
+    async componentDidMount() {
+        await this.requestPermissions();
+        const { getActiveOrdersShipper } = this.props; 
+        getActiveOrdersShipper(() => {}, this.onError);
+    }
+
+    requestPermissions = async () => {
+        const foreground = await Location.requestForegroundPermissionsAsync();
+        if (foreground.status !== 'granted') {
+            alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION);
+            console.log('El permiso de ubicación (foreground) fue denegado');
+            return;
+        } else {
+            const background = await Location.requestBackgroundPermissionsAsync();
+            console.log(background);
+            if (background.status !== 'granted') {
+                alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION);
+                console.log('El permiso de ubicación (background) fue denegado');
+                return;
+            }
+        }
+        // else if (isiOS && (permissions.ios.scope !== 'always')) {
+        //     alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION_IOS);
+        //     console.log('Permiso de uicación no es del tipo \'always\'');
+        // }
+        
     }
 
     onSelectOrderItem = (order) => {
@@ -47,7 +73,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
     onSuccess = () => {
         const { navigation } = this.props;
-        navigation.navigate('MapUserOrderDetails');
+        navigation.navigate('ShipperPendingOrdersRoutes', { screen: 'MapShipperOrderDetails'});
     }
 
     onError = (error) => {
@@ -74,7 +100,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
     render() {
         const { error, visibleModal } = this.state;
-        const { activeOrders, isLoading } = this.props; 
+        const { isLoading, activeOrders, getActiveOrdersShipper } = this.props;
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
@@ -84,20 +110,20 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                     // }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}
                     data={activeOrders}
-                    keyExtractor={(item, index) => item.orderId.toString()}
+                    keyExtractor={(item, index) => index.toString()}
                     refreshControl={
                         <RefreshControl
                             colors={[color.black.black]}
                             tintColor={color.black.black}
                             refreshing={isLoading}
-                            onRefresh={() => getActiveOrdersUser(() => {}, this.onError)}
+                            onRefresh={() => getActiveOrdersShipper(() => {}, this.onError)}
                         />
                     }
                     renderItem={({ item }) => {
                         const { originAddress, destinationAddress } = item;
                         return (
                             <TouchableOpacity 
-                                onPress={() => this.onSelectOrderItem(item)}
+                            onPress={() => this.onSelectOrderItem(item)}
                                 style={styles.card}>
                                 {
                                     isLessThan(dateToFrontend(item.originAt), currentDate()) &&
@@ -160,9 +186,9 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
 function mapStateToProps(state, props) {
     return {
-        activeOrders: state.userOrdersReducer.activeOrders,
-        isLoading: state.userOrdersReducer.isLoading,
+        activeOrders: state.shipperOrdersReducer.activeOrders,
+        isLoading: state.shipperOrdersReducer.isLoading,
     }
 }
 
-export default connect(mapStateToProps, { setOrderSelected, getActiveOrdersUser })(ActiveUserOrders);
+export default connect(mapStateToProps, { setOrderSelected, getActiveOrdersShipper })(ActiveShipperOrders);

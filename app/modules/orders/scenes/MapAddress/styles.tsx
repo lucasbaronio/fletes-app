@@ -1,13 +1,53 @@
 import { StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
-import { screenSize, color } from '../../../../styles/theme';
+import { screenSize, color, fontWeight } from '../../../../styles/theme';
 
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      // backgroundColor: color.red.red,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    // modal: {
+    //   flex: 1,
+    //   alignItems: 'center',
+    //   justifyContent: 'center',
+    // },
+    // modalText: {
+    //   padding: 20,
+    //   backgroundColor: color.translucent,
+    //   borderColor: color.grey.lightGrey,
+    //   borderRadius: 8,
+    //   borderWidth: .3,
+    //   shadowRadius: 10,
+    //   shadowOpacity: .6,
+    // },
+    centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    modalView: {
+      margin: 30,
+      backgroundColor: color.white.whitesmoke,
+      borderRadius: 20,
+      padding: 30,
+      alignItems: "center",
+      shadowColor: color.black.black,
+      shadowOffset: {
+        width: 0,
+        height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5
+    },
+    activityIndicator: {
+      padding: 10,
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: "center"
     },
     mapStyle: {
       width: screenSize.width,
