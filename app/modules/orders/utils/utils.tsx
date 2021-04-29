@@ -43,15 +43,3 @@ export const timeDiffMinutes = (to, from) => {
 export const timeDiffSeconds = (to, from) => {
     return moment(to).diff(moment(from), 'seconds');
 }
-
-// export const displayDateFromFormat = (date, format) => {
-//     moment.locale(Localization.locale);
-//     const dateMoment = moment(date, format);
-//     const now = moment(new Date());
-//     const diff = now.diff(dateMoment, 'days');
-//     if (diff > 6 || diff < -6) {
-//         return moment(dateMoment).format('LLLL');
-//     } else {
-//         return moment(dateMoment).locale('es').calendar();
-//     }
-// }

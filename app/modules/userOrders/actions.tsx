@@ -9,7 +9,7 @@ type OrderStatusCompleted = {
     comments: string,
 }
 
-export const setOrderSelected = (order, successCB) => {
+export const setUserOrderSelected = (order, successCB) => {
     return (dispatch) => {
         dispatch({type: t.ORDER_SELECTED, data: { order }});
         successCB();
@@ -24,7 +24,7 @@ export const getOrderUser = (orderId, successCB, errorCB) => {
             if (isSuccess) {
                 const { data } = response;
                 dispatch({type: t.ORDER, data});
-                successCB();
+                successCB(data.order);
             }
             else if (error) {
                 if (error.error == 'invalidAccessToken') {
@@ -43,7 +43,6 @@ export const getActiveOrdersUser = (successCB, errorCB) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                console.log(data);
                 dispatch({type: t.ACTIVE_ORDERS, data});
                 successCB();
             }

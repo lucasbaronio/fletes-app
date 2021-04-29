@@ -5,7 +5,7 @@ import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
 import { MaterialIcons } from '@expo/vector-icons';
-import { StatusBar } from 'expo-status-bar';
+// import { StatusBar } from 'expo-status-bar';
 
 import { actions as orders } from "../../index";
 const { setOrderOriginAddress, setOrderDestinationAddress, setOrderDate, getOrdersInfo } = orders;
@@ -156,7 +156,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
 
         return (
             <SafeAreaView style={styles.container}>
-                <StatusBar style="dark" />
+                {/* <StatusBar style="dark" /> */}
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <Modal
                     animationType="slide"

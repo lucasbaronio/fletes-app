@@ -68,11 +68,10 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
         }
     }
 
-    onSuccess = () => {
-        const { order } = this.props;
+    onSuccess = (status) => {
         this.setState({
-            textButton: getOrderStatusTextButtonUser(order.status),
-            error: 'Estado del pedido: ' + getOrderStatusText(order.status),
+            textButton: getOrderStatusTextButtonUser(status),
+            error: 'Estado del pedido: ' + getOrderStatusText(status),
             visibleModal: true,
         });
     }
@@ -97,6 +96,13 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
             latitudeDelta: Math.abs(coordsA.latitude - midRegion.latitude) * 5,
             longitudeDelta: Math.abs(coordsA.longitude - midRegion.longitude) * 3,
         }
+    }
+
+    initialRegion = {
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05
     }
 
     render() {
@@ -133,27 +139,31 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
                     // scrollEnabled={false}
                     pitchEnabled={false}
                     toolbarEnabled={false}
-                    initialRegion={this.getMidPointCoords(originAddress.coords, destinationAddress.coords)}
+                    initialRegion={!isLoading ? this.getMidPointCoords(originAddress.coords, destinationAddress.coords) : this.initialRegion}
                     style={styles.mapStyle} >
 
-                    <Marker 
-                        draggable
-                        // image={require('../../../../../assets/driver.png')}
-                        pinColor={color.red.redTomato}
-                        coordinate={originAddress.coords} >
-                    </Marker>
-                    <Marker 
-                        draggable
-                        // image={require('../../../../../assets/driver.png')}
-                        pinColor={color.blue.steelBlue}
-                        coordinate={destinationAddress.coords} >
-                    </Marker>
-                    <MapViewDirections
-                        origin={originAddress.coords}
-                        destination={destinationAddress.coords}
-                        apikey={API_KEY_GOOGLE}
-                        strokeWidth={3}
-                        strokeColor={color.green.greenLima} />
+                    {
+                        // originAddress.coords && destinationAddress.coords &&
+                        !isLoading &&
+                        <><Marker 
+                            draggable
+                            // image={require('../../../../../assets/driver.png')}
+                            pinColor={color.red.redTomato}
+                            coordinate={originAddress.coords} >
+                        </Marker>
+                        <Marker 
+                            draggable
+                            // image={require('../../../../../assets/driver.png')}
+                            pinColor={color.blue.steelBlue}
+                            coordinate={destinationAddress.coords} >
+                        </Marker>
+                        <MapViewDirections
+                            origin={originAddress.coords}
+                            destination={destinationAddress.coords}
+                            apikey={API_KEY_GOOGLE}
+                            strokeWidth={3}
+                            strokeColor={color.green.greenLima} /></>
+                    }
                     
                 </MapView>
                 <SlidingPanelOrderDetails 

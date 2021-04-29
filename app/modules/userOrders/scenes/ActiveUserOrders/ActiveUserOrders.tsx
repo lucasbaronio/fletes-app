@@ -5,18 +5,18 @@ import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 
 import { actions as orders } from "../../index";
-const { setOrderSelected, getActiveOrdersUser } = orders;
+const { setUserOrderSelected, getActiveOrdersUser } = orders;
 
 import styles from './styles';
 import { currentDate, displayDate, isLessThan, dateToFrontend } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
-import { getOrderStatusText } from '../../../../config/utils';
+import { getOrderStatusText, statusOrder } from '../../../../config/utils';
 import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
-    setOrderSelected: (order, successCB) => void,
+    setUserOrderSelected: (order, successCB) => void,
     getActiveOrdersUser: (successCB, errorCB) => void,
     activeOrders: any,
     isLoading: boolean,
@@ -41,8 +41,8 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
     }
 
     onSelectOrderItem = (order) => {
-        const { setOrderSelected } = this.props;
-        setOrderSelected(order, this.onSuccess);
+        const { setUserOrderSelected } = this.props;
+        setUserOrderSelected(order, this.onSuccess);
     }
 
     onSuccess = () => {
@@ -74,16 +74,19 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
     render() {
         const { error, visibleModal } = this.state;
-        const { activeOrders, isLoading } = this.props; 
+        const { activeOrders, isLoading, getActiveOrdersUser } = this.props; 
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <FlatList
-                    // ListFooterComponent={
-                    //     <View style={{ flex: 1, marginVertical: 40 }}></View>
-                    // }
+                    ListEmptyComponent={
+                        <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
+                            <Text>No se encontraron Pedidos Activos</Text>
+                        </View>
+                    }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}
                     data={activeOrders}
+                    // keyExtractor={(item, index) => index.toString()}
                     keyExtractor={(item, index) => item.orderId.toString()}
                     refreshControl={
                         <RefreshControl
@@ -100,7 +103,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
                                 onPress={() => this.onSelectOrderItem(item)}
                                 style={styles.card}>
                                 {
-                                    isLessThan(dateToFrontend(item.originAt), currentDate()) &&
+                                    isLessThan(dateToFrontend(item.originAt), currentDate()) && statusOrder.PENDING == item.status &&
                                     <View style={styles.floatText}>
                                         <Text style={{ textAlign: 'center', color: color.red.redTomato }}>
                                             Vencida
@@ -165,4 +168,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderSelected, getActiveOrdersUser })(ActiveUserOrders);
+export default connect(mapStateToProps, { setUserOrderSelected, getActiveOrdersUser })(ActiveUserOrders);

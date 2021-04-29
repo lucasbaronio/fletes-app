@@ -6,20 +6,20 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
 
 import { actions as shipperOrders } from "../../index";
-const { setOrderSelected, getActiveOrdersShipper } = shipperOrders;
+const { setShipperOrderSelected, getActiveOrdersShipper } = shipperOrders;
 
 import styles from './styles';
 import { currentDate, dateToFrontend, displayDate } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
-import { getOrderStatusText } from '../../../../config/utils';
+import { getOrderStatusText, statusOrder } from '../../../../config/utils';
 import { ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION } from '../../../../config/strings';
 import { isLessThan } from '../../../userOrders/utils/utils';
 import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
-    setOrderSelected: (order, successCB) => void,
+    setShipperOrderSelected: (order, successCB) => void,
     getActiveOrdersShipper: (successCB, errorCB) => void,
     activeOrders: any,
     isLoading: boolean,
@@ -67,13 +67,13 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
     }
 
     onSelectOrderItem = (order) => {
-        const { setOrderSelected } = this.props;
-        setOrderSelected(order, this.onSuccess);
+        const { setShipperOrderSelected } = this.props;
+        setShipperOrderSelected(order, this.onSuccess);
     }
 
     onSuccess = () => {
         const { navigation } = this.props;
-        navigation.navigate('ShipperPendingOrdersRoutes', { screen: 'MapShipperOrderDetails'});
+        navigation.navigate('ShipperActiveOrdersRoutes', { screen: 'MapShipperOrderDetails'});
     }
 
     onError = (error) => {
@@ -105,12 +105,15 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <FlatList
-                    // ListFooterComponent={
-                    //     <View style={{ flex: 1, marginVertical: 40 }}></View>
-                    // }
+                    ListEmptyComponent={
+                        <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
+                            <Text>No se encontraron Pedidos Activos</Text>
+                        </View>
+                    }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}
                     data={activeOrders}
-                    keyExtractor={(item, index) => index.toString()}
+                    // keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => item.orderId.toString()}
                     refreshControl={
                         <RefreshControl
                             colors={[color.black.black]}
@@ -126,7 +129,7 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
                             onPress={() => this.onSelectOrderItem(item)}
                                 style={styles.card}>
                                 {
-                                    isLessThan(dateToFrontend(item.originAt), currentDate()) &&
+                                    isLessThan(dateToFrontend(item.originAt), currentDate()) && statusOrder.PENDING == item.status &&
                                     <View style={styles.floatText}>
                                         <Text style={{ textAlign: 'center', color: color.red.redTomato }}>
                                             Vencida
@@ -191,4 +194,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderSelected, getActiveOrdersShipper })(ActiveShipperOrders);
+export default connect(mapStateToProps, { setShipperOrderSelected, getActiveOrdersShipper })(ActiveShipperOrders);

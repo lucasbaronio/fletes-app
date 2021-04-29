@@ -13,7 +13,7 @@ type OrderStatusTo = {
     arrivesAt: any,
 }
 
-export const setOrderSelected = (order, successCB) => {
+export const setShipperOrderSelected = (order, successCB) => {
     return (dispatch) => {
         dispatch({type: t.ORDER_SELECTED, data: { order }});
         successCB();
@@ -28,7 +28,7 @@ export const getOrderShipper = (orderId, successCB, errorCB) => {
             if (isSuccess) {
                 const { data } = response;
                 dispatch({type: t.ORDER, data});
-                successCB();
+                successCB(data.order);
             }
             else if (error) {
                 if (error.error == 'invalidAccessToken') {
@@ -182,17 +182,33 @@ export const changeOrderStatusAtDestination = (orderId, successCB, errorCB) => {
 export const changeOrderStatusCompletePending = (orderId, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
+        console.log('orderId', orderId);
         api.orderStatusCompletePending(orderId, (isSuccess, response, error) => {
-            dispatch({type: t.LOADING});
             if (isSuccess) {
                 dispatch({type: t.ORDER_COMPLETE_PENDING});
-                successCB(statusOrder.COMPLETE_PENDING);
+                apiUserOrders.getOrder(orderId, (isSuccess, response, error) => {
+                    dispatch({type: t.LOADING});
+                    if (isSuccess) {
+                        const { data } = response;
+                        dispatch({type: t.ORDER, data});
+                        successCB(statusOrder.COMPLETE_PENDING);
+                    }
+                    else if (error) {
+                        if (error.error == 'invalidAccessToken') {
+                            dispatch({ type: tAuth.LOG_OUT });
+                        }
+                        errorCB(error.message)
+                    }
+                });
             }
-            else if (error) {
-                if (error.error == 'invalidAccessToken') {
-                    dispatch({ type: tAuth.LOG_OUT });
+            else {
+                dispatch({type: t.LOADING});
+                if (error) {
+                    if (error.error == 'invalidAccessToken') {
+                        dispatch({ type: tAuth.LOG_OUT });
+                    }
+                    errorCB(error.message)
                 }
-                errorCB(error.message)
             }
         });
     };

@@ -70,7 +70,7 @@ export const createFinalOrder = (createOrder, successCB, errorCB) => {
             if (isSuccess) {
                 const { data } = response;
                 console.log(data);
-                dispatch({type: tUserOrders.ORDER, data});
+                dispatch({type: tUserOrders.ORDER_CREATED, data});
                 successCB();
             }
             else if (error) {

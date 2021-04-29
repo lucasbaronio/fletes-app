@@ -23,7 +23,6 @@ type MyProps = {
 const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, order, vehicles, isLoading, textButton }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
-  setInterval(()=> calculatePricePerHour(), 1000);
 
   const draggableRange = {
     top: (deviceHeight - Constants.statusBarHeight) * 0.9,
@@ -37,6 +36,7 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
+  const [refreshIntervalId, setRefreshIntervalId] = useState<any>();
   const [pricePerHourDinamic, setPricePerHourDinamic] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -55,6 +55,11 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
 
   useEffect(() => {
     calculatePricePerHour();
+    const refreshIntervalId = setInterval(() => calculatePricePerHour(), 60000);
+    setRefreshIntervalId(refreshIntervalId);
+  }, []);
+
+  useEffect(() => {
 		const slidingListener = panelPositionVal.addListener(
 			_onAnimatedValueChange,
 		);
@@ -70,16 +75,17 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
   }
 
   const calculatePricePerHour = () => {
-    const { shipperArrivedAtOriginAt, shipperCompletedAt, picePerHour } = order;
+    const { shipperArrivedAtOriginAt, shipperCompletedAt, pricePerHour } = order;
     let diff = 0;
     if (!shipperArrivedAtOriginAt && !shipperCompletedAt) diff = 0;
-    else if (!shipperCompletedAt) diff = timeDiffMinutes(currentDate(), dateToFrontend(shipperArrivedAtOriginAt));
-    else diff = timeDiffMinutes(dateToFrontend(shipperCompletedAt), dateToFrontend(shipperArrivedAtOriginAt));
-    // return (picePerHour * diff).toString();
-    setHours(Math.trunc(diff / 60));
-    setMinutes(Math.trunc(diff));
-    // setSeconds(Math.trunc(diff % 60));
-    setPricePerHourDinamic(Math.round(picePerHour * diff / 60))
+    else if (!shipperCompletedAt) diff = timeDiffSeconds(currentDate(), dateToFrontend(shipperArrivedAtOriginAt));
+    else {
+      diff = timeDiffSeconds(dateToFrontend(shipperCompletedAt), dateToFrontend(shipperArrivedAtOriginAt));
+      clearInterval(refreshIntervalId);
+    }
+    setHours(Math.trunc(diff / 60 / 66));
+    setMinutes(Math.trunc((diff / 60) % 60));
+    setPricePerHourDinamic(Math.round((pricePerHour * diff / 60 / 60) * 100) / 100)
   }
 
   return (
@@ -203,7 +209,7 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
             <View style={styles.orderPriceContainer}>
               <View style={styles.orderPriceLine}>
                   <Text style={[styles.orderPriceText, { flex: 1 }]}>Precio por hora</Text>
-                  <Text style={styles.orderPriceValue}>$ {order.picePerHour}</Text>
+                  <Text style={styles.orderPriceValue}>$ {order.pricePerHour}</Text>
               </View>
               <View style={styles.separatorMiddle}></View>
               {

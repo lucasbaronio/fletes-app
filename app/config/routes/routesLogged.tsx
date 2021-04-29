@@ -6,10 +6,10 @@ import { isLargeScreen } from "../../styles/theme";
 import CreateOrderRoutes from './createOrderRoutes';
 import UserOrdersRoutes from './userOrdersRoutes';
 import ShipperPendingOrdersRoutes from './shipperPendingOrdersRoutes';
+import ShipperActiveOrdersRoutes from './shipperActiveOrdersRoutes';
+import { isShipperUser } from '../utils';
 
 import { actions as auth } from "../../modules/auth/index";
-import { isShipperUser } from '../utils';
-import ActiveShipperOrders from '../../modules/shipperOrders/scenes/ActiveShipperOrders/ActiveShipperOrders';
 const { logOut } = auth;
 
 const Drawer = createDrawerNavigator();
@@ -48,11 +48,11 @@ function RouterLogged({ logOut, user }) {
                                 headerShown: false,
                             }} />
                         <Drawer.Screen 
-                            name="ActiveShipperOrders" 
-                            component={ActiveShipperOrders} 
+                            name="ShipperActiveOrdersRoutes" 
+                            component={ShipperActiveOrdersRoutes} 
                             options={{
                                 title: 'Pedidos Activos',
-                                headerShown: true,
+                                headerShown: false,
                             }} />
                     </>
                 ) : (
@@ -92,7 +92,7 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { logOut })(RouterLogged);;
+export default connect(mapStateToProps, { logOut })(RouterLogged);
 
 // function LogOut({ logOut, navigation }) {
 //     return (

@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { SafeAreaView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { StatusBar } from 'expo-status-bar';
-import * as Location from 'expo-location';
+// import { StatusBar } from 'expo-status-bar';
+// import * as Location from 'expo-location';
 
 import { actions as shipperOrders } from "../../index";
 const { 
@@ -25,8 +25,8 @@ import { getOrderStatusText, getOrderStatusTextButtonShipper, statusOrder } from
 import SlidingPanelAcceptOrder from '../../components/SlidingPanelAcceptOrder';
 import CustomModal from '../../../../components/CustomModal';
 
-const GEOFENCING_ORIGIN = 'GEOFENCING_ORIGIN_TASK';
-const GEOFENCING_DESTINATION = 'GEOFENCING_DESTINATION_TASK';
+// const GEOFENCING_ORIGIN = 'GEOFENCING_ORIGIN_TASK';
+// const GEOFENCING_DESTINATION = 'GEOFENCING_DESTINATION_TASK';
 
 type MyProps = {
     changeOrderStatusAccepted: (orderStatusAccepted, onSuccess, onError) => void,
@@ -78,6 +78,13 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
             latitudeDelta: Math.abs(coordsA.latitude - midRegion.latitude) * 5,
             longitudeDelta: Math.abs(coordsA.longitude - midRegion.longitude) * 3,
         }
+    }
+
+    initialRegion = {
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05
     }
 
     onPress = () => {
@@ -132,32 +139,33 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
 
     onSuccessCreateTasks = async (statusOrder) => {
         this.onSuccess(statusOrder);
-        const { orderId, originAddress, destinationAddress } = this.props.order;
-        const { status } = await Location.requestBackgroundPermissionsAsync();
-        if (status === 'granted') {
-            await Location.startGeofencingAsync(GEOFENCING_ORIGIN, [{
-                identifier: orderId,
-                latitude: originAddress.coords.latitude,
-                longitude: originAddress.coords.longitude,
-                radius: 20,
-                notifyOnEnter: true,
-                notifyOnExit: true,
-            }]);
-            await Location.startGeofencingAsync(GEOFENCING_DESTINATION, [{
-                identifier: orderId,
-                latitude: destinationAddress.coords.latitude,
-                longitude: destinationAddress.coords.longitude,
-                radius: 20,
-                notifyOnEnter: true, // Solo enter porque no interesa cuando se va del destino
-            }]);
-        }
+        // const { orderId, originAddress, destinationAddress } = this.props.order;
+        // const { status } = await Location.requestBackgroundPermissionsAsync();
+        // if (status === 'granted') {
+        //     await Location.startGeofencingAsync(GEOFENCING_ORIGIN, [{
+        //         identifier: orderId,
+        //         latitude: originAddress.coords.latitude,
+        //         longitude: originAddress.coords.longitude,
+        //         radius: 20,
+        //         notifyOnEnter: true,
+        //         notifyOnExit: true,
+        //     }]);
+        //     await Location.startGeofencingAsync(GEOFENCING_DESTINATION, [{
+        //         identifier: orderId,
+        //         latitude: destinationAddress.coords.latitude,
+        //         longitude: destinationAddress.coords.longitude,
+        //         radius: 20,
+        //         notifyOnEnter: true, // Solo enter porque no interesa cuando se va del destino
+        //     }]);
+        // }
     }
 
     onSuccess = (status) => {
-        const { order } = this.props;
+        console.log('onSuccess', status);
+        console.log('onSuccess', getOrderStatusTextButtonShipper(status));
         this.setState({
-            textButton: getOrderStatusTextButtonShipper(order.status),
-            error: 'Estado del pedido: ' + getOrderStatusText(order.status), 
+            textButton: getOrderStatusTextButtonShipper(status),
+            error: 'Estado del pedido: ' + getOrderStatusText(status), 
             visibleModal: true 
         });
     }
@@ -176,7 +184,7 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
         const { originAddress, destinationAddress, } = order;
         return (
             <SafeAreaView style={styles.container}>
-                <StatusBar style="dark" />
+                {/* <StatusBar style="dark" /> */}
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
@@ -204,27 +212,31 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                     // scrollEnabled={false}
                     pitchEnabled={false}
                     toolbarEnabled={false}
-                    initialRegion={this.getMidPointCoords(originAddress.coords, destinationAddress.coords)}
+                    initialRegion={!isLoading ? this.getMidPointCoords(originAddress.coords, destinationAddress.coords) : this.initialRegion}
                     style={styles.mapStyle} >
-
-                    <Marker 
-                        draggable
-                        // image={require('../../../../../assets/driver.png')}
-                        pinColor={color.red.redTomato}
-                        coordinate={originAddress.coords} >
-                    </Marker>
-                    <Marker 
-                        draggable
-                        // image={require('../../../../../assets/driver.png')}
-                        pinColor={color.blue.steelBlue}
-                        coordinate={destinationAddress.coords} >
-                    </Marker>
-                    <MapViewDirections
-                        origin={originAddress.coords}
-                        destination={destinationAddress.coords}
-                        apikey={API_KEY_GOOGLE}
-                        strokeWidth={3}
-                        strokeColor={color.green.greenLima} />
+                    
+                    {
+                        // originAddress.coords && destinationAddress.coords &&
+                        !isLoading &&
+                        <><Marker 
+                            draggable
+                            // image={require('../../../../../assets/driver.png')}
+                            pinColor={color.red.redTomato}
+                            coordinate={originAddress.coords} >
+                        </Marker>
+                        <Marker 
+                            draggable
+                            // image={require('../../../../../assets/driver.png')}
+                            pinColor={color.blue.steelBlue}
+                            coordinate={destinationAddress.coords} >
+                        </Marker>
+                        <MapViewDirections
+                            origin={originAddress.coords}
+                            destination={destinationAddress.coords}
+                            apikey={API_KEY_GOOGLE}
+                            strokeWidth={3}
+                            strokeColor={color.green.greenLima} /></>
+                    }
                     
                 </MapView>
                 <SlidingPanelAcceptOrder 

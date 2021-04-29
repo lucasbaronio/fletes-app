@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import * as Notifications from 'expo-notifications';
 import { View } from 'react-native';
 // import DefaultPopup from 'react-native-push-notification-popup';
-// import notificationRouter from './notificationRouter';
 
 import { actions as auth } from "../../../modules/auth/index"
 const { savePushNotificationID } = auth;
 import { actions as shipperOrders } from "../../../modules/shipperOrders/index"
-const { getOrderShipper } = shipperOrders;
+const { getOrderShipper, setShipperOrderSelected } = shipperOrders;
 import { actions as userOrders } from "../../../modules/userOrders/index"
-const { getOrderUser } = userOrders;
+const { getOrderUser, setUserOrderSelected } = userOrders;
 
 import { registerForPushNotificationsAsync } from './registerForPushNotificationsAsync';
 import notificationRouter from './notificationRouter';
@@ -27,9 +26,16 @@ type MyProps = {
     savePushNotificationID: (pushNotificationID, successCB) => void,
     getOrderShipper: (orderId, successCB, errorCB) => void,
     getOrderUser: (orderId, successCB, errorCB) => void,
+    setUserOrderSelected: (order, successCB) => void,
+    setShipperOrderSelected: (order, successCB) => void,
     navigation: any,
 }
-const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { savePushNotificationID, getOrderShipper, getOrderUser })(
+const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { 
+    savePushNotificationID, 
+    getOrderShipper,
+    setShipperOrderSelected, 
+    getOrderUser,
+    setUserOrderSelected })(
     class extends React.Component<MyProps> {
         notificationListener: any;
         responseListener: any;
@@ -51,7 +57,7 @@ const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { s
             // This listener is fired whenever a notification is received while the app is foregrounded
             this.notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
                 // setNotification(notification);
-                console.log("Push adentro", notification);
+                // console.log("Push adentro", notification);
                 // this.popup.show({
                 //     onPress: () => notificationRouter({ notification, ...this.props }),
                 //     appIconSource: require('../../../../assets/pimbay.png'),
@@ -60,13 +66,13 @@ const withNotificationExpoHOC = WrappedComponent => connect(mapStateToProps, { s
                 //     title: notification.data.title ? notification.data.title : 'Sin Título',
                 //     body: notification.data.body ? notification.data.body : 'Notificación sin un body 😀',
                 // });
-                // notificationRouter({ notification, ...this.props });
+                notificationRouter({ notification, pushBackgrounded: false, ...this.props });
             });
 
             // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
             this.responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-                console.log("Push afuera", response);
-                notificationRouter({ notification: response.notification, ...this.props });
+                // console.log("Push afuera", response);
+                notificationRouter({ notification: response.notification, pushBackgrounded: true, ...this.props });
             });
         }
 

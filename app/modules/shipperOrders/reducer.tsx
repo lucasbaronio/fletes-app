@@ -46,7 +46,7 @@ let initialState = {
         shipperArrivesAtDestinationAt: null,
         shipperArrivesAtOriginAt: null,
         shipperCompletedAt: null,
-        picePerHour: null,
+        pricePerHour: null,
         finalPrice: null,
         fixedPrice: null,
         status: statusOrder.PENDING,
@@ -92,36 +92,36 @@ const shipperOrdersReducer = (state = initialState, action) => {
 
         case t.ORDER: {
             const { order } = action.data;
-            const { pendingOrders, activeOrders, historyOrders } = state;
+            const { pendingOrders, activeOrders, historyOrders, orderSelected } = state;
             switch (order.status) {
                 case statusOrder.PENDING:
                     return { 
                         ...state, 
-                        orderSelected: order, 
-                        pendingOrders: pendingOrders.concat(order),
+                        orderSelected: orderSelected.orderId == order.orderId ? order : orderSelected, 
+                        pendingOrders: pendingOrders.filter(item => item.orderId !== order.orderId).concat(order),
                     };
                 case statusOrder.CANCELED:
                     return { 
                         ...state, 
-                        orderSelected: order, 
-                        activeOrders: activeOrders.filter(order => order.orderId !== order.orderId),
-                        pendingOrders: pendingOrders.filter(order => order.orderId !== order.orderId),
-                        historyOrders: historyOrders.concat(order),
+                        orderSelected: orderSelected.orderId == order.orderId ? order : orderSelected, 
+                        activeOrders: activeOrders.filter(item => item.orderId !== order.orderId),
+                        pendingOrders: pendingOrders.filter(item => item.orderId !== order.orderId),
+                        historyOrders: historyOrders.filter(item => item.orderId !== order.orderId).concat(order),
                     };
                 case statusOrder.COMPLETED:
                     return { 
                         ...state, 
-                        orderSelected: order, 
-                        activeOrders: activeOrders.filter(order => order.orderId !== order.orderId),
-                        pendingOrders: pendingOrders.filter(order => order.orderId !== order.orderId),
-                        historyOrders: historyOrders.concat(order),
+                        orderSelected: orderSelected.orderId == order.orderId ? order : orderSelected, 
+                        activeOrders: activeOrders.filter(item => item.orderId !== order.orderId),
+                        pendingOrders: pendingOrders.filter(item => item.orderId !== order.orderId),
+                        historyOrders: historyOrders.filter(item => item.orderId !== order.orderId).concat(order),
                     };
                 default: // Active order
                     return { 
                         ...state, 
-                        orderSelected: order, 
-                        pendingOrders: pendingOrders.filter(order => order.orderId !== order.orderId),
-                        activeOrders: activeOrders.concat(order),
+                        orderSelected: orderSelected.orderId == order.orderId ? order : orderSelected, 
+                        pendingOrders: pendingOrders.filter(item => item.orderId !== order.orderId),
+                        activeOrders: activeOrders.filter(item => item.orderId !== order.orderId).concat(order),
                     };
             }
         }

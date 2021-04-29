@@ -1,5 +1,6 @@
 export const ORDER_SELECTED = 'shipperOrders/ORDER_SELECTED';
 export const ORDER = 'shipperOrders/ORDER';
+export const ORDER_FROM_NOTIFICATION = 'shipperOrders/ORDER_FROM_NOTIFICATION';
 export const ORDERS_PENDING_SHIPPER = 'shipperOrders/ORDERS_PENDING_SHIPPER';
 export const ORDERS_ACTIVE_SHIPPER = 'shipperOrders/ORDERS_ACTIVE_SHIPPER';
 export const ORDER_ACCEPTED = 'shipperOrders/ORDER_ACCEPTED';

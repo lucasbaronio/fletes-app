@@ -4,18 +4,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Button, Icon } from 'native-base';
 import MapShipperOrderDetails from '../../modules/shipperOrders/scenes/MapShipperOrderDetails/MapShipperOrderDetails';
 import { color, iconSize } from '../../styles/theme';
-import PendingShipperOrders from '../../modules/shipperOrders/scenes/PendingShipperOrders/PendingShipperOrders';
+import ActiveShipperOrders from '../../modules/shipperOrders/scenes/ActiveShipperOrders/ActiveShipperOrders';
 
 const ShipperOrdersStack = createStackNavigator();
 
-function ShipperPendingOrdersRoutes(props) {
+function ShipperActiveOrdersRoutes(props) {
     return (
-        <ShipperOrdersStack.Navigator initialRouteName="PendingShipperOrders" >
+        <ShipperOrdersStack.Navigator initialRouteName="ActiveShipperOrders" >
             <ShipperOrdersStack.Screen 
-                name="PendingShipperOrders" 
-                component={PendingShipperOrders} 
+                name="ActiveShipperOrders" 
+                component={ActiveShipperOrders} 
                 options={({ navigation }) => ({
-                    title: 'Pedidos Disponibles',
+                    title: 'Pedidos Activos',
                     headerShown: true,
                     headerLeft: () => (
                         <Button transparent
@@ -38,8 +38,7 @@ function ShipperPendingOrdersRoutes(props) {
                     headerTransparent: true,
                     headerLeft: () => (
                         <Button transparent
-                            // Aca despues hay que cambiarlo porque va haber un ActiveShipperOrders 
-                          onPress={() => navigation.navigate('ShipperPendingOrdersRoutes', { screen: 'PendingShipperOrders' })}
+                          onPress={() => navigation.navigate('ShipperActiveOrdersRoutes', { screen: 'ActiveShipperOrders' })}
                           color={color.black.black} >
                             <Icon 
                                 ios='chevron-back-circle-outline' 
@@ -62,4 +61,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { })(ShipperPendingOrdersRoutes);
+export default connect(mapStateToProps, { })(ShipperActiveOrdersRoutes);

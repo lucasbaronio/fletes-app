@@ -6,7 +6,7 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
 
 import { actions as shipperOrders } from "../../index";
-const { setOrderSelected, getOrdersPendingShipper } = shipperOrders;
+const { setShipperOrderSelected, getOrdersPendingShipper } = shipperOrders;
 
 import styles from './styles';
 import { currentDate, dateToFrontend, displayDate } from '../../utils/utils';
@@ -19,7 +19,7 @@ import { isLessThan } from '../../../userOrders/utils/utils';
 import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
-    setOrderSelected: (order, successCB) => void,
+    setShipperOrderSelected: (order, successCB) => void,
     getOrdersPendingShipper: (successCB, errorCB) => void,
     pendingOrders: any,
     isLoading: boolean,
@@ -67,8 +67,8 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
     }
 
     onSelectOrderItem = (order) => {
-        const { setOrderSelected } = this.props;
-        setOrderSelected(order, this.onSuccess);
+        const { setShipperOrderSelected } = this.props;
+        setShipperOrderSelected(order, this.onSuccess);
     }
 
     onSuccess = () => {
@@ -105,9 +105,11 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <FlatList
-                    // ListFooterComponent={
-                    //     <View style={{ flex: 1, marginVertical: 40 }}></View>
-                    // }
+                    ListEmptyComponent={
+                        <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
+                            <Text>No se encontraron nuevos pedidos</Text>
+                        </View>
+                    }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}
                     data={pendingOrders}
                     keyExtractor={(item, index) => item.orderId.toString()}
@@ -191,4 +193,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { setOrderSelected, getOrdersPendingShipper })(PendingShipperOrders);
+export default connect(mapStateToProps, { setShipperOrderSelected, getOrdersPendingShipper })(PendingShipperOrders);
