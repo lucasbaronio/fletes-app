@@ -5,14 +5,14 @@ import {
   Animated, StyleSheet,
   View, TouchableOpacity, ActivityIndicator
 } from 'react-native';
+import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
 import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
-import { currentDate, dateToFrontend, timeDiffMinutes, displayDate } from '../utils/utils';
-import { timeDiffSeconds } from '../../orders/utils/utils';
+import { displayDate } from '../utils/utils';
 
 type MyProps = {
   onPress: () => void,
@@ -36,11 +36,6 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  const [refreshIntervalId, setRefreshIntervalId] = useState<any>();
-  const [pricePerHourDinamic, setPricePerHourDinamic] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  // const [seconds, setSeconds] = useState(0);
   
   const PANEL_VELOCITY = isiOS ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
@@ -62,13 +57,6 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
   }
 
   useEffect(() => {
-    calculatePricePerHour();
-    const refreshIntervalId = setInterval(() => calculatePricePerHour(), 60000);
-    setRefreshIntervalId(refreshIntervalId);
-  }, []);
-
-  useEffect(() => {
-    calculatePricePerHour();
 		const slidingListener = panelPositionVal.addListener(
 			_onAnimatedValueChange,
 		);
@@ -80,21 +68,9 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
   }
 
   const onPressMoreDetails = () => {
-
-  }
-
-  const calculatePricePerHour = () => {
-    const { shipperArrivedAtOriginAt, shipperCompletedAt, pricePerHour } = order;
-    let diff = 0;
-    if (!shipperArrivedAtOriginAt && !shipperCompletedAt) diff = 0;
-    else if (!shipperCompletedAt) diff = timeDiffSeconds(currentDate(), dateToFrontend(shipperArrivedAtOriginAt));
-    else {
-      diff = timeDiffSeconds(dateToFrontend(shipperCompletedAt), dateToFrontend(shipperArrivedAtOriginAt));
-      clearInterval(refreshIntervalId);
-    }
-    setHours(Math.trunc(diff / 60 / 66));
-    setMinutes(Math.trunc((diff / 60) % 60));
-    setPricePerHourDinamic(Math.round((pricePerHour * diff / 60 / 60) * 100) / 100)
+    RootNavigation.push('OrderDetails', {
+      order: order
+    });
   }
 
   return (
@@ -217,27 +193,14 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
           <View style={styles.orderContainer}>
             <View style={styles.orderPriceContainer}>
               <View style={styles.orderPriceLine}>
-                  <Text style={[styles.orderPriceText, { flex: 1 }]}>Precio por hora</Text>
+                  <Text style={styles.orderPriceText}>Precio por hora</Text>
                   <Text style={styles.orderPriceValue}>$ {order.pricePerHour}</Text>
               </View>
-              <View style={styles.separatorMiddle}></View>
-              {
-                getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.PENDING) &&
-                <View style={[styles.orderPriceLine, { paddingVertical: 3 }]}>
-                    <View style={{ flex: 1, flexDirection: 'column' }}>
-                        <Text style={[styles.orderPriceText, { fontWeight: fontWeight.L }]}>Total por hora:</Text>
-                        <Text style={{ fontSize: fontSize.XS }}>({hours} hs y {minutes} mins)</Text>
-                    </View>
-                    <View style={{ justifyContent: 'center' }}>
-                      <Text style={[styles.orderPriceValue, { fontWeight: fontWeight.L }]}>$ {pricePerHourDinamic}</Text>
-                    </View>
-                </View>
-              }
+              {/* <View style={styles.separatorMiddle}></View> */}
               <View style={styles.orderPriceLine}>
-                  <Text style={[styles.orderPriceText, { flex: 1, fontWeight: fontWeight.L }]}>Total fijo</Text>
-                  <Text style={[styles.orderPriceValue, { fontWeight: fontWeight.L }]}>$ {order.fixedPrice}</Text>
+                  <Text style={styles.orderPriceText}>Total fijo</Text>
+                  <Text style={styles.orderPriceValue}>$ {order.fixedPrice}</Text>
               </View>
-              
             </View>
             <View style={styles.orderDetailsContainer}>
               <TouchableOpacity
@@ -390,10 +353,12 @@ const styles = StyleSheet.create({
     marginVertical: 1,
   },
   orderPriceText: { 
+    flex: 1,
     fontSize: fontSize.S
   },
   orderPriceValue: { 
-    fontSize: fontSize.M
+    fontSize: fontSize.M,
+    fontWeight: fontWeight.L,
   },
   orderDetailsContainer: {
     flex: .2,

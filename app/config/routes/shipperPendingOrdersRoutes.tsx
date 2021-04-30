@@ -5,6 +5,7 @@ import { Button, Icon } from 'native-base';
 import MapShipperOrderDetails from '../../modules/shipperOrders/scenes/MapShipperOrderDetails/MapShipperOrderDetails';
 import { color, iconSize } from '../../styles/theme';
 import PendingShipperOrders from '../../modules/shipperOrders/scenes/PendingShipperOrders/PendingShipperOrders';
+import OrderDetails from '../../modules/shared/OrderDetails/OrderDetails';
 
 const ShipperOrdersStack = createStackNavigator();
 
@@ -50,6 +51,13 @@ function ShipperPendingOrdersRoutes(props) {
                                 }} />
                         </Button>
                     ),
+                })}
+            />
+            <ShipperOrdersStack.Screen 
+                name="OrderDetails" 
+                component={OrderDetails} 
+                options={({ navigation }) => ({
+                    title: 'Detalles del Pedido',
                 })}
             />
         </ShipperOrdersStack.Navigator>

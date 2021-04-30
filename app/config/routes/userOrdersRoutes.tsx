@@ -5,6 +5,7 @@ import { Button, Icon } from 'native-base';
 import MapUserOrderDetails from '../../modules/userOrders/scenes/MapUserOrderDetails/MapUserOrderDetails';
 import { color, iconSize, isiOS } from '../../styles/theme';
 import ActiveUserOrders from '../../modules/userOrders/scenes/ActiveUserOrders/ActiveUserOrders';
+import OrderDetails from '../../modules/shared/OrderDetails/OrderDetails';
 
 // import { actions as auth } from "../modules/auth/index"
 // const { logOut } = auth;
@@ -53,6 +54,13 @@ function UserOrdersRoutes(props) {
                                 }} />
                         </Button>
                     ),
+                })}
+            />
+            <UserOrdersStack.Screen 
+                name="OrderDetails" 
+                component={OrderDetails} 
+                options={({ navigation }) => ({
+                    title: 'Detalles del Pedido',
                 })}
             />
         </UserOrdersStack.Navigator>
