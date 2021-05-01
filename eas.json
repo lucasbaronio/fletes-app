@@ -1,10 +1,8 @@
 {
   "builds": {
-    "builds": {
-      "android": {
-        "release": {
-          "workflow": "managed"
-        }
+    "android": {
+      "release": {
+        "workflow": "managed"
       }
     },
     "ios": {
