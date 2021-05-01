@@ -4,6 +4,7 @@ import { H1, Button, Text, Icon } from 'native-base';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Localization from 'expo-localization';
 import moment from "moment";
+import "moment-timezone";
 import 'moment/min/locales';
 import { displayDate, currentDate, dateToMoment } from '../utils/utils';
 
@@ -29,9 +30,9 @@ export default class DateTime extends Component<MyProps, MyState> {
 
     componentDidMount() {
         // console.log(Localization.locale)
-        moment.locale(Localization.locale);
+        moment.locale('es');
         const { dateOrder } = this.props;
-        const date = new Date(moment(dateOrder).format());
+        const date = new Date(moment(dateOrder).tz(Localization.timezone).format());
         this.setState({ date });
     }
 
@@ -52,18 +53,6 @@ export default class DateTime extends Component<MyProps, MyState> {
         this.hideDatePicker();
         this.setState({ now: isNow })
     };
-
-    // displayDate = () => {
-    //     const { date } = this.state;
-    //     const dateMoment = moment(date);
-    //     const now = moment(new Date());
-    //     const diff = now.diff(dateMoment, 'days');
-    //     if (diff > 6 || diff < -6) {
-    //         return moment(date).format('LLLL');
-    //     } else {
-    //         return moment(date).calendar();
-    //     }
-    // }
 
     render() {
         const { visible, date, now } = this.state;
@@ -97,7 +86,7 @@ export default class DateTime extends Component<MyProps, MyState> {
                     minimumDate={new Date()}
                     minuteInterval={5}
                     timeZoneOffsetInMinutes={-180}
-                    locale={Localization.locale}
+                    locale={'es'}
                     is24Hour={true}
                     isVisible={visible}
                     mode='datetime'

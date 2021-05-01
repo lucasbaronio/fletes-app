@@ -8,42 +8,37 @@ import * as Localization from 'expo-localization';
 // import * as api from '../api';
 
 export const displayDate = (date) => {
-    moment.locale(Localization.locale);
-    const dateMoment = moment(date);
-    const now = moment(new Date());
+    moment.locale('es');
+    const dateMoment = moment(date).tz(Localization.timezone);
+    const now = moment(new Date()).tz(Localization.timezone);
     const diff = now.diff(dateMoment, 'days');
     if (diff > 6 || diff < -6) {
-        return moment(date).format('LLLL');
+        return dateMoment.format('LLLL');
     } else {
-        // return moment(date).locale('es').calendar();
-        return moment(date).calendar();
+        return dateMoment.calendar();
     }
 }
 
 export const currentDate = () => {
-    moment.locale(Localization.locale);
-    return moment(new Date()).format();
+    moment.locale('es');
+    return moment(new Date()).tz(Localization.timezone).format();
 }
 
 export const dateToMoment = (date) => {
-    return moment(date).format();
+    return moment(date).tz(Localization.timezone).format();
 }
 
 export const dateToBackend = (date) => {
-    moment.locale(Localization.locale);
+    moment.locale('es');
     // console.log(moment.utc(date));
     // console.log(moment.utc(date).format());
     return moment.utc(date).format();
 }
 
 export const dateToFrontend = (date) => {
-    moment.locale(Localization.locale);
-    return moment(date).format();
+    moment.locale('es');
+    return moment(date).tz(Localization.timezone).format();
 }
-
-// export const timeDiffMinutes = (to, from) => {
-//     return moment(to).diff(moment(from), 'minutes');
-// }
 
 // const GEOFENCING_ORIGIN = 'GEOFENCING_ORIGIN_TASK';
 // const GEOFENCING_DESTINATION = 'GEOFENCING_DESTINATION_TASK';
