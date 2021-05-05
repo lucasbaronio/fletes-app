@@ -20,6 +20,11 @@ export const currentDate = () => {
     return moment(new Date()).tz(Localization.timezone).format();
 }
 
+export const currentDateMoment = () => {
+    moment.locale('es');
+    return moment(new Date()).tz(Localization.timezone);
+}
+
 export const dateToMoment = (date) => {
     return moment(date).tz(Localization.timezone).format();
 }

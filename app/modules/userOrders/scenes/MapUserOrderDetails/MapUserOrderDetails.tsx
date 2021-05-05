@@ -42,9 +42,7 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
         const { order, changeOrderStatusCompleted, changeOrderStatusCanceled } = this.props;
         switch (order.status) {
             case statusOrder.PENDING:
-                changeOrderStatusCanceled({ 
-                    orderId: order.orderId, 
-                }, this.onSuccess, this.onError);
+                changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
                 break;
             case statusOrder.ACCEPTED:
                 changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);

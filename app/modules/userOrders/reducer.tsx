@@ -135,12 +135,19 @@ const userOrdersReducer = (state = initialState, action) => {
         }
 
         case t.ORDER_COMPLETED: {
+            const { orderSelected, activeOrders, historyOrders } = state;
+
             return { 
                 ...state, 
                 orderSelected: { 
                     ...state.orderSelected, 
                     status: statusOrder.COMPLETED 
-                }
+                },
+                activeOrders: activeOrders.filter(item => item.orderId !== orderSelected.orderId),
+                historyOrders: [...historyOrders, { 
+                    ...state.orderSelected, 
+                    status: statusOrder.COMPLETED 
+                }],
             };
         }
 
@@ -153,7 +160,10 @@ const userOrdersReducer = (state = initialState, action) => {
                     status: statusOrder.CANCELED 
                 },
                 activeOrders: activeOrders.filter(item => item.orderId !== orderSelected.orderId),
-                historyOrders: [...historyOrders, orderSelected],
+                historyOrders: [...historyOrders, { 
+                    ...state.orderSelected, 
+                    status: statusOrder.COMPLETED 
+                }],
             };
         }
 

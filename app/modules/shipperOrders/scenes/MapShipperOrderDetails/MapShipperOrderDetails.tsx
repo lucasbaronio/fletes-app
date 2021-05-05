@@ -14,6 +14,8 @@ const {
     changeOrderStatusAtDestination,
     changeOrderStatusCompletePending,
     changeOrderStatusCanceled,
+    setShipperArrivesAtDestinationAt,
+    setShipperArrivesAtOriginAt,
 } = shipperOrders;
 import { actions as users } from "../../../users/index";
 const { getVehicles } = users;
@@ -37,6 +39,8 @@ type MyProps = {
     changeOrderStatusAtDestination: (orderId, onSuccess, onError) => void,
     changeOrderStatusCompletePending: (orderId, onSuccess, onError) => void,
     changeOrderStatusCanceled: (orderId, onSuccess, onError) => void,
+    setShipperArrivesAtDestinationAt: (destinationAt, onSuccess) => void,
+    setShipperArrivesAtOriginAt: (originAt, onSuccess) => void,
     order: any,
     isLoading: boolean,
     navigation: any,
@@ -104,10 +108,12 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                 break;
             case statusOrder.ACCEPTED:
                 if (index == 0) {
+                    const { shipperArrivesAtOriginAt } = order;
                     changeOrderStatusToOrigin({ 
                         orderId: order.orderId, 
                         arrivesAt: {
-                            arrivesAt: "2021-05-12T18:20:00-03:00",
+                            // arrivesAt: "2021-05-12T18:20:00-03:00",
+                            arrivesAt: shipperArrivesAtOriginAt,
                         }
                     }, this.onSuccess, this.onError);
                 } else {
@@ -121,7 +127,8 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                 changeOrderStatusToDestination({ 
                     orderId: order.orderId, 
                     arrivesAt: {
-                        arrivesAt: "2021-05-12T18:20:00-03:00",
+                        // arrivesAt: "2021-05-12T18:20:00-03:00",
+                        arrivesAt: setShipperArrivesAtDestinationAt,
                     }
                 }, this.onSuccess, this.onError);
                 break;
@@ -176,7 +183,7 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
 
     render() {
         const { error, visibleModal } = this.state;
-        const { order, isLoading } = this.props;
+        const { order, isLoading, setShipperArrivesAtDestinationAt, setShipperArrivesAtOriginAt, } = this.props;
         const { originAddress, destinationAddress, status } = order;
         return (
             <SafeAreaView style={styles.container}>
@@ -237,6 +244,8 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                 </MapView>
                 <SlidingPanelShipperOrderDetails 
                     isLoading={isLoading}
+                    onSetArrivesAtOrigin={setShipperArrivesAtOriginAt}
+                    onSetArrivesAtDestination={setShipperArrivesAtDestinationAt}
                     order={order}
                     vehicleSelected={order.vehicle}
                     textButton={getOrderStatusTextButtonShipper(status)}
@@ -262,4 +271,6 @@ export default connect(mapStateToProps, {
     changeOrderStatusAtDestination,
     changeOrderStatusCompletePending,
     changeOrderStatusCanceled,
+    setShipperArrivesAtDestinationAt,
+    setShipperArrivesAtOriginAt,
 })(MapShipperOrderDetails);

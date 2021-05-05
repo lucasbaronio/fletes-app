@@ -1,7 +1,6 @@
 import { statusOrder } from '../../config/utils';
 import { currentDate, dateToBackend } from '../orders/utils/utils';
 import * as t from './actionTypes';
-import { orderStatusAccepted } from './api';
 
 type Order = {
     orderId: number,
@@ -150,7 +149,10 @@ const shipperOrdersReducer = (state = initialState, action) => {
 
             return { 
                 ...state, 
-                activeOrders: [...activeOrders, orderSelected],
+                activeOrders: [...activeOrders, { 
+                    ...orderSelected, 
+                    status: statusOrder.ACCEPTED 
+                }],
                 pendingOrders: pendingOrders.filter(order => order.orderId !== orderSelected.orderId),
                 orderSelected: { 
                     ...orderSelected, 
@@ -210,7 +212,10 @@ const shipperOrdersReducer = (state = initialState, action) => {
                 },
                 activeOrders: activeOrders.filter(item => item.orderId !== orderSelected.orderId),
                 pendingOrders: pendingOrders.filter(item => item.orderId !== orderSelected.orderId),
-                historyOrders: [...historyOrders, orderSelected],
+                historyOrders: [...historyOrders, { 
+                    ...state.orderSelected, 
+                    status: statusOrder.CANCELED,
+                }],
             };
         }
 
@@ -239,6 +244,7 @@ const shipperOrdersReducer = (state = initialState, action) => {
 
         case t.ORIGIN_AT: {
             const { originAt } = action;
+            console.log(originAt)
             
             return { 
                 ...state, 

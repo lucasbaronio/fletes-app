@@ -5,26 +5,26 @@ import {
   Animated, StyleSheet,
   View, TouchableOpacity, ActivityIndicator, Pressable
 } from 'react-native';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
-import { displayDate } from '../../orders/utils/utils';
+import { currentDate, currentDateMoment, dateToBackend, displayDate } from '../../orders/utils/utils';
 import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
+import PickerModal from '../../shared/ActionModal/ActionModal';
 
 type MyProps = {
   onPress: (index) => void,
   order: any,
   textButton: string[],
   vehicleSelected: any,
-  shipperArrivesAtOriginAt: any,
-  shipperArrivesAtDestinationAt: any,
+  onSetArrivesAtOrigin: any,
+  onSetArrivesAtDestination: any,
   isLoading: boolean,
 }
-const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton, vehicleSelected, shipperArrivesAtOriginAt, shipperArrivesAtDestinationAt }) => {
+const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton, vehicleSelected, onSetArrivesAtOrigin, onSetArrivesAtDestination }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
 
@@ -41,7 +41,8 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
   const [visible, setVisible] = useState(false);
-  const [time, setTime] = useState();
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(15);
 
   const PANEL_VELOCITY = isiOS ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
@@ -84,9 +85,15 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
     setVisible(false);
   };
 
-  const handleConfirm = (time) => {
-    setTime(time);
-    // onSetOriginTimeOrder(time);
+  const handleConfirm = (hours, minutes) => {
+    setHours(hours);
+    setMinutes(minutes);
+    const date = currentDateMoment().add(hours, 'hours').add(minutes, 'minutes');
+    if (order.status == statusOrder.ACCEPTED) {
+      onSetArrivesAtOrigin(dateToBackend(date), () => {});
+    } else {
+      onSetArrivesAtDestination(dateToBackend(date), () => {});
+    }
     hideDatePicker();
   };
 
@@ -252,15 +259,23 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
             </View></>
           }
           {
-            order.status == statusOrder.ACCEPTED &&
+            (order.status == statusOrder.ACCEPTED || order.status == statusOrder.AT_ORIGIN) &&
             <><View style={[styles.separator, styles.separatorLong]}></View>
             <View style={styles.orderSelectContainer}>
               <View style={styles.orderSelectTitleContainer}>
-                <Text style={styles.text3}>Tiempo aprox. a punto de origen</Text>
                 {
-                  shipperArrivesAtOriginAt &&
-                  // <Text style={styles.text2}>{displayTime(shipperArrivesAtOriginAt)}</Text>
-                  <Text style={styles.text2}>{shipperArrivesAtOriginAt}</Text>
+                  (order.status == statusOrder.ACCEPTED) ?
+                    <><Text style={styles.text4}>Tiempo aprox. a punto de origen</Text>
+                    {
+                      order.shipperArrivesAtOriginAt &&
+                      <Text style={styles.text2}>{hours} hs y {minutes} mins.</Text>
+                    }</>
+                  :
+                    <><Text style={styles.text4}>Tiempo aprox. a punto de destino</Text>
+                    {
+                      order.shipperArrivesAtDestinationAt &&
+                      <Text style={styles.text2}>{hours} hs y {minutes} mins.</Text>
+                    }</>
                 }
               </View>
               <View style={styles.orderSelectButtonContainer}>
@@ -270,22 +285,12 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
                   <Text style={[styles.buttonText, styles.text4]}>Seleccionar</Text>
                 </Pressable>
               </View>
-              <DateTimePickerModal
-                // date={new Date(time)}
-                cancelTextIOS='Cancelar'
-                confirmTextIOS='Confirmar'
-                headerTextIOS='Tiempo estimado de llegada a punto de origen'
-                // minimumDate={new Date()}
-                // maximumDate={new Date(2300, 10, 20)}
-                minuteInterval={5}
-                timeZoneOffsetInMinutes={-180}
-                isDarkModeEnabled={true}
-                locale={'es'}
-                // is24Hour={true}
-                isVisible={visible}
-                mode='time'
-                onCancel={hideDatePicker}
-                onConfirm={(time) => handleConfirm(time)} />
+              <PickerModal 
+                hours={hours} 
+                minutes={minutes} 
+                titleModal={(order.status == statusOrder.ACCEPTED) ? "Tiempo de llegada estimado a punto de origen" : "Tiempo de llegada estimado a punto de destino"} 
+                visible={visible} 
+                onConfirm={handleConfirm}/>
             </View></>
           }
           {
