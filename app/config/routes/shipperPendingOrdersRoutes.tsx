@@ -6,6 +6,7 @@ import MapShipperOrderDetails from '../../modules/shipperOrders/scenes/MapShippe
 import { color, iconSize } from '../../styles/theme';
 import PendingShipperOrders from '../../modules/shipperOrders/scenes/PendingShipperOrders/PendingShipperOrders';
 import OrderDetails from '../../modules/shared/OrderDetails/OrderDetails';
+import VehicleSelect from '../../modules/shipperOrders/scenes/VehicleSelect/VehicleSelect';
 
 const ShipperOrdersStack = createStackNavigator();
 
@@ -58,6 +59,13 @@ function ShipperPendingOrdersRoutes(props) {
                 component={OrderDetails} 
                 options={({ navigation }) => ({
                     title: 'Detalles del Pedido',
+                })}
+            />
+            <ShipperOrdersStack.Screen 
+                name="VehicleSelect" 
+                component={VehicleSelect} 
+                options={({ navigation }) => ({
+                    title: 'Seleccionar Vehículo',
                 })}
             />
         </ShipperOrdersStack.Navigator>

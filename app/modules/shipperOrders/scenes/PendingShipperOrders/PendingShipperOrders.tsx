@@ -107,7 +107,7 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
                 <FlatList
                     ListEmptyComponent={
                         <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
-                            <Text>No se encontraron nuevos pedidos</Text>
+                            <Text style={{ textAlign: 'center' }}>No se encontraron nuevos pedidos, desliza hacia abajo para actualizar</Text>
                         </View>
                     }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}

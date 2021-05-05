@@ -3,24 +3,28 @@ import { Button, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, TouchableOpacity, ActivityIndicator
+  View, TouchableOpacity, ActivityIndicator, Pressable
 } from 'react-native';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
+import { displayDate } from '../../orders/utils/utils';
 import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
-import { displayDate } from '../utils/utils';
 
 type MyProps = {
-  onPress: () => void,
+  onPress: (index) => void,
   order: any,
   textButton: string[],
+  vehicleSelected: any,
+  shipperArrivesAtOriginAt: any,
+  shipperArrivesAtDestinationAt: any,
   isLoading: boolean,
 }
-const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton }) => {
+const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton, vehicleSelected, shipperArrivesAtOriginAt, shipperArrivesAtDestinationAt }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
 
@@ -36,7 +40,9 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  
+  const [visible, setVisible] = useState(false);
+  const [time, setTime] = useState();
+
   const PANEL_VELOCITY = isiOS ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
     velocity: PANEL_VELOCITY,
@@ -44,16 +50,9 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
   };
 
   const _onAnimatedValueChange = ({ value }) => {
-    const {top, bottom} = draggableRange;
-    const delta = top - bottom;
-    const valuePCT = ((value - bottom) * 100) / delta;
-
-    // if (value === top) {
-    //   setAtTop(true);
-    // }
-    // if (value === bottom) {
-    //   setAtTop(false);
-    // }
+    // const {top, bottom} = draggableRange;
+    // const delta = top - bottom;
+    // const valuePCT = ((value - bottom) * 100) / delta;
   }
 
   useEffect(() => {
@@ -72,6 +71,24 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
       order: order
     });
   }
+
+  const onPressSelectVehicle = () => {
+    RootNavigation.push('VehicleSelect', { vehicleTypeId: order.vehicleType.vehicleTypeId });
+  }
+
+  const onPressSelectOriginTime = () => {
+    setVisible(true);
+  }
+
+  const hideDatePicker = () => {
+    setVisible(false);
+  };
+
+  const handleConfirm = (time) => {
+    setTime(time);
+    // onSetOriginTimeOrder(time);
+    hideDatePicker();
+  };
 
   return (
     <SlidingUpPanel
@@ -105,19 +122,19 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
               </View>
           </Button>
 
-          <View style={styles.timeNextStatusContainer}>
+          <View style={[styles.containerSliding, styles.containerColumn]}>
             <View>
-              <Text style={styles.timeNextStatusText}>
+              <Text style={[styles.marginVerticalLines, styles.titleText]}>
                 Fecha y hora de llegada del transportista al punto de origen
                 </Text>
             </View>
             <View>
-              <Text style={styles.timeNextStatusValue}>
+              <Text style={styles.text2}>
                 {displayDate(order.originAt)}
                 </Text>
             </View>
           </View>
-          <View style={styles.progressBarContainer}>
+          <View style={[styles.containerRow, styles.marginVerticalLines, { alignItems: 'center', marginVertical: 15 }]}>
             <Progress.Bar 
               style={{ flex: 1, marginHorizontal: 2 }}
               indeterminate={order.status === statusOrder.PENDING}
@@ -170,36 +187,36 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
               color={color.blue.steelBlue}
               unfilledColor={color.blue.lightBlue} />
           </View>
-          <View style={styles.statusContainer}>
-            <Text style={styles.statusText}>{getOrderStatusText(order.status)}</Text>
+          <View style={[styles.containerSliding, styles.marginVerticalLines]}>
+            <Text style={styles.text2}>{getOrderStatusText(order.status)}</Text>
           </View>
-          <View style={styles.separator}></View>
+          <View style={[styles.separator, styles.separatorLong]}></View>
           {
             !!order.shipper && order.status != statusOrder.PENDING &&
-            <><View style={styles.shipperContainer}>
+            <><View style={[styles.containerSliding, styles.containerColumn]}>
               <View>
-                <Text style={styles.shipperText}>
+                <Text style={styles.titleText}>
                   Nombre del transportista
                 </Text>
               </View>
               <View>
-                <Text style={styles.shipperValue}>
+                <Text style={styles.text1}>
                   {order.shipper.name}
                 </Text>
               </View>
             </View>
-            <View style={styles.separator}></View></>
+            <View style={[styles.separator, styles.separatorLong]}></View></>
           }
-          <View style={styles.orderContainer}>
+          <View style={[styles.containerSliding, styles.containerRow]}>
             <View style={styles.orderPriceContainer}>
               <View style={styles.orderPriceLine}>
-                  <Text style={styles.orderPriceText}>Precio por hora</Text>
-                  <Text style={styles.orderPriceValue}>$ {order.pricePerHour}</Text>
+                  <Text style={[{ flex: 1 }, styles.text3]}>Precio por hora</Text>
+                  <Text style={styles.text2}>$ {order.pricePerHour}</Text>
               </View>
               {/* <View style={styles.separatorMiddle}></View> */}
               <View style={styles.orderPriceLine}>
-                  <Text style={styles.orderPriceText}>Total fijo</Text>
-                  <Text style={styles.orderPriceValue}>$ {order.fixedPrice}</Text>
+                  <Text style={[{ flex: 1 }, styles.text3]}>Total fijo</Text>
+                  <Text style={styles.text2}>$ {order.fixedPrice}</Text>
               </View>
             </View>
             <View style={styles.orderDetailsContainer}>
@@ -210,19 +227,76 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
                   name="clipboard-notes" 
                   size={iconSize.XXL} 
                   color={color.black.black} />
-                <Text style={styles.orderDetailsText}>Detalle</Text>
+                <Text style={[styles.orderDetailsText, styles.text4]}>Detalle</Text>
               </TouchableOpacity>
             </View>
           </View>
           {
+            order.status == statusOrder.PENDING &&
+            <><View style={[styles.separator, styles.separatorLong]}></View>
+            <View style={styles.orderSelectContainer}>
+              <View style={styles.orderSelectTitleContainer}>
+                <Text style={styles.text3}>Vehiculo seleccionado</Text>
+                {
+                  vehicleSelected && vehicleSelected.vehicleId != 0 &&
+                  <Text style={styles.text2}>{vehicleSelected.model} - {vehicleSelected.registration}</Text>
+                }
+              </View>
+              <View style={styles.orderSelectButtonContainer}>
+                <Pressable
+                  style={styles.orderSelectButton}
+                  onPress={onPressSelectVehicle} >
+                  <Text style={[styles.buttonText, styles.text4]}>Seleccionar</Text>
+                </Pressable>
+              </View>
+            </View></>
+          }
+          {
+            order.status == statusOrder.ACCEPTED &&
+            <><View style={[styles.separator, styles.separatorLong]}></View>
+            <View style={styles.orderSelectContainer}>
+              <View style={styles.orderSelectTitleContainer}>
+                <Text style={styles.text3}>Tiempo aprox. a punto de origen</Text>
+                {
+                  shipperArrivesAtOriginAt &&
+                  // <Text style={styles.text2}>{displayTime(shipperArrivesAtOriginAt)}</Text>
+                  <Text style={styles.text2}>{shipperArrivesAtOriginAt}</Text>
+                }
+              </View>
+              <View style={styles.orderSelectButtonContainer}>
+                <Pressable
+                  style={styles.orderSelectButton}
+                  onPress={onPressSelectOriginTime} >
+                  <Text style={[styles.buttonText, styles.text4]}>Seleccionar</Text>
+                </Pressable>
+              </View>
+              <DateTimePickerModal
+                // date={new Date(time)}
+                cancelTextIOS='Cancelar'
+                confirmTextIOS='Confirmar'
+                headerTextIOS='Tiempo estimado de llegada a punto de origen'
+                // minimumDate={new Date()}
+                // maximumDate={new Date(2300, 10, 20)}
+                minuteInterval={5}
+                timeZoneOffsetInMinutes={-180}
+                isDarkModeEnabled={true}
+                locale={'es'}
+                // is24Hour={true}
+                isVisible={visible}
+                mode='time'
+                onCancel={hideDatePicker}
+                onConfirm={(time) => handleConfirm(time)} />
+            </View></>
+          }
+          {
             order.finalPrice &&
-            <><View style={styles.separator}></View>
+            <><View style={[styles.separator, styles.separatorLong]}></View>
             <View style={[styles.orderPriceLine, { marginHorizontal: 20 }]}>
                 <Text style={{ flex: 1, fontSize: fontSize.L }}>Total</Text>
                 <Text style={{ fontSize: fontSize.L, fontWeight: fontWeight.L }}>$ {order.finalPrice}</Text>
             </View></>
           }
-          <View style={styles.separator}></View>
+          <View style={[styles.separator, styles.separatorLong]}></View>
           <View style={styles.helpContainer}>
             <TouchableOpacity
               style={styles.helpButton}
@@ -244,12 +318,12 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
                   <Button 
                     key={index}
                     style={styles.button}
-                    onPress={onPress}>
+                    onPress={() => onPress(index)}>
                       {
                         isLoading ?
                           <ActivityIndicator />
                         :
-                        <Text style={styles.textButton}>
+                        <Text style={styles.buttonTextBottom}>
                           {text}
                         </Text>
                       }
@@ -258,6 +332,7 @@ const SlidingPanelOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, o
               }
             </View>
           }
+          
         </View>
     </SlidingUpPanel>
   );
@@ -284,81 +359,65 @@ const styles = StyleSheet.create({
     width: '100%', 
     justifyContent: "center",
   },
-  timeNextStatusContainer:{
+  containerSliding: {
     width: '90%', 
+  },
+  containerColumn: {
     flexDirection: 'column',
   },
-  timeNextStatusText: {
-    marginVertical: 5,
+  containerRow: {
+    width: '90%', 
+    flexDirection: 'row',
+  },
+  titleText: {
     fontSize: fontSize.XS,
     color: color.grey.slateGrey
   },
-  timeNextStatusValue: {
+  marginVerticalLines: {
+    marginVertical: 5,
+  },
+  text1: {
     fontSize: fontSize.L,
     fontWeight: fontWeight.L
   },
-  progressBarContainer: {
-    width: '90%', 
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 15
-  },
-  statusContainer: {
-    width: '90%',
-    marginVertical: 5,
-  },
-  statusText: {
+  text2: {
     fontSize: fontSize.M, 
     fontWeight: fontWeight.M
   },
+  text3: {
+    fontSize: fontSize.S, 
+  },
+  text4: {
+    fontSize: fontSize.XS, 
+  },
+  buttonText: {
+    color: color.white.white,
+    fontWeight: fontWeight.L,
+    textAlign: "center"
+  },
   separator: {
-    width: '90%',
     height: 5, 
-    marginVertical: 15, 
     borderBottomWidth: 1, 
     borderBottomColor: color.grey.lightGrey,
   },
   separatorMiddle: {
     width: '95%',
-    height: 5, 
     marginVertical: 2, 
-    borderBottomWidth: 1, 
-    borderBottomColor: color.grey.lightGrey,
   },
-  shipperContainer: {
-    width: '90%', 
-  },
-  shipperText: {
-    // marginVertical: 2,
-    fontSize: fontSize.XS,
-    color: color.grey.slateGrey
-  },
-  shipperValue: {
-    fontSize: fontSize.L,
-    fontWeight: fontWeight.L
-  },
-  orderContainer: {
-    width: '90%', 
-    flexDirection: 'row',
+  separatorLong: {
+    width: '90%',
+    marginVertical: 15, 
   },
   orderPriceContainer: {
     flex: .8,
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-  orderPriceLine: { 
+  orderPriceLine: {
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     marginHorizontal: 10,
     marginVertical: 1,
-  },
-  orderPriceText: { 
-    flex: 1,
-    fontSize: fontSize.S
-  },
-  orderPriceValue: { 
-    fontSize: fontSize.M,
-    fontWeight: fontWeight.L,
   },
   orderDetailsContainer: {
     flex: .2,
@@ -373,8 +432,28 @@ const styles = StyleSheet.create({
   orderDetailsText: {
     marginTop: 3,
     textAlign: 'center',
-    fontSize: fontSize.XS,
     fontWeight: fontWeight.M
+  },
+  orderSelectContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginHorizontal: 20,
+    marginVertical: 1,
+  },
+  orderSelectTitleContainer: {
+    flex: .7, 
+    flexDirection: 'column'
+  },
+  orderSelectButtonContainer: {
+    flex: .3, 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  orderSelectButton: { 
+    borderRadius: 20,
+    padding: 5,
+    elevation: 2,
+    backgroundColor: color.blue.steelBlue, 
   },
   helpContainer: {
     width: '90%',
@@ -400,21 +479,22 @@ const styles = StyleSheet.create({
     zIndex: 9,
     elevation: 7,
     position: 'absolute',
-    flexDirection: 'row',
+    flexDirection: 'column',
     width: '90%',
   },
   button: {
     flex: 1, 
+    width: '100%',
     flexDirection: 'row', 
     justifyContent: "center",
-    marginHorizontal: 5,
+    marginVertical: 2,
   },
-  textButton: {
+  buttonTextBottom: {
     color: color.white.white, 
-    fontSize: fontSize.XL, 
+    fontSize: fontSize.M, 
     fontWeight: fontWeight.L, 
     textAlign: 'center'
   },
 });
 
-export default SlidingPanelOrderDetails;
+export default SlidingPanelShipperOrderDetails;

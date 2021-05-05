@@ -61,3 +61,24 @@ export const getVehicles = (successCB, errorCB) => {
         });
     };
 }
+
+export const getVehiclesByType = (vehicleTypeId, successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.getVehiclesByType(vehicleTypeId, (isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                console.log(data);
+                dispatch({type: t.GET_VEHICLES_BY_TYPE, data});
+                successCB(data.vehicles);
+            }
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
+        });
+    };
+}

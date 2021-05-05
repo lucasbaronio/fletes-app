@@ -8,7 +8,8 @@ import {
     API_ORDER_AT_ORIGIN,
     API_ORDER_TO_ORIGIN,
     API_ORDER_TO_DESTINATION,
-    API_ORDER_COMPLETE_PENDING
+    API_ORDER_COMPLETE_PENDING,
+    API_ORDER_CANCELED
 } from './constants';
 import { get, post, deleteMethod, patch } from '../globalApi';
 import { getHeaderToken } from '../security';
@@ -61,4 +62,9 @@ export const orderStatusAtDestination = async (orderId, callback) => {
 export const orderStatusCompletePending = async (orderId, callback) => {
     const header = await getHeaderToken();
     patch(API_ORDER_COMPLETE_PENDING(orderId), null, header, callback)
+}
+
+export const orderStatusCanceled = async (orderId, callback) => {
+    const header = await getHeaderToken();
+    patch(API_ORDER_CANCELED(orderId), null, header, callback)
 }

@@ -1,4 +1,3 @@
-// import { AsyncStorage } from 'react-native';
 import { statusOrder } from '../../config/utils';
 import * as t from './actionTypes';
 
@@ -142,6 +141,19 @@ const userOrdersReducer = (state = initialState, action) => {
                     ...state.orderSelected, 
                     status: statusOrder.COMPLETED 
                 }
+            };
+        }
+
+        case t.ORDER_CANCELED: {
+            const { orderSelected, activeOrders, historyOrders } = state;
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    status: statusOrder.CANCELED 
+                },
+                activeOrders: activeOrders.filter(item => item.orderId !== orderSelected.orderId),
+                historyOrders: [...historyOrders, orderSelected],
             };
         }
 

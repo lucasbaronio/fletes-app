@@ -13,6 +13,7 @@ const {
     changeOrderStatusToDestination,
     changeOrderStatusAtDestination,
     changeOrderStatusCompletePending,
+    changeOrderStatusCanceled,
 } = shipperOrders;
 import { actions as users } from "../../../users/index";
 const { getVehicles } = users;
@@ -21,8 +22,8 @@ import styles from './styles';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
-import { getOrderStatusText, getOrderStatusTextButtonShipper, statusOrder } from '../../../../config/utils';
-import SlidingPanelAcceptOrder from '../../components/SlidingPanelAcceptOrder';
+import { getOrderStatusSuccessText, getOrderStatusTextButtonShipper, statusOrder } from '../../../../config/utils';
+import SlidingPanelShipperOrderDetails from '../../components/SlidingPanelShipperOrderDetails';
 import CustomModal from '../../../../components/CustomModal';
 
 // const GEOFENCING_ORIGIN = 'GEOFENCING_ORIGIN_TASK';
@@ -35,15 +36,13 @@ type MyProps = {
     changeOrderStatusToDestination: (orderStatusToDestination, onSuccess, onError) => void,
     changeOrderStatusAtDestination: (orderId, onSuccess, onError) => void,
     changeOrderStatusCompletePending: (orderId, onSuccess, onError) => void,
-    getVehicles: (onSuccess, onError) => void,
+    changeOrderStatusCanceled: (orderId, onSuccess, onError) => void,
     order: any,
-    vehicles: any,
     isLoading: boolean,
     navigation: any,
 }
 type MyState = {
     error: string,
-    textButton: string[],
     visibleModal: boolean,
 }
 class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
@@ -51,19 +50,12 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
         super(props);
         this.state = {
             error: '',
-            textButton: [],
             visibleModal: false,
         };
     }
 
     componentDidMount() {
-        const { order, getVehicles } = this.props;
-        this.setState({
-            textButton: getOrderStatusTextButtonShipper(order.status)
-        });
-        if (order.status == statusOrder.PENDING) {
-            // getVehicles(this.onSuccess, this.onError);
-        }
+
     }
 
     getMidPointCoords = (coordsA, coordsB) => {
@@ -87,7 +79,7 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
         longitudeDelta: 0.05
     }
 
-    onPress = () => {
+    onPress = (index) => {
         const { 
             order,
             changeOrderStatusAccepted,
@@ -96,24 +88,31 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
             changeOrderStatusToDestination,
             changeOrderStatusAtDestination,
             changeOrderStatusCompletePending,
+            changeOrderStatusCanceled,
         } = this.props;
         switch (order.status) {
             case statusOrder.PENDING:
-                changeOrderStatusAccepted({ 
-                    orderId: order.orderId, 
-                    vehicle: {
-                        vehicleId: 1,
-                    }
-                }, this.onSuccess, this.onError);
+                const { vehicle } = order;
+                if (vehicle && vehicle.vehicleId != 0) {
+                    changeOrderStatusAccepted({ 
+                        orderId: order.orderId, 
+                        vehicle: {
+                            vehicleId: order.vehicle.vehicleId,
+                        }
+                    }, this.onSuccess, this.onError);
+                } else this.onError('Usted no ha seleccionado ningún vehiculo para realizar el pedido.');
                 break;
             case statusOrder.ACCEPTED:
-                // TODO: Falta la opcion de si cancela el shipper
-                changeOrderStatusToOrigin({ 
-                    orderId: order.orderId, 
-                    arrivesAt: {
-                        arrivesAt: "2021-05-12T18:20:00-03:00",
-                    }
-                }, this.onSuccess, this.onError);
+                if (index == 0) {
+                    changeOrderStatusToOrigin({ 
+                        orderId: order.orderId, 
+                        arrivesAt: {
+                            arrivesAt: "2021-05-12T18:20:00-03:00",
+                        }
+                    }, this.onSuccess, this.onError);
+                } else {
+                    changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
+                }
                 break;
             case statusOrder.TO_ORIGIN:
                 changeOrderStatusAtOrigin(order.orderId, this.onSuccessCreateTasks, this.onError);
@@ -161,11 +160,8 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     onSuccess = (status) => {
-        console.log('onSuccess', status);
-        console.log('onSuccess', getOrderStatusTextButtonShipper(status));
         this.setState({
-            textButton: getOrderStatusTextButtonShipper(status),
-            error: 'Estado del pedido: ' + getOrderStatusText(status), 
+            error: getOrderStatusSuccessText(status), 
             visibleModal: true 
         });
     }
@@ -179,9 +175,9 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { textButton, error, visibleModal } = this.state;
-        const { order, vehicles, isLoading } = this.props;
-        const { originAddress, destinationAddress, } = order;
+        const { error, visibleModal } = this.state;
+        const { order, isLoading } = this.props;
+        const { originAddress, destinationAddress, status } = order;
         return (
             <SafeAreaView style={styles.container}>
                 {/* <StatusBar style="dark" /> */}
@@ -239,11 +235,11 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                     }
                     
                 </MapView>
-                <SlidingPanelAcceptOrder 
+                <SlidingPanelShipperOrderDetails 
                     isLoading={isLoading}
                     order={order}
-                    vehicles={vehicles}
-                    textButton={textButton}
+                    vehicleSelected={order.vehicle}
+                    textButton={getOrderStatusTextButtonShipper(status)}
                     onPress={this.onPress} />
             </SafeAreaView>
         );
@@ -254,7 +250,7 @@ function mapStateToProps(state, props) {
     return {
         isLoading: state.shipperOrdersReducer.isLoading,
         order: state.shipperOrdersReducer.orderSelected,
-        vehicles: state.usersReducer.vehicles,
+        // vehicleSelected: state.shipperOrdersReducer.orderSelected.vehicle,
     }
 }
 
@@ -265,4 +261,5 @@ export default connect(mapStateToProps, {
     changeOrderStatusToDestination,
     changeOrderStatusAtDestination,
     changeOrderStatusCompletePending,
+    changeOrderStatusCanceled,
 })(MapShipperOrderDetails);

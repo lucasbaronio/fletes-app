@@ -9,6 +9,7 @@ import {
     API_ORDER_TO_DESTINATION as apiOrderToDestination,
     API_ORDER_AT_DESTINATION as apiOrderAtDestination,
     API_ORDER_COMPLETE_PENDING as apiOrderCompletePending,
+    API_ORDER_CANCELED as apiOrderCanceled,
 } from "../../config/constants"
 
 export const API_ORDERS_INFO = apiOrdersInfo;
@@ -21,3 +22,4 @@ export const API_ORDER_AT_ORIGIN = apiOrderAtOrigin;
 export const API_ORDER_TO_DESTINATION = apiOrderToDestination;
 export const API_ORDER_AT_DESTINATION = apiOrderAtDestination;
 export const API_ORDER_COMPLETE_PENDING = apiOrderCompletePending;
+export const API_ORDER_CANCELED = apiOrderCanceled;

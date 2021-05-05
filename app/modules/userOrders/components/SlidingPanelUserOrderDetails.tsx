@@ -11,17 +11,16 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
-import { currentDate, dateToFrontend, displayDate, timeDiffMinutes, timeDiffSeconds } from '../../orders/utils/utils';
 import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
+import { displayDate } from '../utils/utils';
 
 type MyProps = {
   onPress: () => void,
   order: any,
   textButton: string[],
-  vehicles: any,
   isLoading: boolean,
 }
-const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton }) => {
+const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
 
@@ -37,11 +36,7 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
-  // const [refreshIntervalId, setRefreshIntervalId] = useState<any>();
-  // const [pricePerHourDinamic, setPricePerHourDinamic] = useState(0);
-  // const [hours, setHours] = useState(0);
-  // const [minutes, setMinutes] = useState(0);
-
+  
   const PANEL_VELOCITY = isiOS ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
     velocity: PANEL_VELOCITY,
@@ -49,16 +44,17 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
   };
 
   const _onAnimatedValueChange = ({ value }) => {
-    // const {top, bottom} = draggableRange;
-    // const delta = top - bottom;
-    // const valuePCT = ((value - bottom) * 100) / delta;
-  }
+    const {top, bottom} = draggableRange;
+    const delta = top - bottom;
+    const valuePCT = ((value - bottom) * 100) / delta;
 
-  // useEffect(() => {
-  //   calculatePricePerHour();
-  //   const refreshIntervalId = setInterval(() => calculatePricePerHour(), 60000);
-  //   setRefreshIntervalId(refreshIntervalId);
-  // }, []);
+    // if (value === top) {
+    //   setAtTop(true);
+    // }
+    // if (value === bottom) {
+    //   setAtTop(false);
+    // }
+  }
 
   useEffect(() => {
 		const slidingListener = panelPositionVal.addListener(
@@ -76,20 +72,6 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
       order: order
     });
   }
-
-  // const calculatePricePerHour = () => {
-  //   const { shipperArrivedAtOriginAt, shipperCompletedAt, pricePerHour } = order;
-  //   let diff = 0;
-  //   if (!shipperArrivedAtOriginAt && !shipperCompletedAt) diff = 0;
-  //   else if (!shipperCompletedAt) diff = timeDiffSeconds(currentDate(), dateToFrontend(shipperArrivedAtOriginAt));
-  //   else {
-  //     diff = timeDiffSeconds(dateToFrontend(shipperCompletedAt), dateToFrontend(shipperArrivedAtOriginAt));
-  //     clearInterval(refreshIntervalId);
-  //   }
-  //   setHours(Math.trunc(diff / 60 / 60));
-  //   setMinutes(Math.trunc((diff / 60) % 60));
-  //   setPricePerHourDinamic(Math.round((pricePerHour * diff / 60 / 60) * 100) / 100)
-  // }
 
   return (
     <SlidingUpPanel
@@ -209,7 +191,7 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
             <View style={styles.separator}></View></>
           }
           <View style={styles.orderContainer}>
-          <View style={styles.orderPriceContainer}>
+            <View style={styles.orderPriceContainer}>
               <View style={styles.orderPriceLine}>
                   <Text style={styles.orderPriceText}>Precio por hora</Text>
                   <Text style={styles.orderPriceValue}>$ {order.pricePerHour}</Text>
@@ -276,7 +258,6 @@ const SlidingPanelAcceptOrder: React.FunctionComponent<MyProps> = ({ onPress, or
               }
             </View>
           }
-          
         </View>
     </SlidingUpPanel>
   );
@@ -365,7 +346,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-  orderPriceLine: {
+  orderPriceLine: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     marginHorizontal: 10,
@@ -419,22 +400,21 @@ const styles = StyleSheet.create({
     zIndex: 9,
     elevation: 7,
     position: 'absolute',
-    flexDirection: 'column',
+    flexDirection: 'row',
     width: '90%',
   },
   button: {
     flex: 1, 
-    width: '100%',
     flexDirection: 'row', 
     justifyContent: "center",
-    marginVertical: 2,
+    marginHorizontal: 5,
   },
   textButton: {
     color: color.white.white, 
-    fontSize: fontSize.M, 
+    fontSize: fontSize.XL, 
     fontWeight: fontWeight.L, 
     textAlign: 'center'
   },
 });
 
-export default SlidingPanelAcceptOrder;
+export default SlidingPanelUserOrderDetails;

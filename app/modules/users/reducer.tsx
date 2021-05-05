@@ -1,6 +1,15 @@
 import { deleteMany, saveMany } from '../secureStore';
 import * as t from './actionTypes';
 
+type Vehicle = {
+    vehicleId: number,
+    model: string,
+    registration: string,
+    enable: boolean,
+}
+
+let vehicles: Vehicle[] = [];
+
 let initialState = { 
     user: {
         userId: 0,
@@ -11,7 +20,7 @@ let initialState = {
         userType: ''
     },
     paymentMethods: [],
-    vehicles: [],
+    vehicles,
     isLoading: false
 };
 
@@ -38,6 +47,18 @@ const ordersReducer = (state = initialState, action) => {
             const { vehicles } = action.data;
 
             return { ...state, vehicles };
+        }
+
+        case t.GET_VEHICLES_BY_TYPE: {
+            const { vehicles } = action.data;
+            const oldVehicleState = state.vehicles;
+
+            const vehiclesWithOutNews = oldVehicleState.filter(oldVehicle => !vehicles.some(newVehicle => newVehicle.vehicleId === oldVehicle.vehicleId));
+
+            return { 
+                ...state, 
+                vehicles: vehiclesWithOutNews.concat(vehicles) 
+            };
         }
 
         default:

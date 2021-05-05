@@ -140,7 +140,6 @@ export const changeOrderStatusAtOrigin = (orderId, successCB, errorCB) => {
 }
 
 export const changeOrderStatusToDestination = (orderStatusToDestination: OrderStatusTo, successCB, errorCB) => {
-    console.log(orderStatusToDestination);
     return (dispatch) => {
         dispatch({type: t.LOADING});
         const { orderId, arrivesAt } = orderStatusToDestination;
@@ -182,10 +181,9 @@ export const changeOrderStatusAtDestination = (orderId, successCB, errorCB) => {
 export const changeOrderStatusCompletePending = (orderId, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        console.log('orderId', orderId);
         api.orderStatusCompletePending(orderId, (isSuccess, response, error) => {
             if (isSuccess) {
-                dispatch({type: t.ORDER_COMPLETE_PENDING});
+                // dispatch({type: t.ORDER_COMPLETE_PENDING});
                 apiUserOrders.getOrder(orderId, (isSuccess, response, error) => {
                     dispatch({type: t.LOADING});
                     if (isSuccess) {
@@ -214,3 +212,43 @@ export const changeOrderStatusCompletePending = (orderId, successCB, errorCB) =>
     };
 }
 
+export const changeOrderStatusCanceled = (orderId, successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.orderStatusCanceled(orderId, (isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                dispatch({type: t.ORDER_CANCELED});
+                successCB(statusOrder.CANCELED);
+            }
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
+        });
+    };
+}
+
+
+export const setVehicleSelected = (vehicle, onSuccess) => {
+    return (dispatch) => {
+        dispatch({type: t.VEHICLE_SELECTED, vehicle});
+        onSuccess();
+    };
+}
+
+export const setShipperArrivesAtOriginAt = (originAt, onSuccess) => {
+    return (dispatch) => {
+        dispatch({type: t.ORIGIN_AT, originAt});
+        onSuccess();
+    };
+}
+
+export const setShipperArrivesAtDestinationAt = (destinationAt, onSuccess) => {
+    return (dispatch) => {
+        dispatch({type: t.DESTINATION_AT, destinationAt});
+        onSuccess();
+    };
+}

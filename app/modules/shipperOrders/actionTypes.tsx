@@ -9,5 +9,10 @@ export const ORDER_AT_ORIGIN = 'shipperOrders/ORDER_AT_ORIGIN';
 export const ORDER_TO_DESTINATION = 'shipperOrders/ORDER_TO_DESTINATION';
 export const ORDER_AT_DESTINATION = 'shipperOrders/ORDER_AT_DESTINATION';
 export const ORDER_COMPLETE_PENDING = 'shipperOrders/ORDER_COMPLETE_PENDING';
+export const ORDER_CANCELED = 'shipperOrders/ORDER_CANCELED';
+
+export const VEHICLE_SELECTED = 'shipperOrders/VEHICLE_SELECTED';
+export const ORIGIN_AT = 'shipperOrders/ORIGIN_AT';
+export const DESTINATION_AT = 'shipperOrders/DESTINATION_AT';
 
 export const LOADING = 'shipperOrders/LOADING';

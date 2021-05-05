@@ -1,6 +1,7 @@
 import { statusOrder } from '../../config/utils';
 import { currentDate, dateToBackend } from '../orders/utils/utils';
 import * as t from './actionTypes';
+import { orderStatusAccepted } from './api';
 
 type Order = {
     orderId: number,
@@ -149,7 +150,6 @@ const shipperOrdersReducer = (state = initialState, action) => {
 
             return { 
                 ...state, 
-                // activeOrders: activeOrders.concat(orderSelected),
                 activeOrders: [...activeOrders, orderSelected],
                 pendingOrders: pendingOrders.filter(order => order.orderId !== orderSelected.orderId),
                 orderSelected: { 
@@ -200,14 +200,64 @@ const shipperOrdersReducer = (state = initialState, action) => {
             };
         }
 
-        case t.ORDER_COMPLETE_PENDING: {
+        case t.ORDER_CANCELED: {
+            const { orderSelected, activeOrders, pendingOrders, historyOrders } = state;
             return { 
                 ...state, 
                 orderSelected: { 
                     ...state.orderSelected, 
-                    shipperCompletedAt: dateToBackend(currentDate()),
-                    status: statusOrder.COMPLETE_PENDING 
-                } 
+                    status: statusOrder.CANCELED,
+                },
+                activeOrders: activeOrders.filter(item => item.orderId !== orderSelected.orderId),
+                pendingOrders: pendingOrders.filter(item => item.orderId !== orderSelected.orderId),
+                historyOrders: [...historyOrders, orderSelected],
+            };
+        }
+
+        // case t.ORDER_COMPLETE_PENDING: {
+        //     return { 
+        //         ...state, 
+        //         orderSelected: { 
+        //             ...state.orderSelected, 
+        //             shipperCompletedAt: dateToBackend(currentDate()),
+        //             status: statusOrder.COMPLETE_PENDING 
+        //         } 
+        //     };
+        // }
+
+        case t.VEHICLE_SELECTED: {
+            const { vehicle } = action;
+            
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    vehicle,
+                }
+            };
+        }
+
+        case t.ORIGIN_AT: {
+            const { originAt } = action;
+            
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    shipperArrivesAtOriginAt: originAt,
+                }
+            };
+        }
+
+        case t.DESTINATION_AT: {
+            const { destinationAt } = action;
+            
+            return { 
+                ...state, 
+                orderSelected: { 
+                    ...state.orderSelected, 
+                    shipperArrivesAtDestinationAt: destinationAt,
+                }
             };
         }
 
