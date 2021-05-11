@@ -6,7 +6,7 @@ import * as Localization from 'expo-localization';
 import moment from "moment";
 import "moment-timezone";
 import 'moment/min/locales';
-import { displayDate, currentDate, dateToMoment } from '../utils/utils';
+import { displayDate, currentDate, dateToMoment, currentDateMoment } from '../utils/utils';
 
 type MyProps = {
     dateOrder: string,
@@ -29,8 +29,7 @@ export default class DateTime extends Component<MyProps, MyState> {
     }
 
     componentDidMount() {
-        // console.log(Localization.locale)
-        moment.locale('es');
+        moment.locale(Localization.locale.substring(0,2));
         const { dateOrder } = this.props;
         const date = new Date(moment(dateOrder).tz(Localization.timezone).format());
         this.setState({ date });
@@ -84,9 +83,10 @@ export default class DateTime extends Component<MyProps, MyState> {
                     confirmTextIOS='Confirmar'
                     headerTextIOS='Programar el pedido'
                     minimumDate={new Date()}
+                    // maximumDate={currentDateMoment().add(20, 'years').toDate()}
                     minuteInterval={5}
-                    timeZoneOffsetInMinutes={-180}
-                    locale={'es'}
+                    // timeZoneOffsetInMinutes={-180}
+                    locale={Localization.locale.substring(0,2)}
                     is24Hour={true}
                     isVisible={visible}
                     mode='datetime'

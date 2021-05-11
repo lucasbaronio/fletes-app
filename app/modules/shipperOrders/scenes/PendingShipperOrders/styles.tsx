@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
       flexDirection: 'row',
       right: 15,
       top: 15,
-      backgroundColor: color.translucent,
+      backgroundColor: color.black.black,
       // opacity: 1,
       alignItems: 'center',
       // shadowColor: '#000000',

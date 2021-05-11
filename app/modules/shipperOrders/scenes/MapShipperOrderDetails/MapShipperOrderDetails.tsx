@@ -17,8 +17,6 @@ const {
     setShipperArrivesAtDestinationAt,
     setShipperArrivesAtOriginAt,
 } = shipperOrders;
-import { actions as users } from "../../../users/index";
-const { getVehicles } = users;
 
 import styles from './styles';
 import MapViewDirections from 'react-native-maps-directions';
@@ -27,6 +25,7 @@ import { API_KEY_GOOGLE } from '../../../../config/constants';
 import { getOrderStatusSuccessText, getOrderStatusTextButtonShipper, statusOrder } from '../../../../config/utils';
 import SlidingPanelShipperOrderDetails from '../../components/SlidingPanelShipperOrderDetails';
 import CustomModal from '../../../../components/CustomModal';
+import ActionModal from '../../../shared/ActionModal/ActionModal';
 
 // const GEOFENCING_ORIGIN = 'GEOFENCING_ORIGIN_TASK';
 // const GEOFENCING_DESTINATION = 'GEOFENCING_DESTINATION_TASK';
@@ -48,6 +47,8 @@ type MyProps = {
 type MyState = {
     error: string,
     visibleModal: boolean,
+    visibleActiveModal: boolean,
+    activeModalMsg: string,
 }
 class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -55,6 +56,8 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             visibleModal: false,
+            visibleActiveModal: false,
+            activeModalMsg: '',
         };
     }
 
@@ -117,7 +120,8 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                         }
                     }, this.onSuccess, this.onError);
                 } else {
-                    changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
+                    this.setState({ visibleActiveModal: true, activeModalMsg: 'Estas seguro que desea cancelar el pedido? Este cambio es irreversible!' });
+                    // changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
                 }
                 break;
             case statusOrder.TO_ORIGIN:
@@ -181,14 +185,25 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
         this.setState({ visibleModal: false, error: '' });
     }
 
+    onCancelActiveModal = () => {
+        this.setState({ visibleActiveModal: false, activeModalMsg: '' });
+    }
+
+    onAcceptActiveModal = () => {
+        const { order, changeOrderStatusCanceled } = this.props;
+        this.setState({ visibleActiveModal: false, activeModalMsg: '' });
+        changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
+    }
+
     render() {
-        const { error, visibleModal } = this.state;
+        const { error, visibleModal, visibleActiveModal, activeModalMsg } = this.state;
         const { order, isLoading, setShipperArrivesAtDestinationAt, setShipperArrivesAtOriginAt, } = this.props;
         const { originAddress, destinationAddress, status } = order;
         return (
             <SafeAreaView style={styles.container}>
                 {/* <StatusBar style="dark" /> */}
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
+                <ActionModal message={activeModalMsg} visible={visibleActiveModal} onCancel={this.onCancelActiveModal} onAccept={this.onAcceptActiveModal}/>
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
                         {ORDERS_SCENES_MAP_ADDRESS_TITLE}

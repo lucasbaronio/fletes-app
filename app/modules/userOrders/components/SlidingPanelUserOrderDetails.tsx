@@ -109,12 +109,12 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             <View>
               <Text style={styles.timeNextStatusText}>
                 Fecha y hora de llegada del transportista al punto de origen
-                </Text>
+              </Text>
             </View>
             <View>
               <Text style={styles.timeNextStatusValue}>
                 {displayDate(order.originAt)}
-                </Text>
+              </Text>
             </View>
           </View>
           <View style={styles.progressBarContainer}>
@@ -215,6 +215,27 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             </View>
           </View>
           {
+            ((order.status == statusOrder.TO_ORIGIN && order.shipperArrivesAtOriginAt) || 
+            (order.status == statusOrder.TO_DESTINATION && order.shipperArrivesAtDestinationAt)) &&
+            <><View style={styles.separator}></View>
+            <View style={{ flexDirection: 'column', marginHorizontal: 20, marginVertical: 1 }}>
+                {
+                  (order.status == statusOrder.TO_ORIGIN) ?
+                    <><Text style={styles.text4}>Hora aprox. a punto de origen</Text>
+                    {
+                      order.shipperArrivesAtOriginAt &&
+                      <Text style={styles.text2}>{displayDate(order.shipperArrivesAtOriginAt)}</Text>
+                    }</>
+                  :
+                    <><Text style={styles.text4}>Hora aprox. a punto de destino</Text>
+                    {
+                      order.shipperArrivesAtDestinationAt &&
+                      <Text style={styles.text2}>{displayDate(order.shipperArrivesAtDestinationAt)}</Text>
+                    }</>
+                }
+            </View></>
+          }
+          {
             order.finalPrice &&
             <><View style={styles.separator}></View>
             <View style={[styles.orderPriceLine, { marginHorizontal: 20 }]}>
@@ -279,6 +300,20 @@ const styles = StyleSheet.create({
     elevation: 10, 
     borderTopLeftRadius: 30, 
     borderTopRightRadius: 30
+  },
+  text1: {
+    fontSize: fontSize.L,
+    fontWeight: fontWeight.L
+  },
+  text2: {
+    fontSize: fontSize.M, 
+    fontWeight: fontWeight.M
+  },
+  text3: {
+    fontSize: fontSize.S, 
+  },
+  text4: {
+    fontSize: fontSize.XS, 
   },
   dragButton: { 
     width: '100%', 

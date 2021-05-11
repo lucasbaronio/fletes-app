@@ -13,6 +13,7 @@ import { API_KEY_GOOGLE } from '../../../../config/constants';
 import { getOrderStatusSuccessText, getOrderStatusTextButtonUser, statusOrder } from '../../../../config/utils';
 import SlidingPanelUserOrderDetails from '../../components/SlidingPanelUserOrderDetails';
 import CustomModal from '../../../../components/CustomModal';
+import ActionModal from '../../../shared/ActionModal/ActionModal';
 
 type MyProps = {
     changeOrderStatusCompleted: (orderStatusCompleted, onSuccess, onError) => void,
@@ -24,6 +25,8 @@ type MyProps = {
 type MyState = {
     error: string,
     visibleModal: boolean,
+    visibleActiveModal: boolean,
+    activeModalMsg: string,
 }
 class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -31,6 +34,8 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             visibleModal: false,
+            visibleActiveModal: false,
+            activeModalMsg: '',
         };
     }
 
@@ -42,10 +47,12 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
         const { order, changeOrderStatusCompleted, changeOrderStatusCanceled } = this.props;
         switch (order.status) {
             case statusOrder.PENDING:
-                changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
+                this.setState({ visibleActiveModal: true, activeModalMsg: 'Estas seguro que desea cancelar el pedido? Este cambio es irreversible!' });
+                // changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
                 break;
             case statusOrder.ACCEPTED:
-                changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
+                this.setState({ visibleActiveModal: true, activeModalMsg: 'Estas seguro que desea cancelar el pedido? Este cambio es irreversible!' });
+                // changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
                 break;
             case statusOrder.COMPLETE_PENDING:
                 changeOrderStatusCompleted({
@@ -74,6 +81,16 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
         this.setState({ visibleModal: false, error: '' });
     }
 
+    onCancelActiveModal = () => {
+        this.setState({ visibleActiveModal: false, activeModalMsg: '' });
+    }
+
+    onAcceptActiveModal = () => {
+        const { order, changeOrderStatusCanceled } = this.props;
+        this.setState({ visibleActiveModal: false, activeModalMsg: '' });
+        changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
+    }
+
     getMidPointCoords = (coordsA, coordsB) => {
         let midRegion = {
             latitude: (coordsA.latitude + coordsB.latitude) / 2,
@@ -96,12 +113,13 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { error, visibleModal } = this.state;
+        const { error, visibleModal, visibleActiveModal, activeModalMsg } = this.state;
         const { order, isLoading } = this.props;
         const { originAddress, destinationAddress, status } = order;
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
+                <ActionModal message={activeModalMsg} visible={visibleActiveModal} onCancel={this.onCancelActiveModal} onAccept={this.onAcceptActiveModal}/>
                 {/* <StatusBar style="dark" /> */}
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>

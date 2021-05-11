@@ -4,7 +4,7 @@ import 'moment/min/locales';
 import * as Localization from 'expo-localization';
 
 export const displayDate = (date) => {
-    moment.locale('es');
+    moment.locale(Localization.locale.substring(0,2));
     const dateMoment = moment(date).tz(Localization.timezone);
     const now = moment(new Date()).tz(Localization.timezone);
     const diff = now.diff(dateMoment, 'days');
@@ -16,12 +16,12 @@ export const displayDate = (date) => {
 }
 
 export const currentDate = () => {
-    moment.locale('es');
+    moment.locale(Localization.locale.substring(0,2));
     return moment(new Date()).tz(Localization.timezone).format();
 }
 
 export const currentDateMoment = () => {
-    moment.locale('es');
+    moment.locale(Localization.locale.substring(0,2));
     return moment(new Date()).tz(Localization.timezone);
 }
 
@@ -30,14 +30,14 @@ export const dateToMoment = (date) => {
 }
 
 export const dateToBackend = (date) => {
-    moment.locale('es');
+    moment.locale(Localization.locale.substring(0,2));
     // console.log(moment.utc(date));
     // console.log(moment.utc(date).format());
     return moment.utc(date).format();
 }
 
 export const dateToFrontend = (date) => {
-    moment.locale('es');
+    moment.locale(Localization.locale.substring(0,2));
     return moment(date).tz(Localization.timezone).format();
 }
 

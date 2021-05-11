@@ -13,7 +13,7 @@ import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
 import { currentDate, currentDateMoment, dateToBackend, displayDate } from '../../orders/utils/utils';
 import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
-import PickerModal from '../../shared/ActionModal/ActionModal';
+import PickerModal from '../../shared/PickerModal/PickerModal';
 
 type MyProps = {
   onPress: (index) => void,
@@ -199,16 +199,16 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
           </View>
           <View style={[styles.separator, styles.separatorLong]}></View>
           {
-            !!order.shipper && order.status != statusOrder.PENDING &&
+            order.user.name &&
             <><View style={[styles.containerSliding, styles.containerColumn]}>
               <View>
                 <Text style={styles.titleText}>
-                  Nombre del transportista
+                  Nombre del usuario
                 </Text>
               </View>
               <View>
                 <Text style={styles.text1}>
-                  {order.shipper.name}
+                  {order.user.name}
                 </Text>
               </View>
             </View>
