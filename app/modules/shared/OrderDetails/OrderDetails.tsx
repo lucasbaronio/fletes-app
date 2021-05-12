@@ -41,6 +41,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
 
         const { originAddress, destinationAddress, originAt, paymentMethod, vehicleType, extraOptions, vehicle, shipper } = order;
         const extraOptionsWithData = this.getExtraOptionsList(extraOptions);
+        console.log(extraOptionsWithData.length);
 
         let shipperData = [{
             subtitle: 'Tipo de vehículo',
@@ -99,6 +100,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
     }
 
     getExtraOptionsList = (extraOptions) => {
+        if (!extraOptions) return [];
         return extraOptions.map((item, index) => {
             return {
                 subtitle: 'Extra ' + (index + 1).toString(),

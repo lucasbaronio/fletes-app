@@ -44,7 +44,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
   // const [streetNameDestination, setStreetNameDestination] = useState('');
   // const [streetNumberDestination, setStreetNumberDestination] = useState('');
   // const [doorNumberDestination, setDoorNumberDestination] = useState('');
-  const [dateOrder, setDateOrder] = useState<string>(currentDate());
+  const [dateOrder, setDateOrder] = useState<string>('');
 
   const dataArray = [
     { title: "Dirección Origen 🔴", content: "origin" },

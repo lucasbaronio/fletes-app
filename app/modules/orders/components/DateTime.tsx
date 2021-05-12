@@ -31,7 +31,12 @@ export default class DateTime extends Component<MyProps, MyState> {
     componentDidMount() {
         moment.locale(Localization.locale.substring(0,2));
         const { dateOrder } = this.props;
-        const date = new Date(moment(dateOrder).tz(Localization.timezone).format());
+        let date;
+        if (dateOrder != '') {
+            date = new Date(moment(dateOrder).tz(Localization.timezone).format());
+        } else {
+            date = currentDate();
+        }
         this.setState({ date });
     }
 
@@ -46,9 +51,8 @@ export default class DateTime extends Component<MyProps, MyState> {
     handleConfirm = (date, isNow) => {
         this.setState({ date });
         const { onSetDateOrder } = this.props;
-        // const dateNumber = moment(date).format("YYYYMMDDHHmm");
-        // const dateFormat = moment(date).format()
-        onSetDateOrder(dateToMoment(date));
+        // onSetDateOrder(dateToMoment(date));
+        onSetDateOrder(isNow ? '' : dateToMoment(date));
         this.hideDatePicker();
         this.setState({ now: isNow })
     };

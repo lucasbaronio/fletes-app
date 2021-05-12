@@ -30,9 +30,9 @@ export const dateToMoment = (date) => {
 
 export const dateToBackend = (date) => {
     moment.locale(Localization.locale.substring(0,2));
-    // console.log(moment.utc(date));
+    // console.log(moment(date).format());
     // console.log(moment.utc(date).format());
-    return moment.utc(date).format();
+    return moment(date).format();
 }
 
 export const dateToFrontend = (date) => {

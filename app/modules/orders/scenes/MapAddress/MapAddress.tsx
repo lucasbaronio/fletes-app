@@ -132,7 +132,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                     longitude: orderDestinationAddress.longitude,
                 }
             }, () => {});
-            setOrderDate(dateToBackend(date), () => {});
+            setOrderDate(date != '' ? dateToBackend(date) : null, () => {});
             getOrdersInfo(this.onSuccess, this.onError);
         }
     }
