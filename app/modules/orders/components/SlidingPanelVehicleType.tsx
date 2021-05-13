@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import { ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 } from '../../../config/strings';
+import { extraOptionPriceTypes } from '../../../config/utils';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
 
 type MyProps = {
@@ -164,12 +165,25 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
                   key={extra.orderAvailableExtraOptionId}
                   onPress={() => onAddOrRemoveExtraOption(extra)}>
                   <CheckBox checked={extra.selected} />
-                  <Body style={styles.listItemExtraOptionsVehicleType}>
-                    <Text>{extra.text}:</Text>
-                    <Text>
-                      <Text style={{ fontSize: fontSize.L }}>+</Text> $ <Text style={{ fontSize: fontSize.L }}>{extra.price}</Text>
-                    </Text>
-                  </Body>
+                  <View style={styles.listItemExtraOptionsVehicleType}>
+                    <View style={{ flex: .6 }}>
+                      <Text>{extra.text}:</Text>
+                    </View>
+                    <View style={{ flex: .4 }}>
+                      {
+                        extra.priceType == extraOptionPriceTypes.FIXED ?
+                        <Text>
+                          <Text style={{ fontSize: fontSize.L }}>+</Text> $ <Text style={{ fontSize: fontSize.L }}>{extra.price}</Text>
+                        </Text>
+                        :
+                        <><Text>
+                          <Text style={{ fontSize: fontSize.L }}>+</Text> $ <Text style={{ fontSize: fontSize.L }}>{extra.price}</Text>
+                        </Text>
+                        <Text style={{ fontSize: fontSize.XS }}>por hora</Text></>
+                      }
+                      
+                    </View>
+                  </View>
                 </ListItem>
               }>
             </List>

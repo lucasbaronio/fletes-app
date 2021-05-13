@@ -11,6 +11,8 @@ const { getPaymentMethod, createPaymentMethod } = users;
 import styles from './styles';
 import { displayDate } from '../../utils/utils';
 import CustomModal from '../../../../components/CustomModal';
+import { extraOptionPriceTypes } from '../../../../config/utils';
+import { fontSize } from '../../../../styles/theme';
 
 type MyProps = {
     getPaymentMethod: (successCB, errorCB) => void,
@@ -85,7 +87,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                     value: vehicleTypeWithData.name
                 }].concat(extraOptionsWithData)
               }
-        ]
+        ];
         this.setState({
             data: DATA,
             totalPricePerHour: totalPricePerHour + vehicleTypeWithData.pricePerHour,
@@ -106,23 +108,35 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
 
     getExtraOptionsList = (extraOptionsList) => {
         return extraOptionsList.map(item => {
+            if (item.priceType == extraOptionPriceTypes.DYNAMIC) {
+                return {
+                    subtitle: 'Opción extra por hora',
+                    value: `${item.text}`
+                }
+            }
             return {
                 subtitle: 'Opción extra',
-                // value: `${item.text} por $${item.price}`
                 value: `${item.text}`
             }
-        })
+        });
     }
     getExtraOptionsPrices = (extraOptionsList) => {
+        const { totalPricePerHour } = this.state;
         let totalPriceFixed = 0;
+        let totalPricePerHourAux = 0;
         let extraOptions = [];
         extraOptionsList.forEach(item => {
-            totalPriceFixed += item.price;
+            if (item.priceType == extraOptionPriceTypes.DYNAMIC) {
+                totalPricePerHourAux += item.price;
+            } else {
+                totalPriceFixed += item.price;
+            }
             extraOptions = extraOptions.concat(item);
         })
         this.setState({
             totalPriceFixed,
             extraOptions,
+            totalPricePerHour: totalPricePerHour + totalPricePerHourAux,
         });
     }
 
@@ -171,8 +185,16 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                                             <View 
                                                 key={item.orderAvailableExtraOptionId} 
                                                 style={styles.subtitleHeaderExtraOptions}>
-                                                <Text>{item.text}</Text>
-                                                <Text>${item.price}</Text>
+                                                <View style={{ flex: .7 }}>
+                                                    <Text>{item.text}</Text>
+                                                </View>
+                                                <View style={{ flex: .3, alignItems: 'center', justifyContent: 'center' }}>
+                                                    <Text>${item.price}</Text>
+                                                    {
+                                                        item.priceType == extraOptionPriceTypes.DYNAMIC && 
+                                                        <Text style={{ fontSize: fontSize.XS }}>por hora</Text>
+                                                    }
+                                                </View>
                                             </View>
                                         ))
                                     }

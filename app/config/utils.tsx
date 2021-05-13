@@ -4,6 +4,11 @@ export enum userTypes {
     SHIPPER = 'SHIPPER',
 }
 
+export enum extraOptionPriceTypes {
+    FIXED = 'FIXED',
+    DYNAMIC = 'DYNAMIC',
+}
+
 export enum statusOrder {
     COMPLETED = 'COMPLETED',
     COMPLETE_PENDING = 'COMPLETE_PENDING',
