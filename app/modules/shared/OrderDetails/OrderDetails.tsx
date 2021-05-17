@@ -17,6 +17,7 @@ type MyState = {
     order: any,
     data: any,
     totalPricePerHour: number,
+    extraOptionsDynamicTotalPrice: number,
     finalPrice: number,
     hours: number,
     minutes: number,
@@ -29,6 +30,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
             order: null,
             data: [],
             totalPricePerHour: 0,
+            extraOptionsDynamicTotalPrice: 0,
             finalPrice: 0,
             hours: 0,
             minutes: 0,
@@ -37,11 +39,16 @@ class OrderDetails extends React.Component<MyProps, MyState> {
 
     componentDidMount() {
         const { order } = this.props.route.params;
-        this.setState({ order }, () => this.calculatePricePerHour());
+        const { originAddress, destinationAddress, originAt, paymentMethod, vehicleType, extraOptions, vehicle, shipper } = order;
+
+        const extraOptionsDynamicTotalPrice = this.getExtraOptionsDynamicPrices(extraOptions);
+        this.setState({ 
+            order, 
+            extraOptionsDynamicTotalPrice 
+        }, () => this.calculatePricePerHour());
         this.refreshIntervalId = setInterval(() => this.calculatePricePerHour(), 60000);
 
-        const { originAddress, destinationAddress, originAt, paymentMethod, vehicleType, extraOptions, vehicle, shipper } = order;
-        const extraOptionsWithData = this.getExtraOptionsList(extraOptions);
+        const extraOptionsWithData = this.getExtraOptionsList(extraOptions);        
 
         let shipperData = [{
             subtitle: 'Tipo de vehículo',
@@ -104,15 +111,27 @@ class OrderDetails extends React.Component<MyProps, MyState> {
         return extraOptions.map((item, index) => {
             return {
                 subtitle: item.priceType == extraOptionPriceTypes.FIXED 
-                ? 'Extra ' + (index + 1).toString()
-                : 'Extra por hora ' + (index + 1).toString(),
+                ? (index + 1).toString() + ' - Extra'
+                : (index + 1).toString() + ' - Extra por hora',
                 value: `${item.text}`
             }
         })
     }
 
+    getExtraOptionsDynamicPrices = (extraOptions) => {
+        let extraOptionsDynamicTotalPrice = 0
+        if (extraOptions) {
+            extraOptions.forEach(item => {
+                if (item.priceType == extraOptionPriceTypes.DYNAMIC) {
+                    extraOptionsDynamicTotalPrice += item.price
+                }
+            });
+        }
+        return extraOptionsDynamicTotalPrice;
+    }
+
     calculatePricePerHour = () => {
-        const { order } = this.state;
+        const { order, extraOptionsDynamicTotalPrice } = this.state;
         if (order) {
             const { shipperArrivedAtOriginAt, shipperCompletedAt, pricePerHour, fixedPrice } = order;
             let diff = 0;
@@ -125,7 +144,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
             this.setState({
                 hours: Math.trunc(diff / 60 / 60),
                 minutes: Math.trunc((diff / 60) % 60),
-                totalPricePerHour: Math.round((pricePerHour * diff / 60 / 60) * 100) / 100,
+                totalPricePerHour: Math.round(((pricePerHour + extraOptionsDynamicTotalPrice) * diff / 60 / 60) * 100) / 100,
                 finalPrice: (Math.round((pricePerHour * diff / 60 / 60) * 100) / 100) + fixedPrice,
             });
         }
@@ -150,7 +169,10 @@ class OrderDetails extends React.Component<MyProps, MyState> {
                                     <Text style={styles.titleHeaderVehicleType}>Tipo de vehículo:</Text>
                                     <View style={styles.subtitleHeaderVehicleType}>
                                         <Text>{vehicleType.name}</Text>
-                                        <Text>${vehicleType.pricePerHour} / hora</Text>
+                                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                            <Text>${vehicleType.pricePerHour}</Text>
+                                            <Text style={{ fontSize: fontSize.XS }}>por hora</Text>
+                                        </View>
                                     </View>
                                 </View>
                             }
@@ -182,7 +204,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
                             </View>
                             <View style={styles.containerTotalHeader}>
                                 <View style={{ flex: 1, flexDirection: 'column' }}>
-                                    <Text style={styles.keyTextTotalHeader}>Total por hora</Text>
+                                    <Text style={styles.keyTextTotalHeader}>Total por hora (actual)</Text>
                                     <Text style={{ fontSize: fontSize.XS }}>({hours} hs y {minutes} mins)</Text>
                                 </View>
                                 <Text style={styles.valueTextTotalHeader}>${totalPricePerHour}</Text>

@@ -9,7 +9,7 @@ import { actions as users } from "../../../users/index";
 const { getPaymentMethod, createPaymentMethod } = users;
 
 import styles from './styles';
-import { displayDate } from '../../utils/utils';
+import { currentDate, displayDate } from '../../utils/utils';
 import CustomModal from '../../../../components/CustomModal';
 import { extraOptionPriceTypes } from '../../../../config/utils';
 import { fontSize } from '../../../../styles/theme';
@@ -49,14 +49,13 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     componentDidMount() {
-        const { totalPricePerHour } = this.state;
         const { createOrder, paymentMethods } = this.props;
         const { originAddress, destinationAddress, originAt, paymentMethodId } = createOrder;
 
         const extraOptionsList = this.getExtraOptions();
         const extraOptionsWithData = this.getExtraOptionsList(extraOptionsList);
-        this.getExtraOptionsPrices(extraOptionsList);
         const vehicleTypeWithData = this.getVehicleType();
+        this.calculatePrices(extraOptionsList, vehicleTypeWithData.pricePerHour);
 
         const DATA = [
             {
@@ -73,7 +72,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                 title: "Detalle de la entrega",
                 data: [{
                     subtitle: 'Fecha y hora transportista en Origen',
-                    value: displayDate(originAt)
+                    value: originAt ? displayDate(originAt) : displayDate(currentDate()),
                 },{
                     subtitle: 'Método de pago',
                     // value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`
@@ -90,7 +89,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
         ];
         this.setState({
             data: DATA,
-            totalPricePerHour: totalPricePerHour + vehicleTypeWithData.pricePerHour,
+            // totalPricePerHour: totalPricePerHour + vehicleTypeWithData.pricePerHour,
             vehicleType: vehicleTypeWithData
         });
     }
@@ -110,7 +109,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
         return extraOptionsList.map(item => {
             if (item.priceType == extraOptionPriceTypes.DYNAMIC) {
                 return {
-                    subtitle: 'Opción extra por hora',
+                    subtitle: 'Opción extra (por hora)',
                     value: `${item.text}`
                 }
             }
@@ -120,8 +119,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
             }
         });
     }
-    getExtraOptionsPrices = (extraOptionsList) => {
-        const { totalPricePerHour } = this.state;
+    calculatePrices = (extraOptionsList, vehiclePricePerHour) => {
         let totalPriceFixed = 0;
         let totalPricePerHourAux = 0;
         let extraOptions = [];
@@ -136,7 +134,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
         this.setState({
             totalPriceFixed,
             extraOptions,
-            totalPricePerHour: totalPricePerHour + totalPricePerHourAux,
+            totalPricePerHour: totalPricePerHourAux + vehiclePricePerHour,
         });
     }
 
@@ -174,7 +172,10 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                                     <Text style={styles.titleHeaderVehicleType}>Tipo de vehículo:</Text>
                                     <View style={styles.subtitleHeaderVehicleType}>
                                         <Text>{vehicleType.name}</Text>
-                                        <Text>${vehicleType.pricePerHour} / hora</Text>
+                                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                                            <Text>${vehicleType.pricePerHour}</Text>
+                                            <Text style={{ fontSize: fontSize.XS }}>por hora</Text>
+                                        </View>
                                     </View>
                                 </View>
                             }

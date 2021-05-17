@@ -11,7 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
-import { getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
+import { extraOptionPriceTypes, getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
 import { displayDate } from '../utils/utils';
 
 type MyProps = {
@@ -28,7 +28,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
     top: (deviceHeight - Constants.statusBarHeight) * 0.9,
     bottom: (deviceHeight - Constants.statusBarHeight) * 0.5,
   };
-
+  
   const snappingPoints = [
     draggableRange.top,
     draggableRange.bottom
@@ -36,6 +36,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
 
   const panelRef = useRef<SlidingUpPanel | null>(null);
   const [panelPositionVal, setPanelPositionVal] = useState(new Animated.Value(draggableRange.bottom));
+  const [pricePerHour, setPricePerHour] = useState(0);
   
   const PANEL_VELOCITY = isiOS ? 2 : 2.3;
   const hideFullScreenPanelOptions: SlidingUpPanelAnimationConfig = {
@@ -55,6 +56,17 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
     //   setAtTop(false);
     // }
   }
+
+  useEffect(() => {
+    const { pricePerHour } = order;
+    let extraOptionsDynamicTotalPrice = 0;
+    order.extraOptions.forEach(item => {
+      if (item.priceType == extraOptionPriceTypes.DYNAMIC) {
+        extraOptionsDynamicTotalPrice += item.price
+      }
+    });
+    setPricePerHour(extraOptionsDynamicTotalPrice + pricePerHour);
+  });
 
   useEffect(() => {
 		const slidingListener = panelPositionVal.addListener(
@@ -194,7 +206,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             <View style={styles.orderPriceContainer}>
               <View style={styles.orderPriceLine}>
                   <Text style={styles.orderPriceText}>Precio por hora</Text>
-                  <Text style={styles.orderPriceValue}>$ {order.pricePerHour}</Text>
+                  <Text style={styles.orderPriceValue}>$ {pricePerHour}</Text>
               </View>
               {/* <View style={styles.separatorMiddle}></View> */}
               <View style={styles.orderPriceLine}>
