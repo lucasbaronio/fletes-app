@@ -144,6 +144,15 @@ const shipperOrdersReducer = (state = initialState, action) => {
             };
         }
 
+        case t.ORDERS_HISTORY_SHIPPER: {
+            const { orders } = action.data;
+            
+            return { 
+                ...state, 
+                historyOrders: orders,
+            };
+        }
+
         case t.ORDER_ACCEPTED: {
             const { orderSelected, pendingOrders, activeOrders } = state;
 

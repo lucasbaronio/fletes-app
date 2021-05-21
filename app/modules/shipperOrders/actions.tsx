@@ -80,6 +80,26 @@ export const getActiveOrdersShipper = (successCB, errorCB) => {
     };
 }
 
+export const getHistoryOrdersShipper = (successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.getHistoryOrdersShipper((isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                dispatch({type: t.ORDERS_HISTORY_SHIPPER, data});
+                successCB();
+            }
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
+        });
+    };
+}
+
 export const changeOrderStatusAccepted = (orderStatusAccepted: OrderStatusAccepted, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});

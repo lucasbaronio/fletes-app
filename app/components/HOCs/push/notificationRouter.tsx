@@ -67,12 +67,12 @@ export default function notificationRouter({ notification,
                 getOrderShipper(data.id, (order) => {
                     if (pushBackgrounded) {
                         setShipperOrderSelected(order, () => {
-                            RootNavigation.navigate('ShipperPendingOrdersRoutes', { screen: 'MapShipperOrderDetails' });
+                            RootNavigation.navigate('ShipperHistoryOrdersRoutes', { screen: 'MapShipperOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('ShipperPendingOrdersRoutes', { screen: 'PendingShipperOrders' });
+                        RootNavigation.navigate('ShipperHistoryOrdersRoutes', { screen: 'HistoryShipperOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });
@@ -163,12 +163,12 @@ export default function notificationRouter({ notification,
                 getOrderShipper(data.id, (order) => {
                     if (pushBackgrounded) {
                         setShipperOrderSelected(order, () => {
-                            RootNavigation.navigate('ShipperPendingOrdersRoutes', { screen: 'MapShipperOrderDetails' });
+                            RootNavigation.navigate('ShipperHistoryOrdersRoutes', { screen: 'MapShipperOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('ShipperPendingOrdersRoutes', { screen: 'PendingShipperOrders' });
+                        RootNavigation.navigate('ShipperHistoryOrdersRoutes', { screen: 'HistoryShipperOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });

@@ -7,6 +7,7 @@ import CreateOrderRoutes from './createOrderRoutes';
 import UserOrdersRoutes from './userOrdersRoutes';
 import ShipperPendingOrdersRoutes from './shipperPendingOrdersRoutes';
 import ShipperActiveOrdersRoutes from './shipperActiveOrdersRoutes';
+import ShipperHistoryOrdersRoutes from './shipperHistoryOrdersRoutes';
 import { isShipperUser } from '../utils';
 
 import { actions as auth } from "../../modules/auth/index";
@@ -52,6 +53,13 @@ function RouterLogged({ logOut, user }) {
                             component={ShipperActiveOrdersRoutes} 
                             options={{
                                 title: 'Pedidos Activos',
+                                headerShown: false,
+                            }} />
+                        <Drawer.Screen 
+                            name="ShipperHistoryOrdersRoutes" 
+                            component={ShipperHistoryOrdersRoutes} 
+                            options={{
+                                title: 'Pedidos Históricos',
                                 headerShown: false,
                             }} />
                     </>

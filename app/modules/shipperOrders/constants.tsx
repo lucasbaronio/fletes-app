@@ -3,6 +3,7 @@ import {
     API_ORDERS as apiOrders,
     API_ORDERS_PENDING_SHIPPER as apiOrdersPendingShipper,
     API_ORDERS_ACTIVE as apiOrdersActive,
+    API_ORDERS_HISTORY as apiOrdersHistory,
     API_ORDER_ACCEPTED as apiOrderAccepted,
     API_ORDER_TO_ORIGIN as apiOrderToOrigin,
     API_ORDER_AT_ORIGIN as apiOrderAtOrigin,
@@ -16,6 +17,7 @@ export const API_ORDERS_INFO = apiOrdersInfo;
 export const API_ORDERS = apiOrders;
 export const API_ORDERS_PENDING_SHIPPER = apiOrdersPendingShipper;
 export const API_ORDERS_ACTIVE = apiOrdersActive;
+export const API_ORDERS_HISTORY = apiOrdersHistory;
 export const API_ORDER_ACCEPTED = apiOrderAccepted;
 export const API_ORDER_TO_ORIGIN = apiOrderToOrigin;
 export const API_ORDER_AT_ORIGIN = apiOrderAtOrigin;

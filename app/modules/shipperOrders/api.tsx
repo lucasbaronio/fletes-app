@@ -2,6 +2,7 @@ import {
     API_ORDERS_INFO,
     API_ORDERS,
     API_ORDERS_ACTIVE,
+    API_ORDERS_HISTORY,
     API_ORDERS_PENDING_SHIPPER,
     API_ORDER_ACCEPTED,
     API_ORDER_AT_DESTINATION,
@@ -27,6 +28,11 @@ export const getOrdersPendingShipper = async (callback) => {
 export const getActiveOrdersShipper = async (callback) => {
     const header = await getHeaderToken();
     get(API_ORDERS_ACTIVE, header, callback);
+}
+
+export const getHistoryOrdersShipper = async (callback) => {
+    const header = await getHeaderToken();
+    get(API_ORDERS_HISTORY, header, callback);
 }
 
 export const createOrder = async (createOrder, callback) => {
