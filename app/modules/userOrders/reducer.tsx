@@ -134,6 +134,15 @@ const userOrdersReducer = (state = initialState, action) => {
             };
         }
 
+        case t.HISTORY_ORDERS: {
+            const { orders } = action.data;
+
+            return { 
+                ...state, 
+                historyOrders: orders,
+            };
+        }
+
         case t.ORDER_COMPLETED: {
             const { orderSelected, activeOrders, historyOrders } = state;
 

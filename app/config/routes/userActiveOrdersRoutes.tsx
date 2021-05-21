@@ -12,7 +12,7 @@ import OrderDetails from '../../modules/shared/OrderDetails/OrderDetails';
 
 const UserOrdersStack = createStackNavigator();
 
-function UserOrdersRoutes(props) {
+function UserActiveOrdersRoutes(props) {
     return (
         <UserOrdersStack.Navigator initialRouteName="ActiveUserOrders" >
             <UserOrdersStack.Screen 
@@ -73,4 +73,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { })(UserOrdersRoutes);
+export default connect(mapStateToProps, { })(UserActiveOrdersRoutes);

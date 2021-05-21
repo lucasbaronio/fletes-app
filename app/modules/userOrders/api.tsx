@@ -3,6 +3,7 @@ import {
     API_ORDER_CANCELED,
     API_ORDER_COMPLETED,
     API_ORDERS_ACTIVE,
+    API_ORDERS_HISTORY,
 } from './constants';
 import { get, post, deleteMethod, patch } from '../globalApi';
 import { getHeaderToken } from '../security';
@@ -15,6 +16,11 @@ export const getOrder = async (orderId, callback) => {
 export const getActiveOrders = async (callback) => {
     const header = await getHeaderToken();
     get(API_ORDERS_ACTIVE, header, callback);
+}
+
+export const getHistoryOrdersUser = async (callback) => {
+    const header = await getHeaderToken();
+    get(API_ORDERS_HISTORY, header, callback);
 }
 
 export const orderStatusCanceled = async (orderId, callback) => {

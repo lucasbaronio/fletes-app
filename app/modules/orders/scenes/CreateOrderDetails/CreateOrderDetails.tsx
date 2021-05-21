@@ -147,7 +147,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
     onSuccessCreateOrder = () => {
         const { navigation } = this.props;
         navigation.popToTop();
-        navigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+        navigation.navigate('UserActiveOrdersRoutes', { screen: 'MapUserOrderDetails' });
     }
 
     onError = (error) => {

@@ -35,12 +35,12 @@ export default function notificationRouter({ notification,
                 getOrderUser(data.id, (order) => {
                     if (pushBackgrounded) {
                         setUserOrderSelected(order, () => {
-                            RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+                            RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'MapUserOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
+                        RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'ActiveUserOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });
@@ -51,12 +51,12 @@ export default function notificationRouter({ notification,
                 getOrderUser(data.id, (order) => {
                     if (pushBackgrounded) {
                         setUserOrderSelected(order, () => {
-                            RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+                            RootNavigation.navigate('UserHistoryOrdersRoutes', { screen: 'MapUserOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
+                        RootNavigation.navigate('UserHistoryOrdersRoutes', { screen: 'HistoryUserOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });
@@ -83,12 +83,12 @@ export default function notificationRouter({ notification,
                 getOrderUser(data.id, (order) => {
                     if (pushBackgrounded) {
                         setUserOrderSelected(order, () => {
-                            RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+                            RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'MapUserOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
+                        RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'ActiveUserOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });
@@ -99,12 +99,12 @@ export default function notificationRouter({ notification,
                 getOrderUser(data.id, (order) => {
                     if (pushBackgrounded) {
                         setUserOrderSelected(order, () => {
-                            RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+                            RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'MapUserOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
+                        RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'ActiveUserOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });
@@ -115,12 +115,12 @@ export default function notificationRouter({ notification,
                 getOrderUser(data.id, (order) => {
                     if (pushBackgrounded) {
                         setUserOrderSelected(order, () => {
-                            RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+                            RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'MapUserOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
+                        RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'ActiveUserOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });
@@ -131,12 +131,12 @@ export default function notificationRouter({ notification,
                 getOrderUser(data.id, (order) => {
                     if (pushBackgrounded) {
                         setUserOrderSelected(order, () => {
-                            RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+                            RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'MapUserOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
+                        RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'ActiveUserOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });
@@ -147,12 +147,12 @@ export default function notificationRouter({ notification,
                 getOrderUser(data.id, (order) => {
                     if (pushBackgrounded) {
                         setUserOrderSelected(order, () => {
-                            RootNavigation.navigate('UserOrdersRoutes', { screen: 'MapUserOrderDetails' });
+                            RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'MapUserOrderDetails' });
                         });
                     }
                 }, (error) => {
                     if (pushBackgrounded) {
-                        RootNavigation.navigate('UserOrdersRoutes', { screen: 'ActiveUserOrders' });
+                        RootNavigation.navigate('UserActiveOrdersRoutes', { screen: 'ActiveUserOrders' });
                         alert(`Se produjo un error al cargar el pedido: ${error}`);
                     }
                 });

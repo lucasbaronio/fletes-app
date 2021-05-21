@@ -56,6 +56,26 @@ export const getActiveOrdersUser = (successCB, errorCB) => {
     };
 }
 
+export const getHistoryOrdersUser = (successCB, errorCB) => {
+    return (dispatch) => {
+        dispatch({type: t.LOADING});
+        api.getHistoryOrdersUser((isSuccess, response, error) => {
+            dispatch({type: t.LOADING});
+            if (isSuccess) {
+                const { data } = response;
+                dispatch({type: t.HISTORY_ORDERS, data});
+                successCB();
+            }
+            else if (error) {
+                if (error.error == 'invalidAccessToken') {
+                    dispatch({ type: tAuth.LOG_OUT });
+                }
+                errorCB(error.message)
+            }
+        });
+    };
+}
+
 export const changeOrderStatusCanceled = (orderId, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});

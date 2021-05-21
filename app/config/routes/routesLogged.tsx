@@ -4,7 +4,8 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemL
 import { isLargeScreen } from "../../styles/theme";
 
 import CreateOrderRoutes from './createOrderRoutes';
-import UserOrdersRoutes from './userOrdersRoutes';
+import UserActiveOrdersRoutes from './userActiveOrdersRoutes';
+import UserHistoryOrdersRoutes from './userHistoryOrdersRoutes';
 import ShipperPendingOrdersRoutes from './shipperPendingOrdersRoutes';
 import ShipperActiveOrdersRoutes from './shipperActiveOrdersRoutes';
 import ShipperHistoryOrdersRoutes from './shipperHistoryOrdersRoutes';
@@ -73,10 +74,17 @@ function RouterLogged({ logOut, user }) {
                                 headerShown: false,
                             }} />
                         <Drawer.Screen 
-                            name="UserOrdersRoutes" 
-                            component={UserOrdersRoutes} 
+                            name="UserActiveOrdersRoutes" 
+                            component={UserActiveOrdersRoutes} 
                             options={{
                                 title: 'Pedidos Activos',
+                                headerShown: false,
+                            }} />
+                        <Drawer.Screen 
+                            name="UserHistoryOrdersRoutes" 
+                            component={UserHistoryOrdersRoutes} 
+                            options={{
+                                title: 'Pedidos Históricos',
                                 headerShown: false,
                             }} />
                     </>
