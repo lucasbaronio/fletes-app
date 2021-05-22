@@ -149,7 +149,13 @@ class HistoryUserOrders extends React.Component<MyProps, MyState> {
 
                                 </MapView>
                                 <View style={styles.containerItemInfo}>
-                                    <Text style={styles.dateOrder}>{displayDate(item.originAt)}</Text>
+                                    <Text style={styles.dateOrder}>
+                                        {(item.userCompletedAt && item.shipperCompletedAt) 
+                                                ? displayDate(item.userCompletedAt)
+                                                : item.userCompletedAt
+                                                    ? displayDate(item.userCompletedAt)
+                                                    : displayDate(item.shipperCompletedAt)}
+                                    </Text>
                                     <Text style={styles.statusOrder}>{getOrderStatusText(item.status)}</Text>
                                 </View>
                             </TouchableOpacity>

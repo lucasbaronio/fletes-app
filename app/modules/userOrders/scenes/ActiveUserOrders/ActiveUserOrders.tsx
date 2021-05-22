@@ -72,6 +72,31 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
         }
     }
 
+    renderDate = (order) => {
+        switch (order.status) {
+          case statusOrder.PENDING:
+            return displayDate(order.originAt);
+          case statusOrder.ACCEPTED:
+            return displayDate(order.originAt);
+          case statusOrder.TO_ORIGIN:
+            return order.shipperArrivesAtOriginAt 
+                        ? displayDate(order.shipperArrivesAtOriginAt)
+                        : displayDate(order.originAt);
+          case statusOrder.AT_ORIGIN:
+            return displayDate(order.shipperArrivedAtOriginAt);
+          case statusOrder.TO_DESTINATION:
+            return order.shipperArrivesAtDestinationAt 
+                        ? displayDate(order.shipperArrivesAtDestinationAt)
+                        : 'No se indicó hora estimada';
+          case statusOrder.AT_DESTINATION:
+            return displayDate(order.shipperArrivedAtDestinationAt);
+          case statusOrder.COMPLETE_PENDING:
+            return displayDate(order.shipperCompletedAt);
+          default:
+            return '';
+        }
+    }
+
     render() {
         const { error, visibleModal } = this.state;
         const { activeOrders, isLoading, getActiveOrdersUser } = this.props; 
@@ -149,7 +174,7 @@ class ActiveUserOrders extends React.Component<MyProps, MyState> {
 
                                 </MapView>
                                 <View style={styles.containerItemInfo}>
-                                    <Text style={styles.dateOrder}>{displayDate(item.originAt)}</Text>
+                                    <Text style={styles.dateOrder}>{this.renderDate(item)}</Text>
                                     <Text style={styles.statusOrder}>{getOrderStatusText(item.status)}</Text>
                                 </View>
                             </TouchableOpacity>

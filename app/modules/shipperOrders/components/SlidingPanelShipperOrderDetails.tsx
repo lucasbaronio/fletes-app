@@ -110,6 +110,67 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
     hideDatePicker();
   };
 
+  const renderDate = () => {
+    switch (order.status) {
+      case statusOrder.PENDING:
+        return {
+          title: 'Hora programada del transportista en el punto de origen',
+          value: displayDate(order.originAt),
+        };
+      case statusOrder.ACCEPTED:
+        return {
+          title: 'Hora programada del transportista en el punto de origen',
+          value: displayDate(order.originAt),
+        };
+      case statusOrder.TO_ORIGIN:
+        return {
+          title: 'Hora programada del transportista en el punto de origen',
+          value: displayDate(order.originAt),
+        };
+      case statusOrder.AT_ORIGIN:
+        return {
+          title: 'Hora que llegó el transportista al punto de origen',
+          value: displayDate(order.shipperArrivedAtOriginAt),
+        };
+      case statusOrder.TO_DESTINATION:
+        return {
+          title: 'Hora estimada del transportista en el punto de destino',
+          value: order.shipperArrivesAtDestinationAt 
+                    ? displayDate(order.shipperArrivesAtDestinationAt)
+                    : 'No se indicó hora estimada',
+        };
+      case statusOrder.AT_DESTINATION:
+        return {
+          title: 'Hora que llegó el transportista al punto de destino',
+          value: displayDate(order.shipperArrivedAtDestinationAt),
+        };
+      case statusOrder.COMPLETE_PENDING:
+        return {
+          title: 'Hora que el transportista finalizó el pedido',
+          value: displayDate(order.shipperCompletedAt),
+        };
+      case statusOrder.COMPLETED:
+        return {
+          title: 'Hora que se completó el pedido',
+          value: displayDate(order.userCompletedAt),
+        };
+      case statusOrder.CANCELED:
+        return {
+          title: order.userCompletedAt
+                    ? 'Hora que el usuario canceló el pedido'
+                    : 'Hora que el transportista canceló el pedido',
+          value: order.userCompletedAt
+                    ? displayDate(order.userCompletedAt)
+                    : displayDate(order.shipperCompletedAt),
+        };
+      default:
+        return {
+          title: '',
+          value: '',
+        };
+    }
+  }
+
   return (
     <SlidingUpPanel
         // @ts-ignore
@@ -141,16 +202,15 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
                 }}>
               </View>
           </Button>
-
           <View style={[styles.containerSliding, styles.containerColumn]}>
             <View>
               <Text style={[styles.marginVerticalLines, styles.titleText]}>
-                Fecha y hora de llegada del transportista al punto de origen
-                </Text>
+                {renderDate().title}
+              </Text>
             </View>
             <View>
               <Text style={styles.text2}>
-                {displayDate(order.originAt)}
+                {renderDate().value}
                 </Text>
             </View>
           </View>

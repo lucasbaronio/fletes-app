@@ -71,7 +71,6 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
         // let { status } = await Permissions.askAsync(Permissions.LOCATION);
         // console.log('getHeadingAsync', await Location.getHeadingAsync())
         let { status } = await Location.requestForegroundPermissionsAsync();
-        console.log(status);
         // const { status, permissions } = await Permissions.askAsync(Permissions.LOCATION_FOREGROUND);
         if (status !== 'granted') {
             alert(ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION);
@@ -172,6 +171,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                 <Modal
                     animationType="slide"
                     transparent={true}
+                    onRequestClose={() => this.setState({ isLoading: false })}
                     visible={isLoading} >
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
