@@ -4,6 +4,8 @@ export const ORDER = 'userOrders/ORDER';
 export const ORDER_CANCELED = 'userOrders/ORDER_CANCELED';
 export const ORDER_COMPLETED = 'userOrders/ORDER_COMPLETED';
 
+export const ORDER_RATING = 'userOrders/ORDER_RATING';
+
 export const ACTIVE_ORDERS = 'userOrders/ACTIVE_ORDERS';
 export const HISTORY_ORDERS = 'userOrders/HISTORY_ORDERS';
 

@@ -98,6 +98,13 @@ const userOrdersReducer = (state = initialState, action) => {
             };
         }
 
+        case t.ORDER_RATING: {
+            const { rating } = action.data;
+            const { orderSelected } = state;
+
+            return { ...state, orderSelected: { ...orderSelected, rating } };
+        }
+
         case t.ORDER: {
             const { order } = action.data;
             const { activeOrders, historyOrders, orderSelected } = state;

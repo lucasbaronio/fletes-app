@@ -5,7 +5,7 @@ import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
 import { actions as userOrders } from "../../index";
-const { changeOrderStatusCanceled, changeOrderStatusCompleted } = userOrders;
+const { changeOrderStatusCanceled, changeOrderStatusCompleted, setOrderRating } = userOrders;
 
 import styles from './styles';
 import { color } from '../../../../styles/theme';
@@ -18,6 +18,7 @@ import ActionModal from '../../../shared/ActionModal/ActionModal';
 type MyProps = {
     changeOrderStatusCompleted: (orderStatusCompleted, onSuccess, onError) => void,
     changeOrderStatusCanceled: (orderId, onSuccess, onError) => void,
+    setOrderRating: (rating, onSuccess) => void,
     order: any,
     isLoading: boolean,
     navigation: any,
@@ -40,26 +41,29 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     componentDidMount() {
-
+        const { order } = this.props;
+        // console.log('rating', order.rating);
     }
 
     onPress = () => {
-        const { order, changeOrderStatusCompleted, changeOrderStatusCanceled } = this.props;
+        const { order, changeOrderStatusCompleted } = this.props;
         switch (order.status) {
             case statusOrder.PENDING:
                 this.setState({ visibleActiveModal: true, activeModalMsg: 'Estas seguro que desea cancelar el pedido? Este cambio es irreversible!' });
-                // changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
                 break;
             case statusOrder.ACCEPTED:
                 this.setState({ visibleActiveModal: true, activeModalMsg: 'Estas seguro que desea cancelar el pedido? Este cambio es irreversible!' });
-                // changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
                 break;
             case statusOrder.COMPLETE_PENDING:
-                changeOrderStatusCompleted({
-                    orderId: order.orderId,
-                    rating: 5,
-                    comments: 'Muy buenooo!!!',
-                }, this.onSuccess, this.onError);
+                const { orderId, rating } = order;
+                console.log(rating);
+                if (rating) {
+                    changeOrderStatusCompleted({
+                        orderId: orderId,
+                        rating: rating,
+                        comments: 'Muy buenooo!!!',
+                    }, this.onSuccess, this.onError);
+                } else this.onError('Por favor ingrese una calificación para el transportista');
                 break;
             default:
                 return;
@@ -114,7 +118,7 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
 
     render() {
         const { error, visibleModal, visibleActiveModal, activeModalMsg } = this.state;
-        const { order, isLoading } = this.props;
+        const { order, isLoading, setOrderRating } = this.props;
         const { originAddress, destinationAddress, status } = order;
         return (
             <SafeAreaView style={styles.container}>
@@ -176,6 +180,7 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
                 </MapView>
                 <SlidingPanelUserOrderDetails 
                     isLoading={isLoading}
+                    setOrderRating={setOrderRating}
                     order={order}
                     textButton={getOrderStatusTextButtonUser(status)}
                     onPress={this.onPress} />
@@ -191,4 +196,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { changeOrderStatusCompleted, changeOrderStatusCanceled })(MapUserOrderDetails);
+export default connect(mapStateToProps, { changeOrderStatusCompleted, changeOrderStatusCanceled, setOrderRating })(MapUserOrderDetails);

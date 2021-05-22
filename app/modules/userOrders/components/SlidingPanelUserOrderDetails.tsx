@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
@@ -16,11 +17,12 @@ import { displayDate } from '../utils/utils';
 
 type MyProps = {
   onPress: () => void,
+  setOrderRating: (rating, onSuccess) => void,
   order: any,
   textButton: string[],
   isLoading: boolean,
 }
-const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton }) => {
+const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton, setOrderRating }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
 
@@ -190,12 +192,12 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             !!order.shipper && order.status != statusOrder.PENDING &&
             <><View style={styles.shipperContainer}>
               <View>
-                <Text style={styles.shipperText}>
+                <Text style={styles.text4}>
                   Nombre del transportista
                 </Text>
               </View>
               <View>
-                <Text style={styles.shipperValue}>
+                <Text style={styles.text1}>
                   {order.shipper.name}
                 </Text>
               </View>
@@ -230,21 +232,37 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             ((order.status == statusOrder.TO_ORIGIN && order.shipperArrivesAtOriginAt) || 
             (order.status == statusOrder.TO_DESTINATION && order.shipperArrivesAtDestinationAt)) &&
             <><View style={styles.separator}></View>
-            <View style={{ flexDirection: 'column', marginHorizontal: 20, marginVertical: 1 }}>
+            <View style={{ flexDirection: 'column', width: '90%', marginVertical: 1 }}>
                 {
                   (order.status == statusOrder.TO_ORIGIN) ?
-                    <><Text style={styles.text4}>Hora aprox. a punto de origen</Text>
-                    {
-                      order.shipperArrivesAtOriginAt &&
-                      <Text style={styles.text2}>{displayDate(order.shipperArrivesAtOriginAt)}</Text>
-                    }</>
+                    <View>
+                      <Text style={styles.text4}>Hora aprox. a punto de origen</Text>
+                      {
+                        order.shipperArrivesAtOriginAt &&
+                        <Text style={styles.text1}>{displayDate(order.shipperArrivesAtOriginAt)}</Text>
+                      }
+                    </View>
                   :
                     <><Text style={styles.text4}>Hora aprox. a punto de destino</Text>
                     {
                       order.shipperArrivesAtDestinationAt &&
-                      <Text style={styles.text2}>{displayDate(order.shipperArrivesAtDestinationAt)}</Text>
+                      <Text style={styles.text1}>{displayDate(order.shipperArrivesAtDestinationAt)}</Text>
                     }</>
                 }
+            </View></>
+          }
+          {
+            (order.status == statusOrder.COMPLETE_PENDING) &&
+            <><View style={styles.separator}></View>
+            <View style={{ flexDirection: 'column', width: '90%', marginVertical: 1 }}>
+              <Text style={styles.text4}>Califica al transportista</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <AntDesign onPress={() => setOrderRating(1,() => {})} name={order.rating > 0 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign onPress={() => setOrderRating(2,() => {})} name={order.rating > 1 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign onPress={() => setOrderRating(3,() => {})} name={order.rating > 2 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign onPress={() => setOrderRating(4,() => {})} name={order.rating > 3 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign onPress={() => setOrderRating(5,() => {})} name={order.rating > 4 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+              </View>
             </View></>
           }
           {
@@ -326,6 +344,7 @@ const styles = StyleSheet.create({
   },
   text4: {
     fontSize: fontSize.XS, 
+    color: color.grey.slateGrey
   },
   dragButton: { 
     width: '100%', 

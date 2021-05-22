@@ -115,3 +115,10 @@ export const changeOrderStatusCompleted = (orderStatusCompleted: OrderStatusComp
         });
     };
 }
+
+export const setOrderRating = (rating, successCB) => {
+    return (dispatch) => {
+        dispatch({type: t.ORDER_RATING, data: { rating }});
+        successCB();
+    };
+}

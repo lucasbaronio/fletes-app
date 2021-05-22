@@ -10,13 +10,14 @@ import AddressForm from './AddressForm';
 import DateTime from './DateTime';
 import { currentDate } from '../utils/utils';
 import { color, fontSize, fontWeight, isiOS, screenSize } from '../../../styles/theme';
-import { ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_1, ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_2 } from '../../../config/strings';
+import { ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION, ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_1, ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_2 } from '../../../config/strings';
 
 type MyProps = {
   onNextScreen: (address, date) => void,
   isLoading: boolean,
+  allowDragging: boolean,
 }
-const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, isLoading }) => {
+const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, isLoading, allowDragging }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
   const draggableRange = {
@@ -82,12 +83,12 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
     <SlidingUpPanel
         // @ts-ignore
         ref={panelRef}
+        allowDragging={allowDragging}
         animatedValue={panelPositionVal}
         draggableRange={draggableRange}
         snappingPoints={snappingPoints}
         showBackdrop={true}
         height={deviceHeight}
-        allowDragging={true}
         containerStyle={styles.slidingUpPanel}
     >
         <View style={styles.panelContent}>
@@ -108,9 +109,13 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                   transparent
                   style={{ width: '100%', justifyContent: "center" }}
                   onPress={() => {
-                    setAtTop(true);
-                    // @ts-ignore
-                    panelRef.current.show();
+                    if (allowDragging) {
+                      setAtTop(true);
+                      // @ts-ignore
+                      panelRef.current.show();
+                    } else {
+                      alert('Se necesitan permisos de ubicación para poder crear un pedido.');
+                    }
                   }}>
                     <Icon name='chevron-up-outline' />
                 </Button>

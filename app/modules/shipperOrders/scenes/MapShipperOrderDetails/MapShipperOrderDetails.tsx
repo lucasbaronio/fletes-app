@@ -95,7 +95,6 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
             changeOrderStatusToDestination,
             changeOrderStatusAtDestination,
             changeOrderStatusCompletePending,
-            changeOrderStatusCanceled,
         } = this.props;
         switch (order.status) {
             case statusOrder.PENDING:
@@ -115,24 +114,23 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                     changeOrderStatusToOrigin({ 
                         orderId: order.orderId, 
                         arrivesAt: {
-                            // arrivesAt: "2021-05-12T18:20:00-03:00",
                             arrivesAt: shipperArrivesAtOriginAt,
                         }
                     }, this.onSuccess, this.onError);
                 } else {
                     this.setState({ visibleActiveModal: true, activeModalMsg: 'Estas seguro que desea cancelar el pedido? Este cambio es irreversible!' });
-                    // changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
                 }
                 break;
             case statusOrder.TO_ORIGIN:
                 changeOrderStatusAtOrigin(order.orderId, this.onSuccessCreateTasks, this.onError);
                 break;
             case statusOrder.AT_ORIGIN:
+                const { shipperArrivesAtDestinationAt } = order;
+                console.log('shipperArrivesAtDestinationAt', shipperArrivesAtDestinationAt);
                 changeOrderStatusToDestination({ 
                     orderId: order.orderId, 
                     arrivesAt: {
-                        // arrivesAt: "2021-05-12T18:20:00-03:00",
-                        arrivesAt: setShipperArrivesAtDestinationAt,
+                        arrivesAt: shipperArrivesAtDestinationAt,
                     }
                 }, this.onSuccess, this.onError);
                 break;
