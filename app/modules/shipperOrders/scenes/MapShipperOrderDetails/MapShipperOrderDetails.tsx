@@ -62,7 +62,8 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     componentDidMount() {
-
+        // const { order } = this.props;
+        // console.log('rating', order.rating);
     }
 
     getMidPointCoords = (coordsA, coordsB) => {
@@ -126,7 +127,6 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                 break;
             case statusOrder.AT_ORIGIN:
                 const { shipperArrivesAtDestinationAt } = order;
-                console.log('shipperArrivesAtDestinationAt', shipperArrivesAtDestinationAt);
                 changeOrderStatusToDestination({ 
                     orderId: order.orderId, 
                     arrivesAt: {

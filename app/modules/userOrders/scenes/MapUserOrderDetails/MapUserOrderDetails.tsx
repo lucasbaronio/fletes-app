@@ -56,7 +56,6 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
                 break;
             case statusOrder.COMPLETE_PENDING:
                 const { orderId, rating } = order;
-                console.log(rating);
                 if (rating) {
                     changeOrderStatusCompleted({
                         orderId: orderId,

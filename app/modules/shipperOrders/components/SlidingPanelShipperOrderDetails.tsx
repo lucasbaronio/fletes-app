@@ -8,6 +8,7 @@ import {
 import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons'; 
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
@@ -303,6 +304,22 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
                 titleModal={(order.status == statusOrder.ACCEPTED) ? "Tiempo de llegada estimado a punto de origen" : "Tiempo de llegada estimado a punto de destino"} 
                 visible={visible} 
                 onConfirm={handleConfirm}/>
+            </View></>
+          }
+          {
+            order.status == statusOrder.COMPLETED && order.rating && 
+            <><View style={[styles.separator, styles.separatorLong]}></View>
+            <View style={[styles.containerSliding, styles.containerColumn]}>
+              <Text style={styles.titleText}>
+                Calificación del usuario
+              </Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                <AntDesign name={order.rating > 0 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign name={order.rating > 1 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign name={order.rating > 2 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign name={order.rating > 3 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign name={order.rating > 4 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+              </View>
             </View></>
           }
           {
