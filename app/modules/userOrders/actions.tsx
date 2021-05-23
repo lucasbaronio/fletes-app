@@ -122,3 +122,10 @@ export const setOrderRating = (rating, successCB) => {
         successCB();
     };
 }
+
+export const setOrderComments = (comments, successCB) => {
+    return (dispatch) => {
+        dispatch({type: t.ORDER_COMMENTS, data: { comments }});
+        successCB();
+    };
+}

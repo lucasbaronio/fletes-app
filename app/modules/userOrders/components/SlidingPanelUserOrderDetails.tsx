@@ -3,7 +3,7 @@ import { Button, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, TouchableOpacity, ActivityIndicator
+  View, TouchableOpacity, ActivityIndicator, Pressable
 } from 'react-native';
 import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
@@ -17,12 +17,13 @@ import { displayDate } from '../utils/utils';
 
 type MyProps = {
   onPress: () => void,
+  onPressComments: () => void,
   setOrderRating: (rating, onSuccess) => void,
   order: any,
   textButton: string[],
   isLoading: boolean,
 }
-const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton, setOrderRating }) => {
+const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton, setOrderRating, onPressComments }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
 
@@ -257,7 +258,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             !!order.shipper && order.status != statusOrder.PENDING &&
             <><View style={styles.shipperContainer}>
               <View>
-                <Text style={styles.text4}>
+                <Text style={styles.titleText}>
                   Nombre del transportista
                 </Text>
               </View>
@@ -271,15 +272,23 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
           }
           <View style={styles.orderContainer}>
             <View style={styles.orderPriceContainer}>
-              <View style={styles.orderPriceLine}>
-                  <Text style={styles.orderPriceText}>Precio por hora</Text>
-                  <Text style={styles.orderPriceValue}>$ {pricePerHour}</Text>
-              </View>
-              {/* <View style={styles.separatorMiddle}></View> */}
-              <View style={styles.orderPriceLine}>
-                  <Text style={styles.orderPriceText}>Total fijo</Text>
-                  <Text style={styles.orderPriceValue}>$ {order.fixedPrice}</Text>
-              </View>
+              {
+                ((order.status == statusOrder.COMPLETE_PENDING) || (order.status == statusOrder.COMPLETED)) && order.finalPrice
+                ? 
+                <View style={[styles.orderPriceLine, { marginVertical: 5 }]}>
+                  <Text style={{ flex: 1, fontSize: fontSize.L }}>Total</Text>
+                  <Text style={{ fontSize: fontSize.L, fontWeight: fontWeight.L }}>$ {order.finalPrice}</Text>
+                </View>
+                : 
+                <><View style={styles.orderPriceLine}>
+                    <Text style={styles.orderPriceText}>Precio por hora</Text>
+                    <Text style={styles.orderPriceValue}>$ {pricePerHour}</Text>
+                </View>
+                <View style={styles.orderPriceLine}>
+                    <Text style={styles.orderPriceText}>Total fijo</Text>
+                    <Text style={styles.orderPriceValue}>$ {order.fixedPrice}</Text>
+                </View></>
+              }
             </View>
             <View style={styles.orderDetailsContainer}>
               <TouchableOpacity
@@ -301,14 +310,14 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                 {
                   (order.status == statusOrder.TO_ORIGIN) ?
                     <View>
-                      <Text style={styles.text4}>Hora aprox. a punto de origen</Text>
+                      <Text style={styles.titleText}>Hora aprox. a punto de origen</Text>
                       {
                         order.shipperArrivesAtOriginAt &&
                         <Text style={styles.text1}>{displayDate(order.shipperArrivesAtOriginAt)}</Text>
                       }
                     </View>
                   :
-                    <><Text style={styles.text4}>Hora aprox. a punto de destino</Text>
+                    <><Text style={styles.titleText}>Hora aprox. a punto de destino</Text>
                     {
                       order.shipperArrivesAtDestinationAt &&
                       <Text style={styles.text1}>{displayDate(order.shipperArrivesAtDestinationAt)}</Text>
@@ -320,7 +329,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             (order.status == statusOrder.COMPLETE_PENDING) &&
             <><View style={styles.separator}></View>
             <View style={{ flexDirection: 'column', width: '90%', marginVertical: 1 }}>
-              <Text style={styles.text4}>Califica al transportista</Text>
+              <Text style={styles.titleText}>Califica al transportista</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 <AntDesign onPress={() => setOrderRating(1,() => {})} name={order.rating > 0 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
                 <AntDesign onPress={() => setOrderRating(2,() => {})} name={order.rating > 1 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
@@ -328,16 +337,33 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                 <AntDesign onPress={() => setOrderRating(4,() => {})} name={order.rating > 3 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
                 <AntDesign onPress={() => setOrderRating(5,() => {})} name={order.rating > 4 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
               </View>
+            </View>
+            <View style={styles.separator}></View>
+            <View style={styles.orderSelectContainer}>
+              <View style={styles.orderSelectTitleContainer}>
+                <Text style={styles.titleText}>Comentarios finales</Text>
+                {
+                  order.comments && 
+                  <Text style={styles.text3}>{order.comments.replace(/\n|\r/g, " ").substring(0,30)}...</Text>
+                }
+              </View>
+              <View style={styles.orderSelectButtonContainer}>
+                <Pressable
+                  style={styles.orderSelectButton}
+                  onPress={onPressComments} >
+                  <Text style={[styles.buttonText, styles.text4]}>Cambiar</Text>
+                </Pressable>
+              </View>
             </View></>
           }
-          {
+          {/* {
             order.finalPrice &&
             <><View style={styles.separator}></View>
             <View style={[styles.orderPriceLine, { marginHorizontal: 20 }]}>
                 <Text style={{ flex: 1, fontSize: fontSize.L }}>Total</Text>
                 <Text style={{ fontSize: fontSize.L, fontWeight: fontWeight.L }}>$ {order.finalPrice}</Text>
             </View></>
-          }
+          } */}
           <View style={styles.separator}></View>
           <View style={styles.helpContainer}>
             <TouchableOpacity
@@ -396,6 +422,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30, 
     borderTopRightRadius: 30
   },
+  titleText: {
+    fontSize: fontSize.XS,
+    color: color.grey.slateGrey
+  },
   text1: {
     fontSize: fontSize.L,
     fontWeight: fontWeight.L
@@ -408,8 +438,12 @@ const styles = StyleSheet.create({
     fontSize: fontSize.S, 
   },
   text4: {
-    fontSize: fontSize.XS, 
-    color: color.grey.slateGrey
+    fontSize: fontSize.XS,
+  },
+  buttonText: {
+    color: color.white.white,
+    fontWeight: fontWeight.L,
+    textAlign: "center"
   },
   dragButton: { 
     width: '100%', 
@@ -445,7 +479,7 @@ const styles = StyleSheet.create({
   separator: {
     width: '90%',
     height: 5, 
-    marginVertical: 15, 
+    marginVertical: 10, 
     borderBottomWidth: 1, 
     borderBottomColor: color.grey.lightGrey,
   },
@@ -506,6 +540,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: fontSize.XS,
     fontWeight: fontWeight.M
+  },
+  orderSelectContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginHorizontal: 20,
+    marginVertical: 1,
+  },
+  orderSelectTitleContainer: {
+    flex: .7, 
+    flexDirection: 'column'
+  },
+  orderSelectButtonContainer: {
+    flex: .3, 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  orderSelectButton: { 
+    borderRadius: 20,
+    padding: 5,
+    elevation: 2,
+    backgroundColor: color.blue.steelBlue, 
   },
   helpContainer: {
     width: '90%',

@@ -72,6 +72,8 @@ let initialState = {
         shipper: null,
         extraOptions: [],
         // paymentMethodId: null,
+        rating: null,
+        comments: ''
     },
     pendingOrders, // Pedidos que estan pendientes a ser aceptadas por el shipper 
     activeOrders, // Pedidos que ya fueron aceptados por el shipper y siguen activas

@@ -5,7 +5,12 @@ import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
 
 import { actions as userOrders } from "../../index";
-const { changeOrderStatusCanceled, changeOrderStatusCompleted, setOrderRating } = userOrders;
+const { 
+    changeOrderStatusCanceled, 
+    changeOrderStatusCompleted, 
+    setOrderRating,
+    setOrderComments
+} = userOrders;
 
 import styles from './styles';
 import { color } from '../../../../styles/theme';
@@ -14,11 +19,13 @@ import { getOrderStatusSuccessText, getOrderStatusTextButtonUser, statusOrder } 
 import SlidingPanelUserOrderDetails from '../../components/SlidingPanelUserOrderDetails';
 import CustomModal from '../../../../components/CustomModal';
 import ActionModal from '../../../shared/ActionModal/ActionModal';
+import TextModal from '../../../shared/TextModal/TextModal';
 
 type MyProps = {
     changeOrderStatusCompleted: (orderStatusCompleted, onSuccess, onError) => void,
     changeOrderStatusCanceled: (orderId, onSuccess, onError) => void,
     setOrderRating: (rating, onSuccess) => void,
+    setOrderComments: (comments, onSuccess) => void,
     order: any,
     isLoading: boolean,
     navigation: any,
@@ -28,6 +35,7 @@ type MyState = {
     visibleModal: boolean,
     visibleActiveModal: boolean,
     activeModalMsg: string,
+    visibleTextModal: boolean
 }
 class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -37,6 +45,7 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
             visibleModal: false,
             visibleActiveModal: false,
             activeModalMsg: '',
+            visibleTextModal: false,
         };
     }
 
@@ -55,12 +64,12 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
                 this.setState({ visibleActiveModal: true, activeModalMsg: 'Estas seguro que desea cancelar el pedido? Este cambio es irreversible!' });
                 break;
             case statusOrder.COMPLETE_PENDING:
-                const { orderId, rating } = order;
+                const { orderId, rating, comments } = order;
                 if (rating) {
                     changeOrderStatusCompleted({
                         orderId: orderId,
                         rating: rating,
-                        comments: 'Muy buenooo!!!',
+                        comments: comments,
                     }, this.onSuccess, this.onError);
                 } else this.onError('Por favor ingrese una calificación para el transportista');
                 break;
@@ -88,10 +97,20 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
         this.setState({ visibleActiveModal: false, activeModalMsg: '' });
     }
 
+    onCancelTextModal = () => {
+        this.setState({ visibleTextModal: false });
+    }
+
     onAcceptActiveModal = () => {
         const { order, changeOrderStatusCanceled } = this.props;
         this.setState({ visibleActiveModal: false, activeModalMsg: '' });
         changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
+    }
+
+    onAcceptTextModal = (comments) => {
+        const { setOrderComments } = this.props;
+        this.setState({ visibleTextModal: false });
+        setOrderComments(comments, () => {});
     }
 
     getMidPointCoords = (coordsA, coordsB) => {
@@ -116,13 +135,14 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { error, visibleModal, visibleActiveModal, activeModalMsg } = this.state;
+        const { error, visibleModal, visibleActiveModal, activeModalMsg, visibleTextModal } = this.state;
         const { order, isLoading, setOrderRating } = this.props;
-        const { originAddress, destinationAddress, status } = order;
+        const { originAddress, destinationAddress, status, comments } = order;
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <ActionModal message={activeModalMsg} visible={visibleActiveModal} onCancel={this.onCancelActiveModal} onAccept={this.onAcceptActiveModal}/>
+                <TextModal title='Comentarios finales' textArea={comments} visible={visibleTextModal} onCancel={this.onCancelTextModal} onAccept={this.onAcceptTextModal}/>
                 {/* <StatusBar style="dark" /> */}
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
@@ -182,6 +202,9 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
                     setOrderRating={setOrderRating}
                     order={order}
                     textButton={getOrderStatusTextButtonUser(status)}
+                    onPressComments={() => {
+                        this.setState({ visibleTextModal: true })
+                    }}
                     onPress={this.onPress} />
             </SafeAreaView>
         );
@@ -195,4 +218,4 @@ function mapStateToProps(state, props) {
     }
 }
 
-export default connect(mapStateToProps, { changeOrderStatusCompleted, changeOrderStatusCanceled, setOrderRating })(MapUserOrderDetails);
+export default connect(mapStateToProps, { changeOrderStatusCompleted, changeOrderStatusCanceled, setOrderRating, setOrderComments })(MapUserOrderDetails);

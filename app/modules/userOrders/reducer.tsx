@@ -70,6 +70,8 @@ let initialState = {
         shipper: null,
         extraOptions: [],
         // paymentMethodId: null,
+        rating: null,
+        comments: ''
     },
     activeOrders, // Pedidos que fueron creados por el user y aún siguen activos
     historyOrders, // Pedidos que fueron creados por el user pero que ya finalizaron (COMPLETED o CANCELED)
@@ -103,6 +105,13 @@ const userOrdersReducer = (state = initialState, action) => {
             const { orderSelected } = state;
 
             return { ...state, orderSelected: { ...orderSelected, rating } };
+        }
+
+        case t.ORDER_COMMENTS: {
+            const { comments } = action.data;
+            const { orderSelected } = state;
+
+            return { ...state, orderSelected: { ...orderSelected, comments } };
         }
 
         case t.ORDER: {
