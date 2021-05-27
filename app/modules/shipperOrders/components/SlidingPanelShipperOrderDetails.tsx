@@ -272,7 +272,7 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
           </View>
           <View style={[styles.separator, styles.separatorLong]}></View>
           {
-            order.user.name &&
+            order.user.name && order.status != statusOrder.COMPLETED &&
             <><View style={[styles.containerSliding, styles.containerColumn]}>
               <View>
                 <Text style={styles.titleText}>
@@ -289,15 +289,23 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
           }
           <View style={[styles.containerSliding, styles.containerRow]}>
             <View style={styles.orderPriceContainer}>
-              <View style={styles.orderPriceLine}>
-                  <Text style={[{ flex: 1 }, styles.text3]}>Precio por hora</Text>
-                  <Text style={styles.text2}>$ {pricePerHour}</Text>
-              </View>
-              {/* <View style={styles.separatorMiddle}></View> */}
-              <View style={styles.orderPriceLine}>
-                  <Text style={[{ flex: 1 }, styles.text3]}>Total fijo</Text>
-                  <Text style={styles.text2}>$ {order.fixedPrice}</Text>
-              </View>
+              {
+                ((order.status == statusOrder.COMPLETE_PENDING) || (order.status == statusOrder.COMPLETED)) && order.finalPrice
+                ? 
+                <View style={[styles.orderPriceLine, { marginVertical: 5 }]}>
+                  <Text style={{ flex: 1, fontSize: fontSize.L }}>Total</Text>
+                  <Text style={{ fontSize: fontSize.L, fontWeight: fontWeight.L }}>$ {order.finalPrice}</Text>
+                </View>
+                : 
+                <><View style={styles.orderPriceLine}>
+                    <Text style={[{ flex: 1 }, styles.text3]}>Precio por hora</Text>
+                    <Text style={styles.text2}>$ {pricePerHour}</Text>
+                </View>
+                <View style={styles.orderPriceLine}>
+                    <Text style={[{ flex: 1 }, styles.text3]}>Total fijo</Text>
+                    <Text style={styles.text2}>$ {order.fixedPrice}</Text>
+                </View></>
+              }
             </View>
             <View style={styles.orderDetailsContainer}>
               <TouchableOpacity
@@ -380,14 +388,6 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
                 <AntDesign name={order.rating > 3 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
                 <AntDesign name={order.rating > 4 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
               </View>
-            </View></>
-          }
-          {
-            order.finalPrice &&
-            <><View style={[styles.separator, styles.separatorLong]}></View>
-            <View style={[styles.orderPriceLine, { marginHorizontal: 20 }]}>
-                <Text style={{ flex: 1, fontSize: fontSize.L }}>Total</Text>
-                <Text style={{ fontSize: fontSize.L, fontWeight: fontWeight.L }}>$ {order.finalPrice}</Text>
             </View></>
           }
           <View style={[styles.separator, styles.separatorLong]}></View>

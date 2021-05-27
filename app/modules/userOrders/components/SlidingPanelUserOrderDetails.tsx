@@ -17,7 +17,7 @@ import { displayDate } from '../utils/utils';
 
 type MyProps = {
   onPress: () => void,
-  onPressComments: () => void,
+  onPressComments: (edit) => void,
   setOrderRating: (rating, onSuccess) => void,
   order: any,
   textButton: string[],
@@ -255,7 +255,8 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
           </View>
           <View style={styles.separator}></View>
           {
-            !!order.shipper && order.status != statusOrder.PENDING &&
+            order.shipper && order.status != statusOrder.PENDING && 
+            order.status != statusOrder.COMPLETED &&
             <><View style={styles.shipperContainer}>
               <View>
                 <Text style={styles.titleText}>
@@ -326,16 +327,46 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             </View></>
           }
           {
-            (order.status == statusOrder.COMPLETE_PENDING) &&
+            ((order.status == statusOrder.COMPLETE_PENDING) || (order.status == statusOrder.COMPLETED)) &&
             <><View style={styles.separator}></View>
             <View style={{ flexDirection: 'column', width: '90%', marginVertical: 1 }}>
               <Text style={styles.titleText}>Califica al transportista</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <AntDesign onPress={() => setOrderRating(1,() => {})} name={order.rating > 0 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
-                <AntDesign onPress={() => setOrderRating(2,() => {})} name={order.rating > 1 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
-                <AntDesign onPress={() => setOrderRating(3,() => {})} name={order.rating > 2 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
-                <AntDesign onPress={() => setOrderRating(4,() => {})} name={order.rating > 3 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
-                <AntDesign onPress={() => setOrderRating(5,() => {})} name={order.rating > 4 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
+                <AntDesign 
+                  onPress={() => 
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                  } 
+                  name={order.rating > 0 ? "star" : "staro" } 
+                  size={iconSize.XXL} 
+                  color="gold" />
+                <AntDesign 
+                  onPress={() => 
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                  } 
+                  name={order.rating > 1 ? "star" : "staro" } 
+                  size={iconSize.XXL} 
+                  color="gold" />
+                <AntDesign 
+                  onPress={() => 
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                  } 
+                  name={order.rating > 2 ? "star" : "staro" } 
+                  size={iconSize.XXL} 
+                  color="gold" />
+                <AntDesign 
+                  onPress={() => 
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                  } 
+                  name={order.rating > 3 ? "star" : "staro" } 
+                  size={iconSize.XXL} 
+                  color="gold" />
+                <AntDesign 
+                  onPress={() => 
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                  } 
+                  name={order.rating > 4 ? "star" : "staro" } 
+                  size={iconSize.XXL} 
+                  color="gold" />
               </View>
             </View>
             <View style={styles.separator}></View>
@@ -348,22 +379,24 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                 }
               </View>
               <View style={styles.orderSelectButtonContainer}>
-                <Pressable
-                  style={styles.orderSelectButton}
-                  onPress={onPressComments} >
-                  <Text style={[styles.buttonText, styles.text4]}>Cambiar</Text>
-                </Pressable>
+                {
+                  order.status == statusOrder.COMPLETE_PENDING 
+                  ? <Pressable
+                    style={styles.orderSelectButton}
+                    onPress={onPressComments} >
+                    <Text style={[styles.buttonText, styles.text4]}>Cambiar</Text>
+                  </Pressable>
+                  :
+                  <Pressable
+                    style={styles.orderSelectButton}
+                    onPress={onPressComments} >
+                    <Text style={[styles.buttonText, styles.text4]}>Ver mas</Text>
+                  </Pressable>
+                }
               </View>
+              
             </View></>
           }
-          {/* {
-            order.finalPrice &&
-            <><View style={styles.separator}></View>
-            <View style={[styles.orderPriceLine, { marginHorizontal: 20 }]}>
-                <Text style={{ flex: 1, fontSize: fontSize.L }}>Total</Text>
-                <Text style={{ fontSize: fontSize.L, fontWeight: fontWeight.L }}>$ {order.finalPrice}</Text>
-            </View></>
-          } */}
           <View style={styles.separator}></View>
           <View style={styles.helpContainer}>
             <TouchableOpacity

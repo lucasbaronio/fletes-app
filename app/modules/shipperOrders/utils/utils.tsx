@@ -19,6 +19,12 @@ export const displayDate = (date) => {
     }
 }
 
+export const displayHistoryDate = (date) => {
+    moment.locale(Localization.locale.substring(0,2));
+    const dateMoment = moment(date).tz(Localization.timezone);
+    return dateMoment.format('LLLL');
+}
+
 export const currentDate = () => {
     moment.locale(Localization.locale.substring(0,2));
     return moment(new Date()).tz(Localization.timezone).format();

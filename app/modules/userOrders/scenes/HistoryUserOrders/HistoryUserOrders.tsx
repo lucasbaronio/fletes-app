@@ -8,12 +8,13 @@ import { actions as orders } from "../../index";
 const { setUserOrderSelected, getHistoryOrdersUser } = orders;
 
 import styles from './styles';
-import { currentDate, displayDate, isLessThan, dateToFrontend } from '../../utils/utils';
+import { currentDate, isLessThan, dateToFrontend } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
 import { getOrderStatusText, statusOrder } from '../../../../config/utils';
 import CustomModal from '../../../../components/CustomModal';
+import { displayHistoryDate } from '../../../shipperOrders/utils/utils';
 
 type MyProps = {
     setUserOrderSelected: (order, successCB) => void,
@@ -151,10 +152,10 @@ class HistoryUserOrders extends React.Component<MyProps, MyState> {
                                 <View style={styles.containerItemInfo}>
                                     <Text style={styles.dateOrder}>
                                         {(item.userCompletedAt && item.shipperCompletedAt) 
-                                                ? displayDate(item.userCompletedAt)
+                                                ? displayHistoryDate(item.userCompletedAt)
                                                 : item.userCompletedAt
-                                                    ? displayDate(item.userCompletedAt)
-                                                    : displayDate(item.shipperCompletedAt)}
+                                                    ? displayHistoryDate(item.userCompletedAt)
+                                                    : displayHistoryDate(item.shipperCompletedAt)}
                                     </Text>
                                     <Text style={styles.statusOrder}>{getOrderStatusText(item.status)}</Text>
                                 </View>

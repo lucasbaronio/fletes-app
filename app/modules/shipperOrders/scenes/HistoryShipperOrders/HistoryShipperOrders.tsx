@@ -9,7 +9,7 @@ import { actions as shipperOrders } from "../../index";
 const { setShipperOrderSelected, getHistoryOrdersShipper } = shipperOrders;
 
 import styles from './styles';
-import { currentDate, dateToFrontend, displayDate } from '../../utils/utils';
+import { currentDate, dateToFrontend, displayHistoryDate } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
 import { color } from '../../../../styles/theme';
 import { API_KEY_GOOGLE } from '../../../../config/constants';
@@ -177,10 +177,10 @@ class HistoryShipperOrders extends React.Component<MyProps, MyState> {
                                 <View style={styles.containerItemInfo}>
                                     <Text style={styles.dateOrder}>
                                         {(item.userCompletedAt && item.shipperCompletedAt) 
-                                                ? displayDate(item.userCompletedAt)
+                                                ? displayHistoryDate(item.userCompletedAt)
                                                 : item.userCompletedAt
-                                                    ? displayDate(item.userCompletedAt)
-                                                    : displayDate(item.shipperCompletedAt)}
+                                                    ? displayHistoryDate(item.userCompletedAt)
+                                                    : displayHistoryDate(item.shipperCompletedAt)}
                                     </Text>
                                     <Text style={styles.statusOrder}>{getOrderStatusText(item.status)}</Text>
                                 </View>
