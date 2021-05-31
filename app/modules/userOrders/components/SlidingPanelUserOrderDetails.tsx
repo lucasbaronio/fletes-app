@@ -12,7 +12,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
-import { extraOptionPriceTypes, getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
+import { extraOptionPriceTypes, getOrderStatusCurrentTime, getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
 import { displayDate } from '../utils/utils';
 
 type MyProps = {
@@ -88,70 +88,70 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
     });
   }
 
-  const renderDate = () => {
-    switch (order.status) {
-      case statusOrder.PENDING:
-        return {
-          title: 'Hora programada del transportista en el punto de origen',
-          value: displayDate(order.originAt),
-        };
-      case statusOrder.ACCEPTED:
-        return {
-          title: 'Hora programada del transportista en el punto de origen',
-          value: displayDate(order.originAt),
-        };
-      case statusOrder.TO_ORIGIN:
-        return {
-          title: order.shipperArrivesAtOriginAt 
-                    ? 'Hora estimada del transportista en el punto de origen'
-                    : 'Hora programada del transportista en el punto de origen',
-          value: order.shipperArrivesAtOriginAt 
-                    ? displayDate(order.shipperArrivesAtOriginAt)
-                    : displayDate(order.originAt),
-        };
-      case statusOrder.AT_ORIGIN:
-        return {
-          title: 'Hora que llegó el transportista al punto de origen',
-          value: displayDate(order.shipperArrivedAtOriginAt),
-        };
-      case statusOrder.TO_DESTINATION:
-        return {
-          title: 'Hora estimada del transportista en el punto de destino',
-          value: order.shipperArrivesAtDestinationAt 
-                    ? displayDate(order.shipperArrivesAtDestinationAt)
-                    : 'No se indicó hora estimada',
-        };
-      case statusOrder.AT_DESTINATION:
-        return {
-          title: 'Hora que llegó el transportista al punto de destino',
-          value: displayDate(order.shipperArrivedAtDestinationAt),
-        };
-      case statusOrder.COMPLETE_PENDING:
-        return {
-          title: 'Hora que el transportista finalizó el pedido',
-          value: displayDate(order.shipperCompletedAt),
-        };
-      case statusOrder.COMPLETED:
-        return {
-          title: 'Hora que se completó el pedido',
-          value: displayDate(order.userCompletedAt),
-        };
-      case statusOrder.CANCELED:
-        return {
-          title: order.userCompletedAt
-                    ? 'Hora que el usuario canceló el pedido'
-                    : 'Hora que el transportista canceló el pedido',
-          value: order.userCompletedAt
-                    ? displayDate(order.userCompletedAt)
-                    : displayDate(order.shipperCompletedAt),
-        };
-      default:
-        return {
-          title: '',
-          value: '',
-        };
-    }
-  }
+  // const renderDate = () => {
+  //   switch (order.status) {
+  //     case statusOrder.PENDING:
+  //       return {
+  //         title: 'Hora programada del transportista en el punto de origen',
+  //         value: displayDate(order.originAt),
+  //       };
+  //     case statusOrder.ACCEPTED:
+  //       return {
+  //         title: 'Hora programada del transportista en el punto de origen',
+  //         value: displayDate(order.originAt),
+  //       };
+  //     case statusOrder.TO_ORIGIN:
+  //       return {
+  //         title: order.shipperArrivesAtOriginAt 
+  //                   ? 'Hora estimada del transportista en el punto de origen'
+  //                   : 'Hora programada del transportista en el punto de origen',
+  //         value: order.shipperArrivesAtOriginAt 
+  //                   ? displayDate(order.shipperArrivesAtOriginAt)
+  //                   : displayDate(order.originAt),
+  //       };
+  //     case statusOrder.AT_ORIGIN:
+  //       return {
+  //         title: 'Hora que llegó el transportista al punto de origen',
+  //         value: displayDate(order.shipperArrivedAtOriginAt),
+  //       };
+  //     case statusOrder.TO_DESTINATION:
+  //       return {
+  //         title: 'Hora estimada del transportista en el punto de destino',
+  //         value: order.shipperArrivesAtDestinationAt 
+  //                   ? displayDate(order.shipperArrivesAtDestinationAt)
+  //                   : 'No se indicó hora estimada',
+  //       };
+  //     case statusOrder.AT_DESTINATION:
+  //       return {
+  //         title: 'Hora que llegó el transportista al punto de destino',
+  //         value: displayDate(order.shipperArrivedAtDestinationAt),
+  //       };
+  //     case statusOrder.COMPLETE_PENDING:
+  //       return {
+  //         title: 'Hora que el transportista finalizó el pedido',
+  //         value: displayDate(order.shipperCompletedAt),
+  //       };
+  //     case statusOrder.COMPLETED:
+  //       return {
+  //         title: 'Hora que se completó el pedido',
+  //         value: displayDate(order.userCompletedAt),
+  //       };
+  //     case statusOrder.CANCELED:
+  //       return {
+  //         title: order.userCompletedAt
+  //                   ? 'Hora que el usuario canceló el pedido'
+  //                   : 'Hora que el transportista canceló el pedido',
+  //         value: order.userCompletedAt
+  //                   ? displayDate(order.userCompletedAt)
+  //                   : displayDate(order.shipperCompletedAt),
+  //       };
+  //     default:
+  //       return {
+  //         title: '',
+  //         value: '',
+  //       };
+  //   }
+  // }
 
   return (
     <SlidingUpPanel
@@ -188,12 +188,12 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
           <View style={styles.timeNextStatusContainer}>
             <View>
               <Text style={styles.timeNextStatusText}>
-                {renderDate().title}
+                {getOrderStatusCurrentTime(order).title}
               </Text>
             </View>
             <View>
               <Text style={styles.timeNextStatusValue}>
-                {renderDate().value}
+                {getOrderStatusCurrentTime(order).value}
               </Text>
             </View>
           </View>

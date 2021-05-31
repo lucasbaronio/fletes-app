@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
     },
     textButton: {
       color: color.white.white, 
-      fontSize: fontSize.XL, 
+      fontSize: fontSize.L, 
       fontWeight: fontWeight.L, 
       textAlign: 'center'
     },

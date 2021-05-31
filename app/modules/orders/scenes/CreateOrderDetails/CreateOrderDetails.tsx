@@ -58,34 +58,43 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
         this.calculatePrices(extraOptionsList, vehicleTypeWithData.pricePerHour);
 
         const DATA = [
+            // {
+            //     title: "Direcciones",
+            //     data: [{
+            //         subtitle: 'Dirección origen',
+            //         value: `${originAddress.streetName} ${originAddress.streetNumber} / ${originAddress.doorNumber}`
+            //     },{
+            //         subtitle: 'Dirección destino',
+            //         value: `${destinationAddress.streetName} ${destinationAddress.streetNumber} / ${destinationAddress.doorNumber}`
+            //     }]
+            // },
             {
-                title: "Direcciones",
-                data: [{
-                    subtitle: 'Dirección origen',
-                    value: `${originAddress.streetName} ${originAddress.streetNumber} / ${originAddress.doorNumber}`
-                },{
-                    subtitle: 'Dirección destino',
-                    value: `${destinationAddress.streetName} ${destinationAddress.streetNumber} / ${destinationAddress.doorNumber}`
-                }]
-              },
-              {
-                title: "Detalle de la entrega",
+                title: "Detalles de la entrega",
                 data: [{
                     subtitle: 'Fecha y hora transportista en Origen',
                     value: originAt ? displayDate(originAt) : displayDate(currentDate()),
                 },{
                     subtitle: 'Método de pago',
                     // value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`
-                    value: '...1234'
+                    value: 'Efectivo al momento de finalizado el pedido.'
+                },{
+                    subtitle: 'Dirección origen',
+                    value: `${originAddress.streetName} ${originAddress.streetNumber}. Apto: ${originAddress.doorNumber}`
+                },{
+                    subtitle: 'Dirección destino',
+                    value: `${destinationAddress.streetName} ${destinationAddress.streetNumber}. Apto: ${destinationAddress.doorNumber}`
                 }]
-              },
-              {
+            },
+            {
                 title: "Detalles del transportista",
                 data: [{
                     subtitle: 'Tipo de vehículo',
                     value: vehicleTypeWithData.name
-                }].concat(extraOptionsWithData)
-              }
+                }]
+            },{
+                title: "Opciones extra",
+                data: extraOptionsWithData
+            }
         ];
         this.setState({
             data: DATA,

@@ -6,7 +6,7 @@ import { Text } from 'native-base';
 import styles from './styles';
 import { currentDate, dateToFrontend, timeDiffSeconds, displayDate } from '../../orders/utils/utils';
 import { fontSize } from '../../../styles/theme';
-import { extraOptionPriceTypes } from '../../../config/utils';
+import { extraOptionPriceTypes, getOrderStatusCurrentTime, statusOrder } from '../../../config/utils';
 
 type MyProps = {
     order: any,
@@ -39,7 +39,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
 
     componentDidMount() {
         const { order } = this.props.route.params;
-        const { originAddress, destinationAddress, originAt, paymentMethod, vehicleType, extraOptions, vehicle, shipper } = order;
+        const { status, originAddress, destinationAddress, originAt, paymentMethod, vehicleType, extraOptions, vehicle, shipper, user } = order;
 
         const extraOptionsDynamicTotalPrice = this.getExtraOptionsDynamicPrices(extraOptions);
         this.setState({ 
@@ -50,14 +50,14 @@ class OrderDetails extends React.Component<MyProps, MyState> {
 
         const extraOptionsWithData = this.getExtraOptionsList(extraOptions);        
 
-        let shipperData = [{
+        let shipperData = shipper ? [{
+            subtitle: 'Nombre',
+            value: shipper.name ? shipper.name : 'Sin definir'
+        }] : [];
+        shipperData = shipperData.concat([{
             subtitle: 'Tipo de vehículo',
             value: vehicleType.name
-        }];
-        shipperData = shipper ? shipperData.concat([{
-            subtitle: 'Nombre',
-            value: shipper.name
-        }]) : shipperData;
+        }]);
         shipperData = vehicle ? shipperData.concat([{
             subtitle: "Modelo del vehículo",
             value: vehicle.model
@@ -66,37 +66,54 @@ class OrderDetails extends React.Component<MyProps, MyState> {
             value: vehicle.registration
         }]) : shipperData;
 
-        const DATA = [
+        let DATA = [
             {
-                title: "Direcciones",
+                title: "Detalles del usuario",
                 data: [{
+                    subtitle: 'Nombre',
+                    value: user.name ? user.name : 'Sin definir'
+                }]
+            },
+            {
+                title: "Detalles de la entrega",
+                data: [{
+                    // subtitle: 'Fecha y hora transportista en Origen',
+                    // value: displayDate(originAt)
+                    subtitle: getOrderStatusCurrentTime(order).title,
+                    value: getOrderStatusCurrentTime(order).value,
+                },{
+                    subtitle: 'Método de pago',
+                    // value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`
+                    value: 'Efectivo al momento de finalizado el pedido.'
+                },{
                     subtitle: 'Dirección origen',
                     value: `${originAddress.streetName} ${originAddress.streetNumber} / ${originAddress.doorNumber}`
                 },{
                     subtitle: 'Dirección destino',
                     value: `${destinationAddress.streetName} ${destinationAddress.streetNumber} / ${destinationAddress.doorNumber}`
                 }]
-              },
-              {
-                title: "Detalle de la entrega",
-                data: [{
-                    subtitle: 'Fecha y hora transportista en Origen',
-                    value: displayDate(originAt)
-                },{
-                    subtitle: 'Método de pago',
-                    // value: `...${paymentMethods.find(item => item.id == paymentMethodId).finalNumbers}`
-                    value: '...1234'
-                }]
-              },
-              {
+            },
+            {
                 title: "Detalles del transportista",
                 data: shipperData,
-              },
-              {
+            },
+            {
                 title: "Opciones extra",
                 data: extraOptionsWithData
-              }
+            }
         ]
+        if (status == statusOrder.COMPLETED) {
+            DATA = DATA.concat({
+                title: 'Calificación del usuario',
+                data: [{
+                    subtitle: 'Puntuación',
+                    value: order.rating + ' / 5'
+                },{
+                    subtitle: 'Puntuación',
+                    value: order.comments
+                }]
+            })
+        }
         this.setState({
             data: DATA,
         });
@@ -145,7 +162,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
                 hours: Math.trunc(diff / 60 / 60),
                 minutes: Math.trunc((diff / 60) % 60),
                 totalPricePerHour: Math.round(((pricePerHour + extraOptionsDynamicTotalPrice) * diff / 60 / 60) * 100) / 100,
-                finalPrice: (Math.round((pricePerHour * diff / 60 / 60) * 100) / 100) + fixedPrice,
+                finalPrice: (Math.round(((pricePerHour + extraOptionsDynamicTotalPrice) * diff / 60 / 60) * 100) / 100) + fixedPrice,
             });
         }
     }

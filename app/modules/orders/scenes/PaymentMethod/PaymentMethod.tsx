@@ -11,6 +11,7 @@ const { getPaymentMethod, createPaymentMethod } = users;
 import styles from './styles';
 import { showToast, showToastLoading } from '../../../../components/Toast';
 import SlidingPanelCreatePaymentMethod from '../../components/SlidingPanelCreatePaymentMethod';
+import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     getPaymentMethod: (successCB, errorCB) => void,
@@ -23,14 +24,15 @@ type MyProps = {
 }
 type paymentMethod = {
     id: number,
-    finalNumbers: number,
-    exp: string,
+    type: string,
+    text: string,
     default: boolean,
     selected: boolean,
 }
 type MyState = {
     error: string,
     isLoading: boolean,
+    visibleModal: boolean,
     paymentMethodSelected: paymentMethod[],
 }
 class PaymentMethod extends React.Component<MyProps, MyState> {
@@ -43,6 +45,7 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             isLoading: true,
+            visibleModal: false,
             paymentMethodSelected: []
         };
     }
@@ -94,11 +97,12 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
     };
 
     render() {
-        const { paymentMethodSelected } = this.state;
+        const { paymentMethodSelected, visibleModal } = this.state;
         const { isLoading } = this.props;
 
         return (
             <View style={styles.container}>
+                <CustomModal onClose={() => this.setState({ visibleModal: false })} visible={visibleModal} message='Por ahora no se pueden crear nuevos metodos de pago, unicamente es posible en efectivo.' />
                 <FlatList
                     data={paymentMethodSelected}
                     renderItem={({item}) =>
@@ -110,12 +114,13 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
                                 <Image
                                     style={{ width: 50, height: 50, marginHorizontal: 15, borderWidth: 0.3 }} 
                                     resizeMode='contain'
-                                    source={item.id % 2 == 0 
-                                        ? require('../../../../../assets/visa.png')
+                                    source={item.type == 'cash' 
+                                        ? require('../../../../../assets/cash.png')
+                                        // ? require('../../../../../assets/visa.png')
                                         : require('../../../../../assets/mastercard.png')} />
                                 <View style={{ flex: 1, flexDirection: 'column' }}>
-                                    <Text>Últimos números de la tarjeta:</Text>
-                                    <Text>...{item.finalNumbers}</Text>
+                                    <Text>{item.text}</Text>
+                                    {/* <Text>...{item.finalNumbers}</Text> */}
                                 </View>
                                 
                             </Body>
@@ -128,7 +133,8 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
                                 bordered
                                 // @ts-ignore
                                 style={{ flex: 1, marginHorizontal: 40, justifyContent: 'center' }}
-                                onPress={() => this.sidingPanelCreatePaymentMethodOpen()}>
+                                // onPress={() => this.sidingPanelCreatePaymentMethodOpen()}>
+                                onPress={() => this.setState({ visibleModal: true })}>
                                     <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
                                         Crear uno nuevo
                                     </Text>

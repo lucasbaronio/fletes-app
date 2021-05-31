@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
   slidingUpPanel: {
     zIndex: 10, 
-    elevation: 10, 
+    elevation: 21, 
     borderTopLeftRadius: 30, 
     borderTopRightRadius: 30
   },

@@ -23,5 +23,5 @@ export const ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_1 = 'Complete los dato
 export const ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_2 = 'Y a continuación levante este panel hacia arriba.';
 
 export const ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1 = 'Capacidad de carga:';
-export const ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2 = 'Caja Abierta/Cerrada:';
+export const ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2 = 'Caja:';
 export const ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 = 'Opciones Extra:';

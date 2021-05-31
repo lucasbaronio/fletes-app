@@ -31,22 +31,22 @@ export const getPaymentMethod = async (callback) => {
             paymentMethods: [
                 {
                     id: 100001,
-                    finalNumbers: 1234,
-                    exp: '05/23',
+                    type: 'cash',
+                    text: 'Efectivo',
                     default: true,
                 },
-                {
-                    id: 100001,
-                    finalNumbers: 4321,
-                    exp: '01/22',
-                    default: false,
-                },
-                {
-                    id: 100001,
-                    finalNumbers: 6789,
-                    exp: '09/24',
-                    default: false,
-                }
+                // {
+                //     id: 100001,
+                //     finalNumbers: 4321,
+                //     exp: '01/22',
+                //     default: false,
+                // },
+                // {
+                //     id: 100001,
+                //     finalNumbers: 6789,
+                //     exp: '09/24',
+                //     default: false,
+                // }
             ]
         }
     }

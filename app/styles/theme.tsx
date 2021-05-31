@@ -32,6 +32,14 @@ const color = {
     translucent: 'rgba(255, 255, 255, 0.5)',
 }
 
+const screenSize = {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+}
+console.log('width', screenSize.width)
+console.log('height', screenSize.height)
+const isLargeScreen = screenSize.width >= 768;
+
 const fontSize = {
     XXS: 8,
     XS: 12,
@@ -41,6 +49,15 @@ const fontSize = {
     XL: 24,
     XXL: 30,
 }
+// const fontSize = {
+//     XXS: screenSize.width * 0.01,
+//     XS: screenSize.width * 0.02,
+//     S: screenSize.width * 0.025,
+//     M: screenSize.width * 0.03,
+//     L: screenSize.width * 0.04,
+//     XL: screenSize.width * 0.06,
+//     XXL: screenSize.width * 0.09,
+// }
 
 enum fontWeight {
     XS = '300',
@@ -72,12 +89,6 @@ const iconSize = {
 const isiOS = Platform.OS === 'ios';
 
 const navbarHeight = isiOS ? 64 : 54;
-const screenSize = {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-}
-
-const isLargeScreen = screenSize.width >= 768;
 
 const statusBarHeight = Constants.statusBarHeight;
 

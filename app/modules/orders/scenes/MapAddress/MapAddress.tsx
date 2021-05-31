@@ -86,7 +86,8 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
         //     console.log('Permiso de uicación no es del tipo \'always\'');
         // }
 
-        let location = await Location.getCurrentPositionAsync({})
+        let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High })
+        console.log(location);
         let currentLocation = {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -200,7 +201,7 @@ class MapAddressDestination extends React.Component<MyProps, MyState> {
                     showsCompass={true}
                     rotateEnabled={true}
                     showsUserLocation={true}
-                    showsTraffic={true}
+                    showsTraffic={false}
                     userLocationAnnotationTitle={'Mi ubicación'}
                     ref={(map) => {this.map = map}}
                     style={styles.mapStyle} >

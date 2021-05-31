@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import Constants from 'expo-constants';
-import { screenSize, color, fontWeight } from '../../../../styles/theme';
+// import Constants from 'expo-constants';
+import { screenSize, color, fontWeight, isiOS, navbarHeight } from '../../../../styles/theme';
 
 export const styles = StyleSheet.create({
     container: {
@@ -61,14 +61,14 @@ export const styles = StyleSheet.create({
     },
     floatText: {
       zIndex: 9,
-      elevation: 7,
+      elevation: 20,
 
       position: 'absolute',
       flexDirection: 'row',
       width: (screenSize.width-40),
-      top: Constants.statusBarHeight + 50,
+      top: navbarHeight + 50,
       left: 20,
-      backgroundColor: color.translucent,
+      backgroundColor: isiOS ? color.translucent : color.white.white,
       // opacity: 1,
       alignItems: 'center',
       // shadowColor: '#000000',
@@ -80,7 +80,7 @@ export const styles = StyleSheet.create({
     },
     mylocation: {
       zIndex: 9,
-      elevation: 7,
+      elevation: 20,
 
       position: 'absolute',
       width: 45,
@@ -88,7 +88,7 @@ export const styles = StyleSheet.create({
       borderRadius: 50,
       left: screenSize.width-70,
       bottom: screenSize.height * 0.2,
-      backgroundColor: color.translucent,
+      backgroundColor: isiOS ? color.translucent : color.white.white,
       // opacity: 1,
       alignItems: 'center',
       // shadowColor: '#000000',

@@ -35,7 +35,8 @@ type MyState = {
     visibleModal: boolean,
     visibleActiveModal: boolean,
     activeModalMsg: string,
-    visibleTextModal: boolean
+    visibleTextModal: boolean,
+    changeTextModal: boolean,
 }
 class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -46,6 +47,7 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
             visibleActiveModal: false,
             activeModalMsg: '',
             visibleTextModal: false,
+            changeTextModal: false,
         };
     }
 
@@ -98,7 +100,7 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     onCancelTextModal = () => {
-        this.setState({ visibleTextModal: false });
+        this.setState({ visibleTextModal: false, changeTextModal: false });
     }
 
     onAcceptActiveModal = () => {
@@ -108,9 +110,12 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     onAcceptTextModal = (comments) => {
-        const { setOrderComments } = this.props;
-        this.setState({ visibleTextModal: false });
-        setOrderComments(comments, () => {});
+        const { changeTextModal } = this.state;
+        if (changeTextModal) {
+            const { setOrderComments } = this.props;
+            setOrderComments(comments, () => {});
+        }
+        this.setState({ visibleTextModal: false, changeTextModal: false });
     }
 
     getMidPointCoords = (coordsA, coordsB) => {
@@ -135,27 +140,15 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { error, visibleModal, visibleActiveModal, activeModalMsg, visibleTextModal } = this.state;
+        const { error, visibleModal, visibleActiveModal, activeModalMsg, visibleTextModal, changeTextModal } = this.state;
         const { order, isLoading, setOrderRating } = this.props;
         const { originAddress, destinationAddress, status, comments } = order;
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <ActionModal message={activeModalMsg} visible={visibleActiveModal} onCancel={this.onCancelActiveModal} onAccept={this.onAcceptActiveModal}/>
-                <TextModal title='Comentarios finales' textArea={comments} visible={visibleTextModal} onCancel={this.onCancelTextModal} onAccept={this.onAcceptTextModal}/>
+                <TextModal title='Comentarios finales' textArea={comments} editable={changeTextModal} visible={visibleTextModal} onCancel={this.onCancelTextModal} onAccept={this.onAcceptTextModal}/>
                 {/* <StatusBar style="dark" /> */}
-                {/* <View style={styles.floatText}>
-                    <Text style={{ textAlign: 'center' }}>
-                        {ORDERS_SCENES_MAP_ADDRESS_TITLE}
-                    </Text>
-                </View>
-                <View style={styles.mylocation}>
-                    <MaterialIcons 
-                        name='my-location'
-                        color={color.black.black}
-                        size={iconSize.XL}
-                        onPress={() => { this.centrateMap() }} />
-                </View> */}
                 <MapView 
                     showsMyLocationButton={false}
                     showsPointsOfInterest={false}
@@ -202,8 +195,8 @@ class MapUserOrderDetails extends React.Component<MyProps, MyState> {
                     setOrderRating={setOrderRating}
                     order={order}
                     textButton={getOrderStatusTextButtonUser(status)}
-                    onPressComments={() => {
-                        this.setState({ visibleTextModal: true })
+                    onPressComments={(change) => {
+                        this.setState({ visibleTextModal: true, changeTextModal: change })
                     }}
                     onPress={this.onPress} />
             </SafeAreaView>

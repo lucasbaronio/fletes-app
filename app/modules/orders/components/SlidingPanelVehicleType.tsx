@@ -40,6 +40,7 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
   const [vehicleType, setVehicleType] = useState({
     name: '',
     open: false,
+    loadCapacity: '',
     pricePerHour: 0,
     vehicleTypeId: 0,
   });
@@ -86,9 +87,9 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
 	}, [panelPositionVal]);
 
   const getVehicleTypeImage = (name) => {
-    if (name == 'chico') {
+    if (name == 'Chico') {
         return small;
-    } else if (name == 'mediano') {
+    } else if (name == 'Mediano') {
         return regular;
     } else {
         return big;
@@ -148,11 +149,11 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
           <View style={styles.moreVehicleTypeInfo}>
             <View style={styles.moreVehicleTypeInfoItem}>
               <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1}</Text>
-              <Text style={{ fontSize: fontSize.XL }}>600 Kg</Text>
+              <Text style={{ fontSize: fontSize.L }}>{vehicleType.loadCapacity}</Text>
             </View>
             <View style={styles.moreVehicleTypeInfoItem}>
               <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2}</Text>
-              <Text style={{ fontSize: fontSize.XL }}>{vehicleType.open}pepe</Text>
+              <Text style={{ fontSize: fontSize.L }}>{vehicleType.open ? 'Abierta' : 'Cerrada'}</Text>
             </View>
           </View>
           <View style={styles.extraOptionsVehicleType}>
@@ -165,9 +166,9 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
                   key={extra.orderAvailableExtraOptionId}
                   onPress={() => onAddOrRemoveExtraOption(extra)}>
                   <CheckBox checked={extra.selected} />
-                  <View style={styles.listItemExtraOptionsVehicleType}>
+                  <View style={[styles.listItemExtraOptionsVehicleType, !isiOS && { marginLeft: 10 }]}>
                     <View style={{ flex: .6 }}>
-                      <Text>{extra.text}:</Text>
+                      <Text>{extra.text}</Text>
                     </View>
                     <View style={{ flex: .4 }}>
                       {
@@ -266,7 +267,8 @@ const styles = StyleSheet.create({
   listItemExtraOptionsVehicleType: {
     flexDirection: 'row', 
     justifyContent: 'space-between', 
-    alignItems: 'center'
+    alignItems: 'center',
+    // marginLeft: 3,
   },
   containerbutton: {
     zIndex: 9,
