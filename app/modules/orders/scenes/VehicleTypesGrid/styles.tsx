@@ -14,9 +14,10 @@ export const styles = StyleSheet.create({
       flex: .9,
     },
     itemContainer: {
-      justifyContent: 'flex-end',
+      justifyContent: 'flex-start',
       padding: 10,
-      height: 150,
+      minHeight: 170,
+      // height: 180,
       shadowColor: color.black.black,
       borderRadius: 5,
       zIndex: 9,
@@ -28,10 +29,10 @@ export const styles = StyleSheet.create({
     itemName: {
       fontSize: fontSize.M,
       color: color.black.black,
-      fontWeight: fontWeight.L,
+      fontWeight: fontWeight.M,
     },
     itemCode: {
-      fontWeight: fontWeight.L,
+      fontWeight: fontWeight.M,
       fontSize: fontSize.S,
       color: color.black.black,
     },

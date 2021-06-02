@@ -65,9 +65,9 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
     }
 
     getVehicleTypeImage = (name) => {
-        if (name == 'chico') {
+        if (name == 'Chico') {
             return small;
-        } else if (name == 'mediano') {
+        } else if (name == 'Mediano') {
             return regular;
         } else {
             return big;
@@ -80,14 +80,15 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
         return (
             <View style={styles.container}>
                 <FlatGrid
-                    keyExtractor={(item, rowItemIndex) => rowItemIndex.toString()}
-                    // keyExtractor={item => item.vehicleTypeId}
+                    // keyExtractor={(item, rowItemIndex) => rowItemIndex.toString()}
+                    keyExtractor={item => item.vehicleTypeId}
                     itemDimension={130}
                     data={vehicleTypes}
                     style={styles.gridView}
                     spacing={10}
                     renderItem={({ item }) => (
                         <TouchableOpacity 
+                            key={item.vehicleTypeId}
                             onPress={() => { this.slidingPanelVehicleType(item) }}
                             style={styles.itemContainer}>
                             <Image 

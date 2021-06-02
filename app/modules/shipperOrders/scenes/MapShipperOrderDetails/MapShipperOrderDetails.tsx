@@ -26,6 +26,7 @@ import { getOrderStatusSuccessText, getOrderStatusTextButtonShipper, statusOrder
 import SlidingPanelShipperOrderDetails from '../../components/SlidingPanelShipperOrderDetails';
 import CustomModal from '../../../../components/CustomModal';
 import ActionModal from '../../../shared/ActionModal/ActionModal';
+import TextModal from '../../../shared/TextModal/TextModal';
 
 // const GEOFENCING_ORIGIN = 'GEOFENCING_ORIGIN_TASK';
 // const GEOFENCING_DESTINATION = 'GEOFENCING_DESTINATION_TASK';
@@ -49,6 +50,7 @@ type MyState = {
     visibleModal: boolean,
     visibleActiveModal: boolean,
     activeModalMsg: string,
+    visibleTextModal: boolean,
 }
 class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -58,6 +60,7 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
             visibleModal: false,
             visibleActiveModal: false,
             activeModalMsg: '',
+            visibleTextModal: false,
         };
     }
 
@@ -187,21 +190,30 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
         this.setState({ visibleActiveModal: false, activeModalMsg: '' });
     }
 
+    onCancelTextModal = () => {
+        this.setState({ visibleTextModal: false });
+    }
+
     onAcceptActiveModal = () => {
         const { order, changeOrderStatusCanceled } = this.props;
         this.setState({ visibleActiveModal: false, activeModalMsg: '' });
         changeOrderStatusCanceled(order.orderId, this.onSuccess, this.onError);
     }
 
+    onAcceptTextModal = (comments) => {
+        this.setState({ visibleTextModal: false });
+    }
+
     render() {
-        const { error, visibleModal, visibleActiveModal, activeModalMsg } = this.state;
+        const { error, visibleModal, visibleActiveModal, activeModalMsg, visibleTextModal } = this.state;
         const { order, isLoading, setShipperArrivesAtDestinationAt, setShipperArrivesAtOriginAt, } = this.props;
-        const { originAddress, destinationAddress, status } = order;
+        const { originAddress, destinationAddress, status, comments } = order;
         return (
             <SafeAreaView style={styles.container}>
                 {/* <StatusBar style="dark" /> */}
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <ActionModal message={activeModalMsg} visible={visibleActiveModal} onCancel={this.onCancelActiveModal} onAccept={this.onAcceptActiveModal}/>
+                <TextModal title='Comentarios finales' textArea={comments} editable={false} visible={visibleTextModal} onCancel={this.onCancelTextModal} onAccept={this.onAcceptTextModal}/>
                 {/* <View style={styles.floatText}>
                     <Text style={{ textAlign: 'center' }}>
                         {ORDERS_SCENES_MAP_ADDRESS_TITLE}
@@ -262,6 +274,9 @@ class MapShipperOrderDetails extends React.Component<MyProps, MyState> {
                     order={order}
                     vehicleSelected={order.vehicle}
                     textButton={getOrderStatusTextButtonShipper(status)}
+                    onPressComments={(change) => {
+                        this.setState({ visibleTextModal: true })
+                    }}
                     onPress={this.onPress} />
             </SafeAreaView>
         );

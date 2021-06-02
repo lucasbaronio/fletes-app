@@ -255,8 +255,8 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
           </View>
           <View style={styles.separator}></View>
           {
-            order.shipper && order.status != statusOrder.PENDING && 
-            order.status != statusOrder.COMPLETED &&
+            order.status != statusOrder.PENDING && 
+            order.status != statusOrder.COMPLETED && order.shipper.name &&
             <><View style={styles.shipperContainer}>
               <View>
                 <Text style={styles.titleText}>
@@ -303,7 +303,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
               </TouchableOpacity>
             </View>
           </View>
-          {
+          {/* {
             ((order.status == statusOrder.TO_ORIGIN && order.shipperArrivesAtOriginAt) || 
             (order.status == statusOrder.TO_DESTINATION && order.shipperArrivesAtDestinationAt)) &&
             <><View style={styles.separator}></View>
@@ -325,7 +325,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                     }</>
                 }
             </View></>
-          }
+          } */}
           {
             ((order.status == statusOrder.COMPLETE_PENDING) || (order.status == statusOrder.COMPLETED)) &&
             <><View style={styles.separator}></View>
@@ -341,28 +341,28 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                   color="gold" />
                 <AntDesign 
                   onPress={() => 
-                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(2,() => {})
                   } 
                   name={order.rating > 1 ? "star" : "staro" } 
                   size={iconSize.XXL} 
                   color="gold" />
                 <AntDesign 
                   onPress={() => 
-                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(3,() => {})
                   } 
                   name={order.rating > 2 ? "star" : "staro" } 
                   size={iconSize.XXL} 
                   color="gold" />
                 <AntDesign 
                   onPress={() => 
-                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(4,() => {})
                   } 
                   name={order.rating > 3 ? "star" : "staro" } 
                   size={iconSize.XXL} 
                   color="gold" />
                 <AntDesign 
                   onPress={() => 
-                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(1,() => {})
+                    (order.status == statusOrder.COMPLETE_PENDING) && setOrderRating(5,() => {})
                   } 
                   name={order.rating > 4 ? "star" : "staro" } 
                   size={iconSize.XXL} 
@@ -383,13 +383,13 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                   order.status == statusOrder.COMPLETE_PENDING 
                   ? <Pressable
                     style={styles.orderSelectButton}
-                    onPress={onPressComments} >
+                    onPress={() => onPressComments(true)} >
                     <Text style={[styles.buttonText, styles.text4]}>Cambiar</Text>
                   </Pressable>
                   :
                   <Pressable
                     style={styles.orderSelectButton}
-                    onPress={onPressComments} >
+                    onPress={() => onPressComments(false)} >
                     <Text style={[styles.buttonText, styles.text4]}>Ver mas</Text>
                   </Pressable>
                 }

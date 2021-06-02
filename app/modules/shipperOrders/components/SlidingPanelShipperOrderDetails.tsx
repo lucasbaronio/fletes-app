@@ -18,6 +18,7 @@ import PickerModal from '../../shared/PickerModal/PickerModal';
 
 type MyProps = {
   onPress: (index) => void,
+  onPressComments: (edit) => void,
   order: any,
   textButton: string[],
   vehicleSelected: any,
@@ -25,7 +26,7 @@ type MyProps = {
   onSetArrivesAtDestination: any,
   isLoading: boolean,
 }
-const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, order, isLoading, textButton, vehicleSelected, onSetArrivesAtOrigin, onSetArrivesAtDestination }) => {
+const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onPress, onPressComments, order, isLoading, textButton, vehicleSelected, onSetArrivesAtOrigin, onSetArrivesAtDestination }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
 
@@ -388,6 +389,24 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
                 <AntDesign name={order.rating > 3 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
                 <AntDesign name={order.rating > 4 ? "star" : "staro" } size={iconSize.XXL} color="gold" />
               </View>
+            </View>
+            <View style={[styles.separator, styles.separatorLong]}></View>
+            <View style={styles.orderSelectContainer}>
+              <View style={styles.orderSelectTitleContainer}>
+                <Text style={styles.titleText}>Comentarios finales</Text>
+                {
+                  order.comments && 
+                  <Text style={styles.text3}>{order.comments.replace(/\n|\r/g, " ").substring(0,30)}...</Text>
+                }
+              </View>
+              <View style={styles.orderSelectButtonContainer}>
+                  <Pressable
+                    style={styles.orderSelectButton}
+                    onPress={() => onPressComments(false)} >
+                    <Text style={[styles.buttonText, styles.text4]}>Ver mas</Text>
+                  </Pressable>
+              </View>
+              
             </View></>
           }
           <View style={[styles.separator, styles.separatorLong]}></View>

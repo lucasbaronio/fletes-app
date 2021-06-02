@@ -109,7 +109,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
                     subtitle: 'Puntuación',
                     value: order.rating + ' / 5'
                 },{
-                    subtitle: 'Puntuación',
+                    subtitle: 'Comentarios del usuario',
                     value: order.comments
                 }]
             })
