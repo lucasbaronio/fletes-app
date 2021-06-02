@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, SafeAreaView, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, SafeAreaView, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
@@ -8,6 +8,7 @@ import * as Location from "expo-location";
 import { actions as shipperOrders } from "../../index";
 const { setShipperOrderSelected, getActiveOrdersShipper } = shipperOrders;
 
+// import { API_LIST_REQUEST_SIZE } from '../../../../config/constants';
 import styles from './styles';
 import { currentDate, dateToFrontend, displayDate } from '../../utils/utils';
 import MapViewDirections from 'react-native-maps-directions';
@@ -20,7 +21,7 @@ import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     setShipperOrderSelected: (order, successCB) => void,
-    getActiveOrdersShipper: (successCB, errorCB) => void,
+    getActiveOrdersShipper: (page, successCB, errorCB) => void,
     activeOrders: any,
     isLoading: boolean,
     navigation: any,
@@ -28,6 +29,8 @@ type MyProps = {
 type MyState = {
     error: string,
     visibleModal: boolean,
+    page: number,
+    onEndReachedCalledDuringMomentum: boolean,
 }
 class ActiveShipperOrders extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -35,13 +38,16 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             visibleModal: false,
+            page: 1,
+            onEndReachedCalledDuringMomentum: false,
         };
     }
 
     async componentDidMount() {
         await this.requestPermissions();
         const { getActiveOrdersShipper } = this.props; 
-        getActiveOrdersShipper(() => {}, this.onError);
+        const { page } = this.state;
+        getActiveOrdersShipper(page, () => {}, this.onError);
     }
 
     requestPermissions = async () => {
@@ -124,12 +130,31 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { error, visibleModal } = this.state;
+        const { error, visibleModal, onEndReachedCalledDuringMomentum, page } = this.state;
         const { isLoading, activeOrders, getActiveOrdersShipper } = this.props;
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <FlatList
+                    onEndReachedThreshold={0.01}
+                    onEndReached={() => {
+                        if (!onEndReachedCalledDuringMomentum) {
+                            this.setState({
+                                page: page + 1
+                            }, () => getActiveOrdersShipper(page, () => {}, this.onError))
+                            this.setState({ onEndReachedCalledDuringMomentum: true })
+                        }
+                    }}
+                    onMomentumScrollBegin={() => this.setState({ onEndReachedCalledDuringMomentum: false })}
+                    ListFooterComponent={() => {
+                        if (isLoading && page != 1) {
+                            return (
+                                <View style={{ flex: 1, marginVertical: 20 }}>
+                                    <ActivityIndicator size="small" />
+                                </View>
+                            )
+                        } else return null
+                    }}
                     ListEmptyComponent={
                         <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
                             <Text style={{ textAlign: 'center' }}>No se encontraron Pedidos Activos, desliza hacia abajo para actualizar</Text>
@@ -143,8 +168,12 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
                         <RefreshControl
                             colors={[color.black.black]}
                             tintColor={color.black.black}
-                            refreshing={isLoading}
-                            onRefresh={() => getActiveOrdersShipper(() => {}, this.onError)}
+                            refreshing={isLoading && page == 1}
+                            onRefresh={() => {
+                                this.setState({
+                                    page: 1
+                                }, () => getActiveOrdersShipper(page, () => {}, this.onError))
+                            }}
                         />
                     }
                     renderItem={({ item }) => {

@@ -20,19 +20,19 @@ export const getOrdersInfo = async (callback) => {
     get(API_ORDERS_INFO, header, callback);
 }
 
-export const getOrdersPendingShipper = async (callback) => {
+export const getOrdersPendingShipper = async (page, callback) => {
     const header = await getHeaderToken();
-    get(API_ORDERS_PENDING_SHIPPER, header, callback);
+    get(API_ORDERS_PENDING_SHIPPER(page), header, callback);
 }
 
-export const getActiveOrdersShipper = async (callback) => {
+export const getActiveOrdersShipper = async (page, callback) => {
     const header = await getHeaderToken();
-    get(API_ORDERS_ACTIVE, header, callback);
+    get(API_ORDERS_ACTIVE(page), header, callback);
 }
 
-export const getHistoryOrdersShipper = async (callback) => {
+export const getHistoryOrdersShipper = async (page, callback) => {
     const header = await getHeaderToken();
-    get(API_ORDERS_HISTORY, header, callback);
+    get(API_ORDERS_HISTORY(page), header, callback);
 }
 
 export const createOrder = async (createOrder, callback) => {

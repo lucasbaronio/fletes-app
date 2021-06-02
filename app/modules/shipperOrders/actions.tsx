@@ -40,10 +40,10 @@ export const getOrderShipper = (orderId, successCB, errorCB) => {
     };
 }
 
-export const getOrdersPendingShipper = (successCB, errorCB) => {
+export const getOrdersPendingShipper = (page, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.getOrdersPendingShipper((isSuccess, response, error) => {
+        api.getOrdersPendingShipper(page, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
@@ -60,10 +60,10 @@ export const getOrdersPendingShipper = (successCB, errorCB) => {
     };
 }
 
-export const getActiveOrdersShipper = (successCB, errorCB) => {
+export const getActiveOrdersShipper = (page, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.getActiveOrdersShipper((isSuccess, response, error) => {
+        api.getActiveOrdersShipper(page, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
@@ -80,10 +80,10 @@ export const getActiveOrdersShipper = (successCB, errorCB) => {
     };
 }
 
-export const getHistoryOrdersShipper = (successCB, errorCB) => {
+export const getHistoryOrdersShipper = (page, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.getHistoryOrdersShipper((isSuccess, response, error) => {
+        api.getHistoryOrdersShipper(page, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;

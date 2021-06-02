@@ -36,10 +36,10 @@ export const getOrderUser = (orderId, successCB, errorCB) => {
     };
 }
 
-export const getActiveOrdersUser = (successCB, errorCB) => {
+export const getActiveOrdersUser = (page, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.getActiveOrders((isSuccess, response, error) => {
+        api.getActiveOrders(page, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
@@ -56,10 +56,10 @@ export const getActiveOrdersUser = (successCB, errorCB) => {
     };
 }
 
-export const getHistoryOrdersUser = (successCB, errorCB) => {
+export const getHistoryOrdersUser = (page, successCB, errorCB) => {
     return (dispatch) => {
         dispatch({type: t.LOADING});
-        api.getHistoryOrdersUser((isSuccess, response, error) => {
+        api.getHistoryOrdersUser(page, (isSuccess, response, error) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;

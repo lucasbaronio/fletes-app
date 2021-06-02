@@ -2,6 +2,7 @@
 export const API_KEY_GOOGLE = 'AIzaSyAyv9pHdOrn__bmpDQbVXL41Hg6725qJmk';
 
 export const API = 'http://baronio.ddns.net:29832/v1';
+export const API_LIST_REQUEST_SIZE = 10;
 
 export const API_AUTH = `${API}/auth`;
 export const API_AUTH_LOG_IN = `${API_AUTH}`;
@@ -22,10 +23,9 @@ export const API_ORDERS = `${API}/orders`;
 export const API_ORDER = (orderId) => `${API_ORDERS}?orderId=${orderId}`;
 export const API_ORDERS_INFO = `${API}/orders/info`;
 
-export const API_ORDERS_ACTIVE = `${API_ORDERS}/mine/active`;
-export const API_ORDERS_HISTORY = `${API_ORDERS}/mine/history`;
-export const API_ORDERS_PENDING_SHIPPER = `${API_ORDERS}/shippers/pending`;
-// export const API_ORDERS_ACTIVE_SHIPPER = `${API_ORDERS}/shippers/active`;
+export const API_ORDERS_ACTIVE = (page) => `${API_ORDERS}/mine/active?page=${page}&size=${API_LIST_REQUEST_SIZE}`;
+export const API_ORDERS_HISTORY = (page) => `${API_ORDERS}/mine/history?page=${page}&size=${API_LIST_REQUEST_SIZE}`;
+export const API_ORDERS_PENDING_SHIPPER = (page) => `${API_ORDERS}/shippers/pending?page=${page}&size=${API_LIST_REQUEST_SIZE}`;
 
 export const API_ORDER_ACCEPTED = (orderId) => `${API_ORDERS}/status/${orderId}/accepted`;
 export const API_ORDER_CANCELED = (orderId) => `${API_ORDERS}/status/${orderId}/canceled`;

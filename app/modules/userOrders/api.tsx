@@ -13,14 +13,14 @@ export const getOrder = async (orderId, callback) => {
     get(API_ORDER(orderId), header, callback);
 }
 
-export const getActiveOrders = async (callback) => {
+export const getActiveOrders = async (page, callback) => {
     const header = await getHeaderToken();
-    get(API_ORDERS_ACTIVE, header, callback);
+    get(API_ORDERS_ACTIVE(page), header, callback);
 }
 
-export const getHistoryOrdersUser = async (callback) => {
+export const getHistoryOrdersUser = async (page, callback) => {
     const header = await getHeaderToken();
-    get(API_ORDERS_HISTORY, header, callback);
+    get(API_ORDERS_HISTORY(page), header, callback);
 }
 
 export const orderStatusCanceled = async (orderId, callback) => {

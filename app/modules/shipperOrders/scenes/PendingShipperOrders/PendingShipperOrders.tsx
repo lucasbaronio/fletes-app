@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, SafeAreaView, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, SafeAreaView, FlatList, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
 import { Text } from 'native-base';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from "expo-location";
@@ -20,7 +20,7 @@ import CustomModal from '../../../../components/CustomModal';
 
 type MyProps = {
     setShipperOrderSelected: (order, successCB) => void,
-    getOrdersPendingShipper: (successCB, errorCB) => void,
+    getOrdersPendingShipper: (page, successCB, errorCB) => void,
     pendingOrders: any,
     isLoading: boolean,
     navigation: any,
@@ -28,6 +28,8 @@ type MyProps = {
 type MyState = {
     error: string,
     visibleModal: boolean,
+    onEndReachedCalledDuringMomentum: boolean,
+    page: number,
 }
 class PendingShipperOrders extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -35,12 +37,15 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             visibleModal: false,
+            onEndReachedCalledDuringMomentum: false,
+            page: 1,
         };
     }
 
     async componentDidMount() {
         const { getOrdersPendingShipper } = this.props; 
-        getOrdersPendingShipper(() => {}, this.onError);
+        const { page } = this.state;
+        getOrdersPendingShipper(page, () => {}, this.onError);
         await this.requestPermissions();
     }
 
@@ -99,12 +104,31 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { error, visibleModal } = this.state;
+        const { error, visibleModal, onEndReachedCalledDuringMomentum, page } = this.state;
         const { isLoading, pendingOrders, getOrdersPendingShipper } = this.props;
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                 <FlatList
+                    onEndReachedThreshold={0.01}
+                    onEndReached={() => {
+                        if (!onEndReachedCalledDuringMomentum) {
+                            this.setState({
+                                page: page + 1
+                            }, () => getOrdersPendingShipper(page, () => {}, this.onError))
+                            this.setState({ onEndReachedCalledDuringMomentum: true })
+                        }
+                    }}
+                    onMomentumScrollBegin={() => this.setState({ onEndReachedCalledDuringMomentum: false })}
+                    ListFooterComponent={() => {
+                        if (isLoading && page != 1) {
+                            return (
+                                <View style={{ flex: 1, marginVertical: 20 }}>
+                                    <ActivityIndicator size="small" />
+                                </View>
+                            )
+                        } else return null
+                    }}
                     ListEmptyComponent={
                         <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
                             <Text style={{ textAlign: 'center' }}>No se encontraron nuevos pedidos, desliza hacia abajo para actualizar</Text>
@@ -117,8 +141,12 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
                         <RefreshControl
                             colors={[color.black.black]}
                             tintColor={color.black.black}
-                            refreshing={isLoading}
-                            onRefresh={() => getOrdersPendingShipper(() => {}, this.onError)}
+                            refreshing={isLoading && page == 1}
+                            onRefresh={() => {
+                                this.setState({
+                                    page: 1
+                                }, () => getOrdersPendingShipper(page, () => {}, this.onError))
+                            }}
                         />
                     }
                     renderItem={({ item }) => {
