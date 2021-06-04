@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Image, ActivityIndicator } from 'react-native';
+import { View, Image, ActivityIndicator, Pressable } from 'react-native';
 import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinner } from 'native-base';
 
 import { actions as auth } from "../../index";
@@ -13,6 +13,8 @@ import {
     ERROR_INCORRECT_MOBILE_NUMBER 
 } from '../../../../config/strings';
 import CustomModal from '../../../../components/CustomModal';
+import { color } from '../../../../styles/theme';
+import styles from './styles';
 
 type MyProps = {
     login: (data, onSuccess, onError) => void,
@@ -99,8 +101,10 @@ class Login extends React.Component<MyProps, MyState> {
                 >
                     <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                     <View style={{ alignItems: 'center', margin: 40 }}>
-                        <Image style={{ height: 180, width: 350 }} resizeMode='cover' source={require('../../../../../assets/fletes_icon.png')}/>
-                        <Text style={{ color: '#000', fontWeight: 'bold', fontSize: 30 }}>FletesApp</Text>
+                        <Image 
+                            style={{ width: '100%', height: 200 }} 
+                            resizeMode='cover' 
+                            source={require('../../../../../assets/fletesapp_icon.jpeg')}/>
                     </View>
 
                     <Form style={{ paddingHorizontal: 20 }}>
@@ -132,28 +136,27 @@ class Login extends React.Component<MyProps, MyState> {
                         <View style={{ flex: 1, flexDirection: 'row', justifyContent: "flex-end" }}>
                             <Text onPress={this.onForgotPassword}>Has olvidado la contraseña?</Text>
                         </View>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10, paddingVertical: 10 }}>
-                            <Button 
-                                // @ts-ignore
-                                disable={isLoading}
-                                style={{ flex: 1, flexDirection: 'row', justifyContent: "center", paddingVertical: 20 }}
+                        <View style={[styles.rowContainer, { marginVertical: 10, paddingVertical: 10 }]}>
+                            <Pressable 
+                                disabled={isLoading}
+                                style={[styles.rowContainer, styles.button]}
                                 onPress={this.onSubmit}>
                                 {
                                     isLoading ?
                                     <ActivityIndicator />
                                     :
-                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
+                                    <Text style={styles.textButton}>
                                         Iniciar Sesión
                                     </Text>
                                 }
-                            </Button>
+                            </Pressable>
                         </View>
                     </Form>
 
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}>
+                    <View style={styles.rowContainer}>
                         <Text>No tienes una cuenta? </Text>
                         <Text 
-                            style={{ color: 'blue' }} 
+                            style={{ color: color.primary.dark }} 
                             onPress={this.goToRegister}>
                                 Crear cuenta
                         </Text>

@@ -11,6 +11,8 @@ const { setVehicleSelected } = shipperOrders;
 
 import styles from './styles';
 import { FlatGrid } from 'react-native-super-grid';
+import { API_VEHICLES_IMAGE } from '../../../../config/constants';
+import { getHeaderToken } from '../../../security';
 // import SlidingPanelVehicleType from '../../components/SlidingPanelVehicleType';
 
 type MyProps = {
@@ -24,6 +26,7 @@ type MyState = {
     error: string,
     visibleModal: boolean,
     vehicles: any,
+    token: any
 }
 class VehicleSelect extends React.Component<MyProps, MyState> {
 
@@ -33,13 +36,15 @@ class VehicleSelect extends React.Component<MyProps, MyState> {
             error: '',
             visibleModal: false,
             vehicles: [],
+            token: null,
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const { getVehiclesByType, route } = this.props;
         const { vehicleTypeId } = route.params;
-        getVehiclesByType(vehicleTypeId, this.onSuccess, this.onError);
+        const token = await getHeaderToken();
+        this.setState({ token }, () => getVehiclesByType(vehicleTypeId, this.onSuccess, this.onError));
     }
 
     onSuccess = (vehicles) => {
@@ -59,7 +64,7 @@ class VehicleSelect extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { vehicles } = this.state;
+        const { vehicles, token } = this.state;
         const { isLoading } = this.props;
         if (isLoading) {
             return (
@@ -84,8 +89,9 @@ class VehicleSelect extends React.Component<MyProps, MyState> {
                             style={styles.itemContainer}>
                             <Image 
                                 style={styles.itemImage} 
-                                resizeMode='contain'
-                                source={require('../../../../../assets/vehicleType_grande.jpeg')} />
+                                resizeMode='cover'
+                                defaultSource={require('../../../../../assets/default-car.png')}
+                                source={{ uri: API_VEHICLES_IMAGE(item.vehicleId), headers: token }} />
                             <Text style={styles.itemModel}>{item.model}</Text>
                             <Text style={styles.itemRegistration}>{item.registration}</Text>
                         </TouchableOpacity>

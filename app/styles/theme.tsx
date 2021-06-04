@@ -2,6 +2,11 @@ import { Dimensions, Platform } from 'react-native';
 import Constants from 'expo-constants';
 
 const color = {
+    primary: {
+        dark: '#FF8C00',
+        middle: '#FFA500',
+        light: 	'#FFD700'
+    },
     blue: {
         steelBlue: '#4682B4',
         midnightBlue: '#191970',

@@ -93,7 +93,8 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
                             style={styles.itemContainer}>
                             <Image 
                                 style={styles.itemImage} 
-                                resizeMode='contain'
+                                resizeMode='cover'
+                                defaultSource={require('../../../../../assets/default-car.png')}
                                 source={this.getVehicleTypeImage(item.name)} />
                             <Text style={styles.itemName}>{item.name}</Text>
                             <Text style={styles.itemCode}>$ {item.pricePerHour} por hora</Text>

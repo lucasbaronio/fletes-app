@@ -10,4 +10,7 @@ export const ORDER_COMMENTS = 'userOrders/ORDER_COMMENTS';
 export const ACTIVE_ORDERS = 'userOrders/ACTIVE_ORDERS';
 export const HISTORY_ORDERS = 'userOrders/HISTORY_ORDERS';
 
+export const ACTIVE_ORDERS_PAGE = 'userOrders/ACTIVE_ORDERS_PAGE';
+export const HISTORY_ORDERS_PAGE = 'userOrders/HISTORY_ORDERS_PAGE';
+
 export const LOADING = 'userOrders/LOADING';

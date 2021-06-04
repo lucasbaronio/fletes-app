@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { color, fontSize, fontWeight } from '../../../../styles/theme';
+import { color, fontSize, fontWeight, screenSize } from '../../../../styles/theme';
 
 export const styles = StyleSheet.create({
     container: {
@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
       backgroundColor: color.white.white,
       flexDirection: 'column',
       justifyContent: 'space-between',
-      alignItems: 'center'
+      // alignItems: 'center'
     },
     gridView: {
       marginTop: 10,
@@ -15,9 +15,10 @@ export const styles = StyleSheet.create({
     },
     itemContainer: {
       justifyContent: 'flex-start',
-      padding: 10,
-      minHeight: 170,
-      // height: 180,
+      alignItems: 'center',
+      padding: 5,
+      maxWidth: (screenSize.width / 2) - 10,
+      minHeight: 180,
       shadowColor: color.black.black,
       borderRadius: 5,
       zIndex: 9,
@@ -38,7 +39,7 @@ export const styles = StyleSheet.create({
     },
     itemImage: {
       width: 150, 
-      height: 90,
+      height: 100,
     }
 });
 

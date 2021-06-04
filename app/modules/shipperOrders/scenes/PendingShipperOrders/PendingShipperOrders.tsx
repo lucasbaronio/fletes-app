@@ -112,7 +112,7 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
                 <FlatList
                     onEndReachedThreshold={0.01}
                     onEndReached={() => {
-                        if (!onEndReachedCalledDuringMomentum) {
+                        if (!onEndReachedCalledDuringMomentum && page != 1) {
                             this.setState({
                                 page: page + 1
                             }, () => getOrdersPendingShipper(page, () => {}, this.onError))

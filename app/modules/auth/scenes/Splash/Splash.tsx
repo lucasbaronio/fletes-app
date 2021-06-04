@@ -2,9 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { View, Image, ActivityIndicator } from 'react-native';
 
-import { actions as auth } from "../../index";
-const { login } = auth;
-
 type MyProps = {
     login: (data, onSuccess, onError) => void,
     pushNotificationID: string,
@@ -26,9 +23,9 @@ class Splash extends React.Component<MyProps, MyState> {
         return (
             <View style={{ flex: 1 }}>
                 <Image 
-                    style={{ height: '100%', width: '100%' }} 
-                    resizeMode= "cover"
-                    source={require('../../../../../assets/splash.png')} />
+                    style={{ height: '100%', width: '100%',backgroundColor: '#000000' }} 
+                    resizeMode= "contain"
+                    source={require('../../../../../assets/fletesapp_icon_dark.jpeg')} />
             </View>
         );
     }

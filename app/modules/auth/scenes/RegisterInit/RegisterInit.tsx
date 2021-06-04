@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Image, ScrollView, ActivityIndicator, Pressable } from 'react-native';
 import { connect } from 'react-redux';
 import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text, Spinner } from 'native-base';
 
@@ -12,6 +12,8 @@ import {
     ERROR_INCORRECT_MOBILE_NUMBER
 } from '../../../../config/strings';
 import CustomModal from '../../../../components/CustomModal';
+import styles from './styles';
+import { color } from '../../../../styles/theme';
 
 type MyProps = {
     registerInit: (data, onSuccess, onError) => void,
@@ -81,7 +83,10 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                     scrollEnabled={false}>
                     <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                     <View style={{ alignItems: 'center', margin: 40 }}>
-                        <Image style={{ height: 180, width: 350 }} resizeMode='cover' source={require('../../../../../assets/fletes_icon.png')}/>
+                        <Image 
+                            style={{ width: '100%', height: 200 }} 
+                            resizeMode='cover' 
+                            source={require('../../../../../assets/fletesapp_icon.jpeg')}/>
                     </View>
 
                     <Form style={{ paddingHorizontal: 20 }}>
@@ -96,28 +101,27 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                                 value={this.state.mobileNumber}/>
                             {false && <Icon name='close-circle' />}
                         </Item>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10, paddingVertical: 10 }}>
-                            <Button 
-                                // @ts-ignore
-                                disable={isLoading}
-                                style={{ flex: 1, flexDirection: 'row', justifyContent: "center", paddingVertical: 20 }}
+                        <View style={[styles.rowContainer, { marginVertical: 10, paddingVertical: 10 }]}>
+                            <Pressable 
+                                disabled={isLoading}
+                                style={[styles.rowContainer, styles.button]}
                                 onPress={this.onSubmit}>
                                 {
                                     isLoading ?
                                     <ActivityIndicator />
                                     :
-                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
+                                    <Text style={styles.textButton}>
                                         Crear cuenta
                                     </Text>
                                 }
-                            </Button>
+                            </Pressable>
                         </View>
                     </Form>
 
-                    <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center" }}>
+                    <View style={styles.rowContainer}>
                         <Text>Ya tienes una cuenta creada? </Text>
                         <Text 
-                            style={{ color: 'blue' }} 
+                            style={{ color: color.primary.dark }} 
                             onPress={this.goToLogIn}>
                                 Iniciar Sesión
                         </Text>

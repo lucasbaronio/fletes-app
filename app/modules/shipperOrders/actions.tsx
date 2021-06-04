@@ -47,7 +47,8 @@ export const getOrdersPendingShipper = (page, successCB, errorCB) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                dispatch({type: t.ORDERS_PENDING_SHIPPER, data});
+                if (page == 1) dispatch({type: t.ORDERS_PENDING_SHIPPER, data});
+                else dispatch({type: t.ORDERS_PENDING_SHIPPER_PAGE, data});
                 successCB();
             }
             else if (error) {
@@ -67,7 +68,8 @@ export const getActiveOrdersShipper = (page, successCB, errorCB) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                dispatch({type: t.ORDERS_ACTIVE_SHIPPER, data});
+                if (page == 1) dispatch({type: t.ORDERS_ACTIVE_SHIPPER, data});
+                else dispatch({type: t.ORDERS_ACTIVE_SHIPPER_PAGE, data});
                 successCB();
             }
             else if (error) {
@@ -87,7 +89,8 @@ export const getHistoryOrdersShipper = (page, successCB, errorCB) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                dispatch({type: t.ORDERS_HISTORY_SHIPPER, data});
+                if (page == 1) dispatch({type: t.ORDERS_HISTORY_SHIPPER, data});
+                else dispatch({type: t.ORDERS_HISTORY_SHIPPER_PAGE, data});
                 successCB();
             }
             else if (error) {

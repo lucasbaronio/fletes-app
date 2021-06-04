@@ -150,12 +150,32 @@ const userOrdersReducer = (state = initialState, action) => {
             };
         }
 
+        case t.ACTIVE_ORDERS_PAGE: {
+            const { orders } = action.data;
+            const { activeOrders } = state;
+
+            return { 
+                ...state, 
+                activeOrders: activeOrders.concat(orders),
+            };
+        }
+
         case t.HISTORY_ORDERS: {
             const { orders } = action.data;
 
             return { 
                 ...state, 
                 historyOrders: orders,
+            };
+        }
+
+        case t.HISTORY_ORDERS_PAGE: {
+            const { orders } = action.data;
+            const { historyOrders } = state;
+
+            return { 
+                ...state, 
+                historyOrders: historyOrders.concat(orders),
             };
         }
 

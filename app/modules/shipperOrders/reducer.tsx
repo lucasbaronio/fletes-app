@@ -137,6 +137,16 @@ const shipperOrdersReducer = (state = initialState, action) => {
             };
         }
 
+        case t.ORDERS_PENDING_SHIPPER_PAGE: {
+            const { orders } = action.data;
+            const { pendingOrders } = state;
+            
+            return { 
+                ...state, 
+                pendingOrders: pendingOrders.concat(orders),
+            };
+        }
+
         case t.ORDERS_ACTIVE_SHIPPER: {
             const { orders } = action.data;
             
@@ -146,12 +156,32 @@ const shipperOrdersReducer = (state = initialState, action) => {
             };
         }
 
+        case t.ORDERS_ACTIVE_SHIPPER_PAGE: {
+            const { orders } = action.data;
+            const { activeOrders } = state;
+            
+            return { 
+                ...state, 
+                activeOrders: activeOrders.concat(orders),
+            };
+        }
+
         case t.ORDERS_HISTORY_SHIPPER: {
             const { orders } = action.data;
             
             return { 
                 ...state, 
                 historyOrders: orders,
+            };
+        }
+
+        case t.ORDERS_HISTORY_SHIPPER_PAGE: {
+            const { orders } = action.data;
+            const { historyOrders } = state;
+            
+            return { 
+                ...state, 
+                historyOrders: historyOrders.concat(orders),
             };
         }
 

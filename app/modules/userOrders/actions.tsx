@@ -43,7 +43,8 @@ export const getActiveOrdersUser = (page, successCB, errorCB) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                dispatch({type: t.ACTIVE_ORDERS, data});
+                if (page == 1) dispatch({type: t.ACTIVE_ORDERS, data});
+                else dispatch({type: t.ACTIVE_ORDERS_PAGE, data});
                 successCB();
             }
             else if (error) {
@@ -63,7 +64,8 @@ export const getHistoryOrdersUser = (page, successCB, errorCB) => {
             dispatch({type: t.LOADING});
             if (isSuccess) {
                 const { data } = response;
-                dispatch({type: t.HISTORY_ORDERS, data});
+                if (page == 1) dispatch({type: t.HISTORY_ORDERS, data});
+                else dispatch({type: t.HISTORY_ORDERS_PAGE, data});
                 successCB();
             }
             else if (error) {
