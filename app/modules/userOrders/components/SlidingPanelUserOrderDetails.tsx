@@ -169,8 +169,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
         containerStyle={styles.slidingUpPanel}
     >
         <View style={styles.panelContent}>
-          <Button 
-            transparent
+          <Pressable 
             style={styles.dragButton}
             onPress={() => {
               // @ts-ignore
@@ -183,7 +182,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                   borderColor: color.grey.lightGrey
                 }}>
               </View>
-          </Button>
+          </Pressable>
 
           <View style={styles.timeNextStatusContainer}>
             <View>
@@ -203,22 +202,22 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
               indeterminate={order.status === statusOrder.PENDING}
               progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.PENDING) ? 1 : 0}
               height={4}
-              color={color.blue.steelBlue}
-              unfilledColor={color.blue.lightBlue} />
+              color={color.primary.dark}
+              unfilledColor={color.primary.light} />
             <Progress.Bar 
               style={{ flex: 1, marginHorizontal: 2 }}
               indeterminate={order.status === statusOrder.ACCEPTED}
               progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.ACCEPTED) ? 1 : 0}
               height={4}
-              color={color.blue.steelBlue}
-              unfilledColor={color.blue.lightBlue} />
+              color={color.primary.dark}
+              unfilledColor={color.primary.light} />
             <Progress.Bar 
               style={{ flex: 1, marginHorizontal: 2 }}
               indeterminate={order.status === statusOrder.TO_ORIGIN}
               progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.TO_ORIGIN) ? 1 : 0}
               height={4}
-              color={color.blue.steelBlue}
-              unfilledColor={color.blue.lightBlue} />
+              color={color.primary.dark}
+              unfilledColor={color.primary.light} />
             <Icon 
               name="pin"
               style={{
@@ -232,8 +231,8 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
               indeterminate={order.status === statusOrder.TO_DESTINATION}
               progress={getOrderStatusIndex(order.status) > getOrderStatusIndex(statusOrder.TO_DESTINATION) ? 1 : 0}
               height={4}
-              color={color.blue.steelBlue}
-              unfilledColor={color.blue.lightBlue} />
+              color={color.primary.dark}
+              unfilledColor={color.primary.light} />
             <Icon 
               name="pin"
               style={{
@@ -247,8 +246,8 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
               indeterminate={order.status === statusOrder.AT_DESTINATION}
               progress={getOrderStatusIndex(order.status) == getOrderStatusIndex(statusOrder.COMPLETED) ? 1 : 0}
               height={4}
-              color={color.blue.steelBlue}
-              unfilledColor={color.blue.lightBlue} />
+              color={color.primary.dark}
+              unfilledColor={color.primary.light} />
           </View>
           <View style={styles.statusContainer}>
             <Text style={styles.statusText}>{getOrderStatusText(order.status)}</Text>
@@ -298,7 +297,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                 <Foundation 
                   name="clipboard-notes" 
                   size={iconSize.XXL} 
-                  color={color.black.black} />
+                  color={color.primary.dark} />
                 <Text style={styles.orderDetailsText}>Detalle</Text>
               </TouchableOpacity>
             </View>
@@ -416,9 +415,9 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
             }]}>
               {
                 textButton.map((text, index) => (
-                  <Button 
+                  <Pressable 
                     key={index}
-                    style={styles.button}
+                    style={[styles.rowContainer, styles.button]}
                     onPress={onPress}>
                       {
                         isLoading ?
@@ -428,7 +427,7 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
                           {text}
                         </Text>
                       }
-                  </Button>
+                  </Pressable>
                 ))
               }
             </View>
@@ -481,6 +480,9 @@ const styles = StyleSheet.create({
   dragButton: { 
     width: '100%', 
     justifyContent: "center",
+    flexDirection: 'row',
+    marginBottom: 5,
+    marginTop: 10,
   },
   timeNextStatusContainer:{
     width: '90%', 
@@ -514,14 +516,14 @@ const styles = StyleSheet.create({
     height: 5, 
     marginVertical: 10, 
     borderBottomWidth: 1, 
-    borderBottomColor: color.grey.lightGrey,
+    borderBottomColor: color.primary.light,
   },
   separatorMiddle: {
     width: '95%',
     height: 5, 
     marginVertical: 2, 
     borderBottomWidth: 1, 
-    borderBottomColor: color.grey.lightGrey,
+    borderBottomColor: color.primary.light,
   },
   shipperContainer: {
     width: '90%', 
@@ -593,7 +595,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 5,
     elevation: 2,
-    backgroundColor: color.blue.steelBlue, 
+    backgroundColor: color.primary.dark, 
   },
   helpContainer: {
     width: '90%',
@@ -622,15 +624,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
   },
-  button: {
+  rowContainer: {
     flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: "center",
-    marginHorizontal: 5,
+    justifyContent: "center", 
+    flexDirection: 'row',
+    marginVertical: 3
+  },
+  button: {
+      paddingVertical: 10, 
+      backgroundColor: color.primary.dark,
+      borderRadius: 10,
   },
   textButton: {
     color: color.white.white, 
-    fontSize: fontSize.XL, 
+    fontSize: fontSize.L, 
     fontWeight: fontWeight.L, 
     textAlign: 'center'
   },

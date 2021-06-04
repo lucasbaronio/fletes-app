@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cancelButton: {
-    borderColor: color.blue.steelBlue,
+    borderColor: color.primary.dark,
     borderWidth: 1,
   },
   acceptButton: {
-    backgroundColor: color.blue.steelBlue,
+    backgroundColor: color.primary.dark,
   },
   textStyle: {
     color: color.white.white,

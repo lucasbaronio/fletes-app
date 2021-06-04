@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, SafeAreaView, SectionList } from 'react-native';
+import { View, SafeAreaView, SectionList, Pressable } from 'react-native';
 import { Button, Text } from 'native-base';
 
 import { actions as orders } from "../../index";
@@ -58,16 +58,6 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
         this.calculatePrices(extraOptionsList, vehicleTypeWithData.pricePerHour);
 
         const DATA = [
-            // {
-            //     title: "Direcciones",
-            //     data: [{
-            //         subtitle: 'Dirección origen',
-            //         value: `${originAddress.streetName} ${originAddress.streetNumber} / ${originAddress.doorNumber}`
-            //     },{
-            //         subtitle: 'Dirección destino',
-            //         value: `${destinationAddress.streetName} ${destinationAddress.streetNumber} / ${destinationAddress.doorNumber}`
-            //     }]
-            // },
             {
                 title: "Detalles de la entrega",
                 data: [{
@@ -228,27 +218,26 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => {
                         return (
-                            <View style={styles.constinerSectionItem}>
+                            <View style={[styles.container, styles.constinerSectionItem]}>
                                 <Text style={styles.subtitleSectionItem}>{item.subtitle}</Text>
                                 <Text style={styles.valueSectionItem}>{item.value}</Text>
                             </View>
                         )
                     }}
                     renderSectionHeader={({ section: { title } }) => (
-                        <View style={styles.containerSectionHeader}>
+                        <View style={[styles.container, styles.containerSectionHeader]}>
                             <Text style={styles.textSectionHeader}>{title}</Text>
                         </View>
                     )}
                 />
                 <View style={styles.containerButton}>
-                    <Button 
-                      // @ts-ignore
-                      style={styles.button}
+                    <Pressable 
+                      style={[styles.rowContainer, styles.button]}
                       onPress={this.onCreateOrder}>
                         <Text style={styles.textButton}>
                             Crear Pedido
                         </Text>
-                    </Button>
+                    </Pressable>
                 </View>
             </SafeAreaView>
         );

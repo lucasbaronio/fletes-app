@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
       flexDirection: 'column', 
       margin: 10, 
       padding: 10, 
-      backgroundColor: color.grey.lightGrey, 
+      backgroundColor: color.primary.light, 
       borderRadius: 5
     },
     containerMapView: {

@@ -3,8 +3,9 @@ import { Body, Button, CheckBox, Icon, List, ListItem, Text } from 'native-base'
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, Image, ActivityIndicator
+  View, Image, ActivityIndicator, Pressable
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import { ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 } from '../../../config/strings';
 import { extraOptionPriceTypes } from '../../../config/utils';
@@ -112,20 +113,20 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
         containerStyle={styles.slidingUpPanel}
     >
         <View style={styles.panelContent}>
-          <Button 
-            transparent
+          <Pressable 
             style={styles.closeButton}
             onPress={() => {
               // @ts-ignore
               panelRef.current.show(hideFullScreenPanelOptions);
             }}>
-              <Icon 
+              {/* <Icon 
                 name="close-outline"
                 style={{
                     fontSize: iconSize.XL, 
                     color: color.grey.slateGrey
-                }} />
-          </Button>
+                }} /> */}
+              <Ionicons name="ios-close" size={iconSize.L} color={color.primary.dark} />
+          </Pressable>
 
           <View style={styles.basicVehicleTypeInfo}>
             <View style={{ flex: 1 }}>
@@ -136,11 +137,11 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ marginBottom: 10 }}>
-                Tipo: <Text style={{ fontSize: fontSize.XL }}>{vehicleType.name}</Text>
+                Tipo: <Text style={{ fontSize: fontSize.XL, color: color.primary.dark }}>{vehicleType.name}</Text>
               </Text>
               <Text style={{ marginBottom: 5 }}>Precio: </Text>
               <Text style={{ marginBottom: 10, marginStart: 30 }}>$ 
-                <Text style={{ fontSize: fontSize.XL }}>
+                <Text style={{ fontSize: fontSize.XL, color: color.primary.dark }}>
                   {vehicleType.pricePerHour}
                 </Text> p/hora
               </Text>
@@ -149,11 +150,11 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
           <View style={styles.moreVehicleTypeInfo}>
             <View style={styles.moreVehicleTypeInfoItem}>
               <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1}</Text>
-              <Text style={{ fontSize: fontSize.L }}>{vehicleType.loadCapacity}</Text>
+              <Text style={{ fontSize: fontSize.L, color: color.primary.dark }}>{vehicleType.loadCapacity}</Text>
             </View>
             <View style={styles.moreVehicleTypeInfoItem}>
               <Text>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2}</Text>
-              <Text style={{ fontSize: fontSize.L }}>{vehicleType.open ? 'Abierta' : 'Cerrada'}</Text>
+              <Text style={{ fontSize: fontSize.L, color: color.primary.dark }}>{vehicleType.open ? 'Abierta' : 'Cerrada'}</Text>
             </View>
           </View>
           <View style={styles.extraOptionsVehicleType}>
@@ -165,7 +166,7 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
                 <ListItem 
                   key={extra.orderAvailableExtraOptionId}
                   onPress={() => onAddOrRemoveExtraOption(extra)}>
-                  <CheckBox checked={extra.selected} />
+                  <CheckBox color={color.primary.dark} checked={extra.selected} />
                   <View style={[styles.listItemExtraOptionsVehicleType, !isiOS && { marginLeft: 10 }]}>
                     <View style={{ flex: .6 }}>
                       <Text>{extra.text}</Text>
@@ -193,9 +194,9 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
             bottom: (deviceHeight - draggableRange.top) + 20,
             left: (deviceWidth * 0.1) / 2
           }]}>
-            <Button 
+            <Pressable 
               // @ts-ignore
-              style={styles.button}
+              style={[styles.rowContainer, styles.button]}
               onPress={() => onNextScreen(vehicleType, extraOptionsSelected)}>
                 {
                   isLoading ?
@@ -205,7 +206,7 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
                       Continuar
                     </Text>
                 }
-            </Button>
+            </Pressable>
           </View>
         </View>
     </SlidingUpPanel>
@@ -234,7 +235,10 @@ const styles = StyleSheet.create({
   },
   closeButton: { 
     width: '100%', 
+    flexDirection: 'row',
     justifyContent: "flex-end",
+    marginRight: 30,
+    marginTop: 10
   },
   basicVehicleTypeInfo:{
     width: '90%', 
@@ -277,10 +281,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
   },
-  button: {
+  rowContainer: {
     flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: "center"
+    justifyContent: "center", 
+    flexDirection: 'row',
+  },
+  button: {
+      paddingVertical: 10, 
+      backgroundColor: color.primary.dark,
+      borderRadius: 10,
   },
   textButton: {
     color: color.white.white, 

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { connect } from 'react-redux';
-import { View, Image, TouchableOpacity, useWindowDimensions, FlatList } from 'react-native';
+import { View, Image, TouchableOpacity, useWindowDimensions, FlatList, Pressable } from 'react-native';
 import { Body, Button, CheckBox, List, ListItem, Text } from 'native-base';
 
 import { actions as orders } from "../../index";
@@ -12,6 +12,7 @@ import styles from './styles';
 import { showToast, showToastLoading } from '../../../../components/Toast';
 import SlidingPanelCreatePaymentMethod from '../../components/SlidingPanelCreatePaymentMethod';
 import CustomModal from '../../../../components/CustomModal';
+import { color, fontSize, fontWeight } from '../../../../styles/theme';
 
 type MyProps = {
     getPaymentMethod: (successCB, errorCB) => void,
@@ -108,8 +109,9 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
                     renderItem={({item}) =>
                         <ListItem 
                             key={item.id}
+                            // style={{ backgroundColor: color.white.white }}
                             onPress={() => this.onSelectPaymentMethod(item)}>
-                            <CheckBox checked={item.selected} />
+                            <CheckBox color={color.primary.dark} checked={item.selected} />
                             <Body style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Image
                                     style={{ width: 50, height: 50, marginHorizontal: 15, borderWidth: 0.3 }} 
@@ -128,30 +130,26 @@ class PaymentMethod extends React.Component<MyProps, MyState> {
                     }
                     ListFooterComponent={() => 
                         <View style={{ flex: 1, flexDirection: 'row', marginVertical: 20 }}>
-                            <Button 
-                                rounded
-                                bordered
-                                // @ts-ignore
-                                style={{ flex: 1, marginHorizontal: 40, justifyContent: 'center' }}
+                            <Pressable 
+                                style={{ flex: 1, marginHorizontal: 40, padding: 10, justifyContent: 'center', borderRadius: 20, borderWidth: 1, borderColor: color.primary.dark }}
                                 // onPress={() => this.sidingPanelCreatePaymentMethodOpen()}>
                                 onPress={() => this.setState({ visibleModal: true })}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+                                    <Text style={{ fontSize: fontSize.M, fontWeight: fontWeight.L, color: color.primary.dark, textAlign: 'center' }}>
                                         Crear uno nuevo
                                     </Text>
-                            </Button>
+                            </Pressable>
                         </View>
                     }
                     keyExtractor={(item, index) => index.toString()}
                 />
                 <View style={styles.containerButton}>
-                    <Button 
-                      // @ts-ignore
-                      style={styles.button}
-                      onPress={this.onNextScreen}>
-                        <Text style={styles.textButton}>
-                            Ver detalle del Pedido
-                        </Text>
-                    </Button>
+                    <Pressable 
+                        style={[styles.rowContainer, styles.button]}
+                        onPress={this.onNextScreen}>
+                            <Text style={styles.textButton}>
+                                Ver detalle del Pedido
+                            </Text>
+                    </Pressable>
                 </View>
                 
                 <SlidingPanelCreatePaymentMethod 

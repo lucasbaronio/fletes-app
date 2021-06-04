@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
       flexDirection: 'column', 
       margin: 10, 
       padding: 10, 
-      backgroundColor: color.grey.slateGrey, 
+      backgroundColor: color.primary.light, 
       borderRadius: 5
     },
     containerMapView: {
@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
       marginBottom: 5
     },
     statusOrder: {
-      color: color.grey.lightGrey
+      color: color.grey.slateGrey
     },
     floatText: {
       zIndex: 9,

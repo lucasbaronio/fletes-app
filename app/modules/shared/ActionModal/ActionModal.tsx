@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cancelButton: {
-    backgroundColor: color.blue.steelBlue,
+    backgroundColor: color.primary.dark,
   },
   acceptButton: {
     backgroundColor: color.red.red,

@@ -4,7 +4,7 @@ import { color, fontSize, fontWeight, screenSize } from '../../../../styles/them
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: 'whitesmoke',
+      backgroundColor: color.primary.light,
     },
     containerHeaderComponent: {
       flex: 1, 
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     },
     titleHeaderVehicleType: {
       flex: 1, 
-      fontWeight: fontWeight.L
+      fontWeight: fontWeight.L,
     },
     subtitleHeaderVehicleType: {
       flex: 1, 
@@ -78,10 +78,15 @@ export const styles = StyleSheet.create({
       bottom: 20,
       left: (screenSize.width * 0.1) / 2,
     },
-    button: {
+    rowContainer: {
       flex: 1, 
-      flexDirection: 'row', 
-      justifyContent: "center"
+      justifyContent: "center", 
+      flexDirection: 'row',
+    },
+    button: {
+        paddingVertical: 10, 
+        backgroundColor: color.primary.dark,
+        borderRadius: 10,
     },
     textButton: {
       color: color.white.white, 
@@ -108,7 +113,6 @@ export const styles = StyleSheet.create({
       paddingHorizontal: 20, 
       paddingBottom: 15, 
       paddingTop: 25, 
-      backgroundColor: color.white.whitesmoke,
     },
     textSectionHeader: {
       fontWeight: fontWeight.L, 
@@ -119,7 +123,7 @@ export const styles = StyleSheet.create({
       marginHorizontal: 20, 
       height: 1, 
       borderBottomWidth: 0.3, 
-      borderBottomColor: color.grey.lightGrey,
+      borderBottomColor: color.primary.light,
     }
 });
 

@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       padding: 10,
       elevation: 2,
-      backgroundColor: color.blue.steelBlue,
+      backgroundColor: color.primary.dark,
     },
     textStyle: {
       color: color.white.white,

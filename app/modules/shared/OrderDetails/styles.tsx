@@ -4,7 +4,7 @@ import { color, fontSize, fontWeight, screenSize } from '../../../styles/theme';
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: 'whitesmoke',
+      backgroundColor: color.primary.light,
     },
     containerHeaderComponent: {
       flex: 1, 
@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
       width: '100%', 
       height: 10, 
       borderBottomWidth: 0.3, 
-      borderBottomColor: color.grey.lightGrey
+      borderBottomColor: color.primary.light
     },
     containerTotalHeader: { 
       flex: 1, 
@@ -108,7 +108,7 @@ export const styles = StyleSheet.create({
       paddingHorizontal: 20, 
       paddingBottom: 15, 
       paddingTop: 25, 
-      backgroundColor: color.white.whitesmoke,
+      backgroundColor: color.primary.light,
     },
     textSectionHeader: {
       fontWeight: fontWeight.L, 

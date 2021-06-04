@@ -6,14 +6,6 @@ export const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: color.white.whitesmoke,
     },
-    card: {
-      flex: 1, 
-      flexDirection: 'column', 
-      margin: 10, 
-      padding: 10, 
-      backgroundColor: color.grey.slateGrey, 
-      borderRadius: 5
-    },
     mapStyle: {
       width: screenSize.width,
       height: screenSize.height * 0.6,

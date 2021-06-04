@@ -2,14 +2,14 @@ import { Accordion, Button, Form, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, ActivityIndicator,
+  View, ActivityIndicator, Pressable,
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import Constants from 'expo-constants';
 import AddressForm from './AddressForm';
 import DateTime from './DateTime';
-import { currentDate } from '../utils/utils';
-import { color, fontSize, fontWeight, isiOS, screenSize } from '../../../styles/theme';
+import { SimpleLineIcons } from '@expo/vector-icons';
+import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
 import { ORDERS_SCENES_MAP_ADDRESS_ERROR_LOCATION, ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_1, ORDERS_SCENES_MAP_ADDRESS_SLIDINGPANEL_TITLE_2 } from '../../../config/strings';
 
 type MyProps = {
@@ -94,20 +94,18 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
         <View style={styles.panelContent}>
               {
                 atTop ?
-                <Button 
-                  transparent
-                  style={{ width: '100%', justifyContent: "center" }}
+                <Pressable 
+                  style={{ width: '100%', justifyContent: "center", alignItems: 'center', marginVertical: 10 }}
                   onPress={() => {
                     setAtTop(false);
                     // @ts-ignore
                     panelRef.current.show(hideFullScreenPanelOptions);
                   }}>
-                    <Icon name='chevron-down-outline' />
-                </Button>
+                    <SimpleLineIcons name="arrow-down" size={iconSize.M} color={color.primary.dark} />
+                </Pressable>
                 : 
-                <Button 
-                  transparent
-                  style={{ width: '100%', justifyContent: "center" }}
+                <Pressable 
+                  style={{ width: '100%', justifyContent: "center", alignItems: 'center', marginVertical: 10 }}
                   onPress={() => {
                     if (allowDragging) {
                       setAtTop(true);
@@ -117,8 +115,8 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                       alert('Se necesitan permisos de ubicación para poder crear un pedido.');
                     }
                   }}>
-                    <Icon name='chevron-up-outline' />
-                </Button>
+                    <SimpleLineIcons name="arrow-up" size={iconSize.M} color={color.primary.dark} />
+                </Pressable>
               }
               
               <Form style={styles.form}>
@@ -144,13 +142,14 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                       renderHeader={(item, expanded) => (
                         <View style={styles.accordion}>
                           <Text 
-                            // @ts-ignore
                             style={{ fontWeight: fontWeight.L }}>
                             {item.title}
                           </Text>
-                          {expanded
-                            ? <Icon style={{ fontSize: fontSize.L }} name="chevron-up-outline" />
-                            : <Icon style={{ fontSize: fontSize.L }} name="chevron-down-outline" />}
+                          {
+                            expanded
+                            ? <SimpleLineIcons name="arrow-up" size={iconSize.S} color={color.black.black} />
+                            : <SimpleLineIcons name="arrow-down" size={iconSize.S} color={color.black.black} />
+                          }
                         </View>
                       )}
                       renderContent={(item: any) => (
@@ -183,9 +182,9 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                   bottom: (deviceHeight - draggableRange.top) + 20,
                   left: (deviceWidth * 0.1) / 2
                 }]}>
-                  <Button 
+                  <Pressable 
                     // @ts-ignore
-                    style={styles.button}
+                    style={[styles.rowContainer, styles.button]}
                     onPress={() => onNextScreen({ 
                       originAddress: {
                         streetName: streetNameOrigin, 
@@ -206,7 +205,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                             Continuar
                           </Text>
                       }
-                  </Button>
+                  </Pressable>
                 </View>
               </Form>
         </View>
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
     padding: 12,
     justifyContent: "space-between",
     alignItems: "center" ,
-    backgroundColor: color.blue.lightBlue
+    backgroundColor: color.primary.light
   },
   viewText: {
     paddingVertical: 5,
@@ -252,10 +251,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
   },
-  button: {
+  rowContainer: {
     flex: 1, 
-    flexDirection: 'row', 
-    justifyContent: "center"
+    justifyContent: "center", 
+    flexDirection: 'row',
+  },
+  button: {
+      paddingVertical: 10, 
+      backgroundColor: color.primary.dark,
+      borderRadius: 10,
   },
   textButton: {
     color: color.white.white, 

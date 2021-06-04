@@ -157,8 +157,8 @@ class PendingShipperOrders extends React.Component<MyProps, MyState> {
                                 style={styles.card}>
                                 {
                                     isLessThan(dateToFrontend(item.originAt), currentDate()) &&
-                                    <View style={styles.floatText}>
-                                        <Text style={{ textAlign: 'center', color: color.red.redTomato }}>
+                                    <View style={styles.floatTextView}>
+                                        <Text style={styles.floatText}>
                                             Vencida
                                         </Text>
                                     </View>

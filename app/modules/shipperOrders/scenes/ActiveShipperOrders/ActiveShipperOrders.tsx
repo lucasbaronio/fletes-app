@@ -150,7 +150,7 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
                         if (isLoading && page != 1) {
                             return (
                                 <View style={{ flex: 1, marginVertical: 20 }}>
-                                    <ActivityIndicator size="small" />
+                                    <ActivityIndicator color={color.primary.dark} size="small" />
                                 </View>
                             )
                         } else return null
@@ -166,8 +166,8 @@ class ActiveShipperOrders extends React.Component<MyProps, MyState> {
                     keyExtractor={(item, index) => item.orderId.toString()}
                     refreshControl={
                         <RefreshControl
-                            colors={[color.black.black]}
-                            tintColor={color.black.black}
+                            colors={[color.primary.dark]}
+                            tintColor={color.primary.dark}
                             refreshing={isLoading && page == 1}
                             onRefresh={() => {
                                 this.setState({

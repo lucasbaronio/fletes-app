@@ -4,7 +4,7 @@ import { color, fontSize, fontWeight, screenSize } from '../../../../styles/them
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: color.white.white,
       flexDirection: 'column',
     },
     containerButton: {
@@ -16,10 +16,15 @@ export const styles = StyleSheet.create({
       bottom: 20,
       left: (screenSize.width * 0.1) / 2,
     },
-    button: {
+    rowContainer: {
       flex: 1, 
-      flexDirection: 'row', 
-      justifyContent: "center"
+      justifyContent: "center", 
+      flexDirection: 'row',
+    },
+    button: {
+        paddingVertical: 10, 
+        backgroundColor: color.primary.dark,
+        borderRadius: 10,
     },
     textButton: {
       color: color.white.white, 

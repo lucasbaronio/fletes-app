@@ -5,7 +5,7 @@ const color = {
     primary: {
         dark: '#FF8C00',
         middle: '#FFA500',
-        light: 	'#FFD700'
+        light: 	'#FFD7B5'
     },
     blue: {
         steelBlue: '#4682B4',
