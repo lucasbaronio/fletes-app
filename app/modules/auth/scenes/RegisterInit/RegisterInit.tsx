@@ -86,7 +86,7 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                         <Image 
                             style={{ width: '100%', height: 200 }} 
                             resizeMode='cover' 
-                            source={require('../../../../../assets/fletesapp_icon.jpeg')}/>
+                            source={require('../../../../../assets/fletesapp_icon.png')}/>
                     </View>
 
                     <Form style={{ paddingHorizontal: 20 }}>

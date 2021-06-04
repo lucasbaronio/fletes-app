@@ -25,7 +25,7 @@ class Splash extends React.Component<MyProps, MyState> {
                 <Image 
                     style={{ height: '100%', width: '100%',backgroundColor: '#000000' }} 
                     resizeMode= "contain"
-                    source={require('../../../../../assets/fletesapp_icon_dark.jpeg')} />
+                    source={require('../../../../../assets/fletesapp_icon_dark.png')} />
             </View>
         );
     }
