@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { H1, Button, Text, Icon } from 'native-base';
+import { Pressable, View, StyleSheet } from 'react-native';
+import { H1, Button, Text } from 'native-base';
+import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as Localization from 'expo-localization';
 import moment from "moment";
 import "moment-timezone";
 import 'moment/min/locales';
 import { displayDate, currentDate, dateToMoment, currentDateMoment } from '../utils/utils';
+import { color, iconSize } from '../../../styles/theme';
 
 type MyProps = {
     dateOrder: string,
@@ -61,23 +63,20 @@ export default class DateTime extends Component<MyProps, MyState> {
         const { visible, date, now } = this.state;
         return (
             <View style={{ flex: 1 }}>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around', margin: 20 }}>
-                    <Button 
-                        iconLeft 
-                        info={now}
-                        primary={!now}
+                <View style={styles.buttonContainer}>
+                    <Pressable 
+                        style={[styles.button, now ? styles.buttonNotSelected : styles.buttonSelected]}
                         onPress={this.showDatePicker} >
-                        <Icon name='time-outline' />
-                        <Text>Programar una día</Text>
-                    </Button>
-                    <Button 
-                        info={!now}
-                        primary={now}
+                        <MaterialIcons name="access-time" size={iconSize.L} color={now ? color.black.black : color.white.white} />
+                        <Text style={{ marginLeft: 5 }}>Programar una día</Text>
+                    </Pressable>
+                    <Pressable 
+                        style={[styles.button, now ? styles.buttonSelected : styles.buttonNotSelected]}
                         onPress={() => this.handleConfirm(currentDate(), true)} >
                         <Text>Ahora</Text>
-                    </Button>
+                    </Pressable>
                 </View>
-                <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                <View style={styles.titleContainer}>
                     <Text>{now ? 'El pedido es para ahora:' : 'El pedido va a ser programado para el:'}</Text>
                     <H1 style={{ padding: 20, textAlign: 'center' }}>{displayDate(date)}</H1>
                 </View>
@@ -100,3 +99,30 @@ export default class DateTime extends Component<MyProps, MyState> {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    buttonContainer: {
+        flex: 1, 
+        flexDirection: 'row', 
+        justifyContent: 'space-around', 
+        margin: 20
+    },
+    button: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        padding: 10, 
+        borderRadius: 10,
+    },
+    buttonSelected: {
+        backgroundColor: color.primary.middle
+    },
+    buttonNotSelected: {
+        borderWidth: 1, 
+        borderColor: color.primary.middle
+    },
+    titleContainer: {
+        flex: 1, 
+        flexDirection: 'column', 
+        alignItems: 'center'
+    }
+  });

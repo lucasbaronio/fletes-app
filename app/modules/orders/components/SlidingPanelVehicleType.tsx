@@ -136,11 +136,11 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
                 source={getVehicleTypeImage(vehicleType.name)} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={{ marginBottom: 10 }}>
+              <Text style={{ marginBottom: 5 }}>
                 Tipo: <Text style={{ fontSize: fontSize.XL, color: color.primary.dark }}>{vehicleType.name}</Text>
               </Text>
-              <Text style={{ marginBottom: 5 }}>Precio: </Text>
-              <Text style={{ marginBottom: 10, marginStart: 30 }}>$ 
+              <Text>Precio: </Text>
+              <Text style={{ marginStart: 30 }}>$ 
                 <Text style={{ fontSize: fontSize.XL, color: color.primary.dark }}>
                   {vehicleType.pricePerHour}
                 </Text> p/hora
@@ -160,7 +160,9 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
           <View style={styles.extraOptionsVehicleType}>
             <Text style={{ marginBottom: 5 }}>{ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3}</Text>
             <List
-              style={[styles.listExtraOptionsVehicleType, { maxHeight: draggableRange.top * 0.35 }]}
+              style={[styles.listExtraOptionsVehicleType, { 
+                maxHeight: draggableRange.top - ((deviceHeight - draggableRange.top) + 50) - (styles.imageVehicleType.height + styles.imageVehicleType.height * 0.5) ,
+              }]}
               dataArray={extraOptionsSelected}
               renderRow={(extra) =>
                 <ListItem 
@@ -250,11 +252,11 @@ const styles = StyleSheet.create({
   },
   moreVehicleTypeInfo: {
     width: '90%', 
-    marginVertical: 5,
+    marginVertical: 3,
     flexDirection: 'column',
   },
   moreVehicleTypeInfoItem: {
-    marginVertical: 3, 
+    // marginVertical: 3, 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center'
@@ -272,7 +274,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center',
-    // marginLeft: 3,
   },
   containerbutton: {
     zIndex: 9,

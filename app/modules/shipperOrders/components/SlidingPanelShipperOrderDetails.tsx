@@ -3,7 +3,7 @@ import { Button, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, TouchableOpacity, ActivityIndicator, Pressable
+  View, TouchableOpacity, ActivityIndicator, Pressable, Linking
 } from 'react-native';
 import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
@@ -78,7 +78,7 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
 	}, [panelPositionVal]);
 
   const onPressHelp = () => {
-
+    Linking.openURL('whatsapp://app');
   }
 
   const onPressMoreDetails = () => {
@@ -88,6 +88,7 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
   }
 
   const onPressSelectVehicle = () => {
+    console.log('vehicleTypeId', order.vehicleType.vehicleTypeId);
     RootNavigation.push('VehicleSelect', { vehicleTypeId: order.vehicleType.vehicleTypeId });
   }
 
@@ -110,67 +111,6 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
     }
     hideDatePicker();
   };
-
-  // const renderDate = () => {
-  //   switch (order.status) {
-  //     case statusOrder.PENDING:
-  //       return {
-  //         title: 'Hora programada del transportista en el punto de origen',
-  //         value: displayDate(order.originAt),
-  //       };
-  //     case statusOrder.ACCEPTED:
-  //       return {
-  //         title: 'Hora programada del transportista en el punto de origen',
-  //         value: displayDate(order.originAt),
-  //       };
-  //     case statusOrder.TO_ORIGIN:
-  //       return {
-  //         title: 'Hora programada del transportista en el punto de origen',
-  //         value: displayDate(order.originAt),
-  //       };
-  //     case statusOrder.AT_ORIGIN:
-  //       return {
-  //         title: 'Hora que llegó el transportista al punto de origen',
-  //         value: displayDate(order.shipperArrivedAtOriginAt),
-  //       };
-  //     case statusOrder.TO_DESTINATION:
-  //       return {
-  //         title: 'Hora estimada del transportista en el punto de destino',
-  //         value: order.shipperArrivesAtDestinationAt 
-  //                   ? displayDate(order.shipperArrivesAtDestinationAt)
-  //                   : 'No se indicó hora estimada',
-  //       };
-  //     case statusOrder.AT_DESTINATION:
-  //       return {
-  //         title: 'Hora que llegó el transportista al punto de destino',
-  //         value: displayDate(order.shipperArrivedAtDestinationAt),
-  //       };
-  //     case statusOrder.COMPLETE_PENDING:
-  //       return {
-  //         title: 'Hora que el transportista finalizó el pedido',
-  //         value: displayDate(order.shipperCompletedAt),
-  //       };
-  //     case statusOrder.COMPLETED:
-  //       return {
-  //         title: 'Hora que se completó el pedido',
-  //         value: displayDate(order.userCompletedAt),
-  //       };
-  //     case statusOrder.CANCELED:
-  //       return {
-  //         title: order.userCompletedAt
-  //                   ? 'Hora que el usuario canceló el pedido'
-  //                   : 'Hora que el transportista canceló el pedido',
-  //         value: order.userCompletedAt
-  //                   ? displayDate(order.userCompletedAt)
-  //                   : displayDate(order.shipperCompletedAt),
-  //       };
-  //     default:
-  //       return {
-  //         title: '',
-  //         value: '',
-  //       };
-  //   }
-  // }
 
   return (
     <SlidingUpPanel

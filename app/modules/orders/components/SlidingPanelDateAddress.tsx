@@ -2,7 +2,7 @@ import { Accordion, Button, Form, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, ActivityIndicator, Pressable,
+  View, ActivityIndicator, Pressable, KeyboardAvoidingView, Platform,
 } from 'react-native';
 import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-panel';
 import Constants from 'expo-constants';
@@ -95,7 +95,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
               {
                 atTop ?
                 <Pressable 
-                  style={{ width: '100%', justifyContent: "center", alignItems: 'center', marginVertical: 10 }}
+                  style={{ width: '100%', justifyContent: "center", alignItems: 'center', marginTop: 5 }}
                   onPress={() => {
                     setAtTop(false);
                     // @ts-ignore
@@ -105,7 +105,7 @@ const SlidingPanelAddress: React.FunctionComponent<MyProps> = ({ onNextScreen, i
                 </Pressable>
                 : 
                 <Pressable 
-                  style={{ width: '100%', justifyContent: "center", alignItems: 'center', marginVertical: 10 }}
+                  style={{ width: '100%', justifyContent: "center", alignItems: 'center', marginTop: 5 }}
                   onPress={() => {
                     if (allowDragging) {
                       setAtTop(true);
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.primary.light
   },
   viewText: {
-    paddingVertical: 5,
+    marginTop: 5,
   },
   form: {
     flex: 1,

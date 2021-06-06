@@ -3,8 +3,8 @@ import Constants from 'expo-constants';
 
 const color = {
     primary: {
-        dark: '#FF8C00',
-        middle: '#FFA500',
+        dark: '#FF8000',
+        middle: '#FFC355',
         light: 	'#FFD7B5'
     },
     blue: {
