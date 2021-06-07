@@ -10,14 +10,16 @@ import SlidingUpPanel, { SlidingUpPanelAnimationConfig } from 'rn-sliding-up-pan
 import { ORDERS_SLIDING_VEHICLE_TYPE_TITLE_1, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_2, ORDERS_SLIDING_VEHICLE_TYPE_TITLE_3 } from '../../../config/strings';
 import { extraOptionPriceTypes } from '../../../config/utils';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
+import { API_VEHICLE_TYPE_IMAGE } from '../../../config/constants';
 
 type MyProps = {
   onNextScreen: (address, extraOptionsSelected) => void,
   forwardRef: any,
   extraOptions: any,
   isLoading: boolean,
+  token: any,
 }
-const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScreen, forwardRef, extraOptions, isLoading }) => {
+const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScreen, forwardRef, extraOptions, isLoading, token }) => {
   const deviceHeight = screenSize.height;
   const deviceWidth = screenSize.width;
   const small = require('../../../../assets/vehicleType_chico.jpeg');
@@ -133,7 +135,8 @@ const SlidingPanelVehicleType: React.FunctionComponent<MyProps> = ({ onNextScree
               <Image 
                 style={styles.imageVehicleType} 
                 resizeMode='contain'
-                source={getVehicleTypeImage(vehicleType.name)} />
+                defaultSource={require('../../../../assets/default-car.png')}
+                source={{ uri: API_VEHICLE_TYPE_IMAGE(vehicleType.vehicleTypeId), headers: token }} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ marginBottom: 5 }}>

@@ -106,7 +106,7 @@ class HistoryUserOrders extends React.Component<MyProps, MyState> {
                     }}
                     ListEmptyComponent={
                         <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
-                            <Text style={{ textAlign: 'center' }}>No se encontraron Pedidos Activos, desliza hacia abajo para actualizar</Text>
+                            <Text style={{ textAlign: 'center' }}>Usted no tiene pedidos finalizados, desliza hacia abajo para actualizar</Text>
                         </View>
                     }
                     // ItemSeparatorComponent={() => <View style={{ flex: 1, marginHorizontal: 20, height: 1, borderBottomWidth: 0.3, borderBottomColor: 'lightgrey' }}></View>}

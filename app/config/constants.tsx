@@ -16,9 +16,9 @@ export const API_USERS = `${API}/users`;
 export const API_USERS_ME = `${API_USERS}/me`;
 export const API_USERS_PAYMENT_METHOD = `${API_USERS}/paymentMethods`;
 export const API_VEHICLES = `${API}/vehicles`;
-export const API_VEHICLES_IMAGE = (vehicleId) => `${API}/vehicles/${vehicleId}/images`;
+export const API_VEHICLES_IMAGE = (vehicleId) => `${API_VEHICLES}/${vehicleId}/images`;
 export const API_VEHICLES_BY_TYPE = (vehicleTypeId) => `${API_VEHICLES}?typeId=${vehicleTypeId}`;
-
+export const API_VEHICLE_TYPE_IMAGE = (vehicleTypeId) => `${API_VEHICLES}/types/${vehicleTypeId}/images`;
 
 export const API_ORDERS = `${API}/orders`;
 export const API_ORDER = (orderId) => `${API_ORDERS}?orderId=${orderId}`;

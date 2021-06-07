@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { connect } from 'react-redux';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button, Text } from 'native-base';
 
 import { actions as orders } from "../../index";
@@ -9,6 +9,8 @@ const { setOrderVehicleType, setOrderExtraOptions } = orders;
 import styles from './styles';
 import { FlatGrid } from 'react-native-super-grid';
 import SlidingPanelVehicleType from '../../components/SlidingPanelVehicleType';
+import { API_VEHICLE_TYPE_IMAGE } from '../../../../config/constants';
+import { getHeaderToken } from '../../../security';
 
 const small = require('../../../../../assets/vehicleType_chico.jpeg');
 const regular = require('../../../../../assets/vehicleType_mediano.jpeg');
@@ -30,7 +32,8 @@ type MyState = {
         pricePerHour: number,
         vehicleTypeId: number,
     },
-    showSlidingPanel: boolean
+    showSlidingPanel: boolean,
+    token: any,
 }
 class VehicleTypesGrid extends React.Component<MyProps, MyState> {
     map: any;
@@ -43,7 +46,13 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
             // @ts-ignore
             vehicleTypeSelected: null,
             showSlidingPanel: false,
+            token: null
         };
+    }
+
+    async componentDidMount() {
+        const token = await getHeaderToken();
+        this.setState({ token });
     }
 
     onNextScreen = (vehicleType, extraOptionsSelected) => {
@@ -75,7 +84,15 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
     }
 
     render() {
+        const { token } = this.state;
         const { vehicleTypes, extraOptions, isLoadingNext } = this.props;
+        if (!token) {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', marginTop: 100 }}>
+                    <ActivityIndicator />
+                </View>
+            )
+        }
 
         return (
             <View style={styles.container}>
@@ -88,14 +105,15 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
                     spacing={10}
                     renderItem={({ item }) => (
                         <TouchableOpacity 
-                            key={item.vehicleTypeId}
+                            // key={item.vehicleTypeId}
                             onPress={() => { this.slidingPanelVehicleType(item) }}
                             style={styles.itemContainer}>
                             <Image 
                                 style={styles.itemImage} 
                                 resizeMode='cover'
                                 defaultSource={require('../../../../../assets/default-car.png')}
-                                source={this.getVehicleTypeImage(item.name)} />
+                                source={{ uri: API_VEHICLE_TYPE_IMAGE(item.vehicleTypeId), headers: token }} />
+                                {/* source={this.getVehicleTypeImage(item.name)} /> */}
                             <Text style={styles.itemName}>{item.name}</Text>
                             <Text style={styles.itemCode}>$ {item.pricePerHour} por hora</Text>
                         </TouchableOpacity>
@@ -104,6 +122,7 @@ class VehicleTypesGrid extends React.Component<MyProps, MyState> {
                     isLoading={isLoadingNext}
                     forwardRef={c => { this.slidingPanelVehicleType = c }}
                     extraOptions={extraOptions}
+                    token={token}
                     onNextScreen={this.onNextScreen}/>
             </View>
         );
