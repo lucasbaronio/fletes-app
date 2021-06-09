@@ -78,7 +78,12 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
 	}, [panelPositionVal]);
 
   const onPressHelp = () => {
-    Linking.openURL('whatsapp://app');
+    Linking.openURL('whatsapp://send?phone=59893764373').then((data) => {
+      console.log('WhatsApp abierto');
+    }).catch((err) => {
+      console.log(err);
+      alert('No se puede abrir Whatsapp porque no se encontró instalado en el dispositivo');
+    });
   }
 
   const onPressMoreDetails = () => {

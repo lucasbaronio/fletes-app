@@ -36,9 +36,9 @@ class Login extends React.Component<MyProps, MyState> {
         this.state = {
             error: '',
             visibleModal: false,
-            // mobileNumber: '',
+            mobileNumber: '',
             password: '',
-            mobileNumber: '91000000',
+            // mobileNumber: '91000000',
             // password: 'strongPassword',
             showPassword: false,
         }

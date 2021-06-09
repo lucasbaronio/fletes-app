@@ -3,7 +3,7 @@ import { Button, Icon, Text } from 'native-base';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { 
   Animated, StyleSheet,
-  View, TouchableOpacity, ActivityIndicator, Pressable
+  View, TouchableOpacity, ActivityIndicator, Pressable, Linking
 } from 'react-native';
 import * as RootNavigation from '../../../config/routes/rootNavigation';
 import { Foundation } from '@expo/vector-icons';
@@ -79,7 +79,12 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
 	}, [panelPositionVal]);
 
   const onPressHelp = () => {
-
+    Linking.openURL('whatsapp://send?phone=59893764373').then((data) => {
+      console.log('WhatsApp abierto');
+    }).catch((err) => {
+      console.log(err);
+      alert('No se puede abrir Whatsapp porque no se encontró instalado en el dispositivo');
+    });
   }
 
   const onPressMoreDetails = () => {
