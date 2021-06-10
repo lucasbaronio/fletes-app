@@ -48,35 +48,35 @@ export const confirmPassword = (c_password, password, onError) => {
     return true;
 }
 
-export const validate = (form) => {
-    let error = {};
-    let success = true;
+// export const validate = (form) => {
+//     let error = {};
+//     let success = true;
 
-    var keys = Object.keys(form);
-    var length = keys.length;
+//     var keys = Object.keys(form);
+//     var length = keys.length;
 
-    keys.slice(0, length).map(field => {
-        if (field !== "error"){
-            var { type, value } = form[field];
-            if (isEmpty(value)){
-                error[field] = 'Este campo es requerido';
-                success = false;
-            }else{
-                error[field] = '';
+//     keys.slice(0, length).map(field => {
+//         if (field !== "error"){
+//             var { type, value } = form[field];
+//             if (isEmpty(value)){
+//                 error[field] = 'Este campo es requerido';
+//                 success = false;
+//             }else{
+//                 error[field] = '';
 
-                if (type === "email" && !validateEmail(value)) {
-                    error[field] = 'Ingrese un mail válido';
-                    success = false;
-                }else if (type === "password" && !validatePassword(value)) {
-                    error[field] = 'La contraseña debe tener más de 6 caracteres';
-                    success = false;
-                }else if (type === "confirm_password" && !confirmPassword(value, form["password"]['value'])) {
-                    error[field] = 'Las contraseñas no coinciden';
-                    success = false;
-                }
-            }
-        }
-    });
+//                 if (type === "email" && !validateEmail(value)) {
+//                     error[field] = 'Ingrese un mail válido';
+//                     success = false;
+//                 }else if (type === "password" && !validatePassword(value)) {
+//                     error[field] = 'La contraseña debe tener más de 6 caracteres';
+//                     success = false;
+//                 }else if (type === "confirm_password" && !confirmPassword(value, form["password"]['value'])) {
+//                     error[field] = 'Las contraseñas no coinciden';
+//                     success = false;
+//                 }
+//             }
+//         }
+//     });
 
-    return {success, error};
-}
+//     return {success, error};
+// }

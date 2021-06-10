@@ -94,7 +94,7 @@ class RegisterInit extends React.Component<MyProps, MyState> {
                             <Icon name='phone-portrait' />
                             <Text style={{ color: '#000', fontWeight: 'bold' }}>🇺🇾(+598)</Text>
                             <Input 
-                                maxLength={9}
+                                maxLength={8}
                                 keyboardType="phone-pad" 
                                 placeholder="Nro. celular"
                                 onChangeText={mobileNumber => this.setState({ mobileNumber })}
