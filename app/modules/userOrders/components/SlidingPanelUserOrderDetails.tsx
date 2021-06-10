@@ -14,6 +14,7 @@ import * as Progress from 'react-native-progress';
 import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../../styles/theme';
 import { extraOptionPriceTypes, getOrderStatusCurrentTime, getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
 import { displayDate } from '../utils/utils';
+import { HELP_PHONE } from '../../../config/constants';
 
 type MyProps = {
   onPress: () => void,
@@ -79,8 +80,8 @@ const SlidingPanelUserOrderDetails: React.FunctionComponent<MyProps> = ({ onPres
 	}, [panelPositionVal]);
 
   const onPressHelp = () => {
-    Linking.openURL('whatsapp://send?phone=59893764373').then((data) => {
-      console.log('WhatsApp abierto');
+    Linking.openURL(`whatsapp://send?phone=${HELP_PHONE}`).then((data) => {
+      console.log('Se pidió ayuda al celular de Whatsapp');
     }).catch((err) => {
       console.log(err);
       alert('No se puede abrir Whatsapp porque no se encontró instalado en el dispositivo');

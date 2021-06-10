@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, ActivityIndicator } from 'react-native';
+import { View, Image, ActivityIndicator, Pressable } from 'react-native';
 import { connect } from 'react-redux';
 import { Container, Content, Form, Item, Input, Toast, Icon, Button, Text } from 'native-base';
 
@@ -14,6 +14,7 @@ import {
     ERROR_PASSWORD_LENGTH 
 } from '../../../../config/strings';
 import CustomModal from '../../../../components/CustomModal';
+import styles from './styles';
 
 type MyProps = {
     passwordRecover: (data, onSuccess, onError) => void,
@@ -85,16 +86,19 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
             <Container>
                 <Content
                     padder={false}
-                    // scrollEnabled={false}
+                    scrollEnabled={false}
                     contentContainerStyle={{ flex: 1, flexDirection: 'column', justifyContent: 'center' }}
                 >
                     <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
                     <View style={{ alignItems: 'center', marginHorizontal: 20 }}>
-                        <Text style={{ textAlign: 'center' }}>
+                        {/* <Text style={{ textAlign: 'center' }}>
                             Te hemos enviado un código por SMS a su celular
                         </Text>
                         <Text style={{ textAlign: 'center' }}>
                             Para completar el proceso de verificación de su numero de telefono, por favor, ingresa el código de activación de 6 digitos y una contraseña
+                        </Text> */}
+                        <Text style={{ textAlign: 'center' }}>
+                            Para poder recuperar su contraseña ingrese el código (000000) y a continuación su contraseña nueva.
                         </Text>
                     </View>
 
@@ -123,21 +127,20 @@ class PasswordRecover extends React.Component<MyProps, MyState> {
                             </Button>
                             {false && <Icon name='close-circle' />}
                         </Item>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: "center", marginVertical: 10 }}>
-                            <Button 
-                                // @ts-ignore
-                                disable={isLoading}
-                                style={{ flex: 1, flexDirection: 'row', justifyContent: "center", paddingVertical: 20 }}
+                        <View style={[styles.rowContainer, { marginVertical: 10, paddingVertical: 10 }]}>
+                            <Pressable 
+                                disabled={isLoading}
+                                style={[styles.rowContainer, styles.button]}
                                 onPress={this.onSubmit}>
                                 {
                                     isLoading ?
                                     <ActivityIndicator />
                                     :
-                                    <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>
+                                    <Text style={styles.textButton}>
                                         Recuperar Contraseña
                                     </Text>
                                 }
-                            </Button>
+                            </Pressable>
                         </View>
                     </Form>
 

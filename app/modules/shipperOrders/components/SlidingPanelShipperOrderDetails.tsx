@@ -15,6 +15,7 @@ import { color, fontSize, fontWeight, iconSize, isiOS, screenSize } from '../../
 import { currentDate, currentDateMoment, dateToBackend, displayDate } from '../../orders/utils/utils';
 import { extraOptionPriceTypes, getOrderStatusCurrentTime, getOrderStatusIndex, getOrderStatusText, statusOrder } from '../../../config/utils';
 import PickerModal from '../../shared/PickerModal/PickerModal';
+import { HELP_PHONE } from '../../../config/constants';
 
 type MyProps = {
   onPress: (index) => void,
@@ -78,8 +79,8 @@ const SlidingPanelShipperOrderDetails: React.FunctionComponent<MyProps> = ({ onP
 	}, [panelPositionVal]);
 
   const onPressHelp = () => {
-    Linking.openURL('whatsapp://send?phone=59893764373').then((data) => {
-      console.log('WhatsApp abierto');
+    Linking.openURL(`whatsapp://send?phone=${HELP_PHONE}`).then((data) => {
+      console.log('Se pidió ayuda al celular de Whatsapp');
     }).catch((err) => {
       console.log(err);
       alert('No se puede abrir Whatsapp porque no se encontró instalado en el dispositivo');

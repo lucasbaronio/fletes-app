@@ -153,14 +153,14 @@ class Login extends React.Component<MyProps, MyState> {
                         </View>
                     </Form>
 
-                    <View style={styles.rowContainer}>
+                    {/* <View style={styles.rowContainer}>
                         <Text>No tienes una cuenta? </Text>
                         <Text 
                             style={{ color: color.primary.dark }} 
                             onPress={this.goToRegister}>
                                 Crear cuenta
                         </Text>
-                    </View>
+                    </View> */}
                     
                 </Content>
             </Container>

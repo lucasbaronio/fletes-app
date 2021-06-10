@@ -1,8 +1,13 @@
 
 export const API_KEY_GOOGLE = 'AIzaSyAyv9pHdOrn__bmpDQbVXL41Hg6725qJmk';
 
-// export const API = 'http://baronio.ddns.net:29832/v1';
-export const API = 'http://lupe.ddns.net:29832/v1';
+export const HELP_PHONE = '59893764373';
+
+// TEST
+// export const API = 'http://lupe.ddns.net:29832/v1';
+
+// PROD
+export const API = 'http://lupe.ddns.net:29831/v1';
 export const API_LIST_REQUEST_SIZE = 10;
 
 export const API_AUTH = `${API}/auth`;
