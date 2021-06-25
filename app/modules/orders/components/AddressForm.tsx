@@ -77,6 +77,7 @@ export default class AddressForm extends Component<MyProps, MyState> {
                         onSubmitEditing={() => { this.thirdTextInputRef._root.focus(); }}
                         // onSubmitEditing={() => { thirdTextInputRef.current._root.focus(); }}
                         blurOnSubmit={false}
+                        maxLength={6}
                         value={streetNumber}/>
                 </Item>
                 <Item floatingLabel last>
@@ -89,6 +90,7 @@ export default class AddressForm extends Component<MyProps, MyState> {
                         }}
                         onEndEditing={() => onSetDoorNumber(doorNumber)}
                         returnKeyType='done'
+                        maxLength={6}
                         // onSubmitEditing={() => onNextScreen({streetName, streetNumber, doorNumber})}
                         value={doorNumber}/>
                 </Item>

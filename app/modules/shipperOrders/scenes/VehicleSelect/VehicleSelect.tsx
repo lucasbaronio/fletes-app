@@ -49,7 +49,7 @@ class VehicleSelect extends React.Component<MyProps, MyState> {
 
     onSuccess = (vehicles) => {
         console.log(vehicles);
-        this.setState({ error: '', visibleModal: false, vehicles });
+        this.setState({ error: '', visibleModal: false, vehicles: vehicles.filter(vehicle => vehicle.enabled == 1) });
     }
 
     onError = (error) => {
