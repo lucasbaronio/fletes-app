@@ -13,6 +13,7 @@ import { currentDate, displayDate } from '../../utils/utils';
 import CustomModal from '../../../../components/CustomModal';
 import { extraOptionPriceTypes } from '../../../../config/utils';
 import { fontSize } from '../../../../styles/theme';
+import { TIME_SEC_BASE_PRICE } from '../../../../config/constants';
 
 type MyProps = {
     getPaymentMethod: (successCB, errorCB) => void,
@@ -33,6 +34,8 @@ type MyState = {
     vehicleType: any,
     totalPricePerHour: number,
     totalPriceFixed: number,
+    basePriceHour: number,
+    basePriceMinutes: number,
 }
 class CreateOrderDetails extends React.Component<MyProps, MyState> {
     constructor(props) {
@@ -45,6 +48,8 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
             vehicleType: null,
             totalPricePerHour: 0,
             totalPriceFixed: 0,
+            basePriceHour: Math.trunc(TIME_SEC_BASE_PRICE / 60 / 60),
+            basePriceMinutes: Math.trunc((TIME_SEC_BASE_PRICE / 60) % 60),
         };
     }
 
@@ -158,7 +163,7 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
     }
 
     render() {
-        const { data, totalPricePerHour, totalPriceFixed, vehicleType, extraOptions, error, visibleModal } = this.state;
+        const { data, totalPricePerHour, totalPriceFixed, vehicleType, extraOptions, error, visibleModal, basePriceHour, basePriceMinutes } = this.state;
         return (
             <SafeAreaView style={styles.container}>
                 <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/>
@@ -200,13 +205,27 @@ class CreateOrderDetails extends React.Component<MyProps, MyState> {
                                     }
                                 </View>
                             <View style={styles.separatorHeader}></View>
-                            <View style={[styles.containerTotalHeader,{ marginTop: 20 }]}>
-                                <Text style={styles.keyTextTotalHeader}>Total fijo</Text>
+                            {/* <View style={[styles.containerTotalHeader,{ marginTop: 20 }]}>
+                                <Text style={styles.keyTextTotalHeader}>Precio fijo</Text>
                                 <Text style={styles.valueTextTotalHeader}>${totalPriceFixed}</Text>
+                            </View> */}
+                            <View style={styles.containerTotalHeader}>
+                                <View style={{ flex: 1, flexDirection: 'column' }}>
+                                    <Text style={styles.keyTextTotalHeader}>Precio base</Text>
+                                    <Text style={{ fontSize: fontSize.XS }}>Pedidos con duración menor a {basePriceHour} hs y {basePriceMinutes} min</Text>
+                                </View>
+                                <View style={{ justifyContent: 'center' }}>
+                                    <Text style={styles.valueTextTotalHeader}>${((totalPricePerHour * TIME_SEC_BASE_PRICE) / 3600) + totalPriceFixed}</Text>
+                                </View>
                             </View>
                             <View style={styles.containerTotalHeader}>
-                                <Text style={styles.keyTextTotalHeader}>Total por hora</Text>
-                                <Text style={styles.valueTextTotalHeader}>${totalPricePerHour}</Text>
+                                <View style={{ flex: 1, flexDirection: 'column' }}>
+                                    <Text style={styles.keyTextTotalHeader}>Precio por hora extra</Text>
+                                    <Text style={{ fontSize: fontSize.XS }}>Se cobra pasado el tiempo base</Text>
+                                </View>
+                                <View style={{ justifyContent: 'center' }}>
+                                    <Text style={styles.valueTextTotalHeader}>${totalPricePerHour}</Text>
+                                </View>
                             </View>
                         </View>
                     }

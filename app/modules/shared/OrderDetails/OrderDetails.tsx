@@ -5,8 +5,9 @@ import { Text } from 'native-base';
 
 import styles from './styles';
 import { currentDate, dateToFrontend, timeDiffSeconds, displayDate } from '../../orders/utils/utils';
-import { fontSize } from '../../../styles/theme';
+import { fontSize, fontWeight } from '../../../styles/theme';
 import { extraOptionPriceTypes, getOrderStatusCurrentTime, statusOrder } from '../../../config/utils';
+import { TIME_SEC_BASE_PRICE } from '../../../config/constants';
 
 type MyProps = {
     order: any,
@@ -21,6 +22,9 @@ type MyState = {
     finalPrice: number,
     hours: number,
     minutes: number,
+    basePriceTitle: string,
+    basePriceHour: number,
+    basePriceMinutes: number,
 }
 class OrderDetails extends React.Component<MyProps, MyState> {
     refreshIntervalId;
@@ -34,6 +38,9 @@ class OrderDetails extends React.Component<MyProps, MyState> {
             finalPrice: 0,
             hours: 0,
             minutes: 0,
+            basePriceTitle: '',
+            basePriceHour: Math.trunc(TIME_SEC_BASE_PRICE / 60 / 60),
+            basePriceMinutes: Math.trunc((TIME_SEC_BASE_PRICE / 60) % 60),
         };
     }
 
@@ -148,7 +155,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
     }
 
     calculatePricePerHour = () => {
-        const { order, extraOptionsDynamicTotalPrice } = this.state;
+        const { order, extraOptionsDynamicTotalPrice } = this.state; 
         if (order) {
             const { shipperArrivedAtOriginAt, shipperCompletedAt, pricePerHour, fixedPrice } = order;
             let diff = 0;
@@ -158,11 +165,20 @@ class OrderDetails extends React.Component<MyProps, MyState> {
                 diff = timeDiffSeconds(dateToFrontend(shipperCompletedAt), dateToFrontend(shipperArrivedAtOriginAt));
                 clearInterval(this.refreshIntervalId);
             }
+            const hours = Math.trunc(diff / 60 / 60);
+            const minutes = Math.trunc((diff / 60) % 60);
+            let basePriceTitle = 'Total por hora';
+            if (diff <= TIME_SEC_BASE_PRICE) {
+                diff = TIME_SEC_BASE_PRICE;
+                basePriceTitle = 'Total por hora (precio base)';
+            }
+            const totalPricePerHour = Math.round(((pricePerHour + extraOptionsDynamicTotalPrice) * diff / 60 / 60) * 100) / 100
             this.setState({
-                hours: Math.trunc(diff / 60 / 60),
-                minutes: Math.trunc((diff / 60) % 60),
-                totalPricePerHour: Math.round(((pricePerHour + extraOptionsDynamicTotalPrice) * diff / 60 / 60) * 100) / 100,
-                finalPrice: (Math.round(((pricePerHour + extraOptionsDynamicTotalPrice) * diff / 60 / 60) * 100) / 100) + fixedPrice,
+                hours,
+                minutes,
+                totalPricePerHour,
+                finalPrice: totalPricePerHour + fixedPrice,
+                basePriceTitle,
             });
         }
     }
@@ -173,7 +189,7 @@ class OrderDetails extends React.Component<MyProps, MyState> {
             return (<View><ActivityIndicator /></View>)
         }
         const { vehicleType, extraOptions, fixedPrice } = order;
-        const { data, totalPricePerHour, finalPrice, hours, minutes } = this.state;
+        const { data, totalPricePerHour, finalPrice, hours, minutes, basePriceTitle, basePriceHour, basePriceMinutes } = this.state;
         return (
             <SafeAreaView style={styles.container}>
                 {/* <CustomModal message={error} visible={visibleModal} onClose={this.onCloseModal}/> */}
@@ -221,8 +237,9 @@ class OrderDetails extends React.Component<MyProps, MyState> {
                             </View>
                             <View style={styles.containerTotalHeader}>
                                 <View style={{ flex: 1, flexDirection: 'column' }}>
-                                    <Text style={styles.keyTextTotalHeader}>Total por hora (actual)</Text>
-                                    <Text style={{ fontSize: fontSize.XS }}>({hours} hs y {minutes} mins)</Text>
+                                    <Text style={styles.keyTextTotalHeader}>{basePriceTitle}</Text>
+                                    <Text style={{ fontSize: fontSize.XS }}><Text style={{ fontWeight: fontWeight.M, fontSize: fontSize.XS }}>Tiempo precio base:</Text> {basePriceHour} hs y {basePriceMinutes} mins</Text>
+                                    <Text style={{ fontSize: fontSize.XS }}><Text style={{ fontWeight: fontWeight.M, fontSize: fontSize.XS }}>Tiempo actual:</Text> {hours} hs y {minutes} mins</Text>
                                 </View>
                                 <Text style={styles.valueTextTotalHeader}>${totalPricePerHour}</Text>
                             </View>

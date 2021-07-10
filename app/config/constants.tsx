@@ -9,6 +9,7 @@ export const API = 'http://lupe.ddns.net:29832/v1';
 // PROD
 // export const API = 'http://lupe.ddns.net:29831/v1';
 export const API_LIST_REQUEST_SIZE = 10;
+export const TIME_SEC_BASE_PRICE = 3600;
 
 export const API_AUTH = `${API}/auth`;
 export const API_AUTH_LOG_IN = `${API_AUTH}`;
